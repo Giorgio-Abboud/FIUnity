@@ -1,0 +1,110 @@
+
+.registration-log-in {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.login-title {
+    color: #0d2b4c;
+    font-family: "New Frank Medium", Helvetica;
+    font-size: 30px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 300px;
+    margin-bottom: 20px; /* Add margin between input fields */
+}
+
+.input-field {
+    background-color: #5b86b580;
+    border-radius: 15px;
+    border: none;
+    color: #ffffff;
+    font-family: "New Frank Light", Helvetica;
+    font-size: 18px;
+    font-weight: 300;
+    height: 54px;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.input-field::placeholder {
+    color: #ffffff;
+}
+
+.submit-button {
+    background-color: #b68400;
+    border: none;
+    border-radius: 15px;
+    color: #ffffff;
+    cursor: pointer;
+    font-family: "New Frank Light", Helvetica;
+    font-size: 18px;
+    font-weight: 300;
+    height: 40px; 
+    width: 100px; 
+    position: absolute;
+    bottom: -70px; 
+    right: -90px;
+    transform: translate(-50%, -50%);
+}
+
+.submit-button:hover {
+    background-color: #d9a31e;
+}
+
+/* Form styles */
+.form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-group button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.form-group button:hover {
+  background-color: #0056b3;
+}
+
+
+
