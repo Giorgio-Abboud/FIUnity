@@ -5,7 +5,9 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 
 export default function WritePost({ profilePic1 }) {
   const [userInput, setUserInput] = useState("");
-
+  const handleIconClick = () => {
+    document.getElementById("dockpicker").click();
+  };
   return (
     <>
       <div className="large-post-box font">
@@ -20,8 +22,9 @@ export default function WritePost({ profilePic1 }) {
             placeholder="Type here..."
           />
           <div className="icon-button-style">
-            <div className="icon">
-              <span>
+            <div className="icon icon-cursor">
+              <span onClick={handleIconClick}>
+                <input type="file" id="dockpicker" accept=".png,.jpg" />
                 <SlPicture />
                 Media
               </span>
