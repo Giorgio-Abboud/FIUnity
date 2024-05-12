@@ -90,12 +90,12 @@
 }
 
 #dockpicker {
-  opacity: 0; 
-  position: absolute; /* Remove from the normal flow */
-  z-index: -1; /* Place behind other content */
-  width: 0.1px; /* Minimize size */
-  height: 0.1px; /* Minimize size */
-  overflow: hidden; /* Hide any overflow */
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+  width: 0.1px;
+  height: 0.1px;
+  overflow: hidden;
 }
 
 .line {
