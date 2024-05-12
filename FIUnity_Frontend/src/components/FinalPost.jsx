@@ -17,7 +17,11 @@ export default function FinalPost({
   return (
     <div className=" final-post-box font">
       <div className="name-container">
-        <img src={profilePic1} alt="profile picture" className="profile-pic-1" />
+        <img
+          src={profilePic1}
+          alt="profile picture"
+          className="profile-pic-1"
+        />
         <div>
           <span className="name">{name}</span>
           <br />
@@ -28,7 +32,7 @@ export default function FinalPost({
       <div>
         <img src={imgUrl} alt="post picture" className="post-pic" />
       </div>
-      <div className="post-features">
+      <div className="post-features icon-cursor">
         <span>
           <AiOutlineLike /> Like
         </span>
