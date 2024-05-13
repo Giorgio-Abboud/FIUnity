@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-4(fn#&(&^^_4j!w!hn0x7(fn)h+s0e-o4r)!2qzt#^nc925)gd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Execution',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -47,7 +51,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
+
+# Done to not reject React framework from interacting witgh Django
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+        ]
+    }
+
+# Tells browser that web app is running at 1 origin
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'FIUnity_Backend.urls'
 
@@ -75,8 +90,19 @@ WSGI_APPLICATION = 'FIUnity_Backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+
+        'ENGINE': 'django.db.backends.postgresql',
+
+        'NAME': 'fiunity',
+
+        'USER': 'postgres',
+
+        'PASSWORD': 'root',
+
+        'HOST': 'localhost',
+
+        'PORT': '5433',
+
     }
 }
 
