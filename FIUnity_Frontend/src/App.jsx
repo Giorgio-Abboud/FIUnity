@@ -1,11 +1,12 @@
 import "./App.css";
 import WritePost from "./components/WritePost";
 import FinalPost from "./components/FinalPost";
+import axios, {isCancel, AxiosError} from 'axios';
 
 function App() {
   return (
     <>
-      <WritePost profilePic1={"/images/roary-profile-pic.jpg"} />
+      <WritePost name={"Roary Royce"}/>
       <FinalPost
         name={"Roary Royce"}
         description={
@@ -13,8 +14,6 @@ function App() {
         }
         classification={"Student"}
         imgUrl={"/images/roary-post-img.png"}
-        profilePic={"/images/roary-profile-pic.jpg"}
-        profilePic1={"/images/other-profile-pic.png"}
       />
     </>
   );

@@ -12,17 +12,12 @@
   border-radius: 10px;
   background-color: white;
   display: flex;
-}
-
-.profile-pic {
-  border-radius: 100%;
-  height: 70px;
+  flex-direction: column;
 }
 
 .text-area-container {
-  width: 85%;
-  margin-right: 15px;
-  margin-left: 15px;
+  width: 98%;
+  margin-right: 20px;
   margin-top: 10px;
 }
 
@@ -38,6 +33,7 @@
   min-height: 60px;
   max-height: 300px;
   padding-top: 10px;
+  margin-top: 10px;
   padding-left: 10px;
   margin-bottom: 10px;
 }
@@ -71,12 +67,13 @@
 .post-button {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   background-color: #ffcc00;
-  color: #0c3d72;
+  color: white;
   border: none;
   padding: 5px;
   font-size: smaller;
   border-radius: 10px;
   height: 30px;
+  margin-left: 15px;
   width: 90px;
 }
 
@@ -116,12 +113,6 @@
   border-radius: 10px;
   background-color: white;
   margin-bottom: 3%;
-}
-
-.profile-pic-1 {
-  border-radius: 100%;
-  height: 55px;
-  width: 55px;
 }
 
 .name {
@@ -164,14 +155,9 @@
   align-items: center;
 }
 
-.profile-pic-2 {
-  border-radius: 100%;
-  height: 40px;
-}
-
 .comment-flex {
   display: flex;
-  gap: 15px;
+  justify-content: space-evenly;
 }
 
 .comment {
@@ -183,10 +169,11 @@
   width: 75%;
   padding-top: 10px;
   padding-left: 10px;
-  padding-right: 3px;
+  padding-right: 10px;
   margin-bottom: 15px;
   min-width: 75%;
   max-width: 75%;
+  margin-left: 15px;
   min-height: 30px;
   max-height: 90px;
 }
