@@ -1,22 +1,28 @@
 import "./Post.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineLike } from "react-icons/ai";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { IoShareOutline } from "react-icons/io5";
 import { BiRepost } from "react-icons/bi";
+import axios from "axios";
 
 export default function FinalPost({
-  name,
+  firstName,
+  lastName,
   classification,
   description,
   imgUrl,
+  timestamp,
 }) {
   const [userInput, setUserInput] = useState("");
   return (
     <div className=" final-post-box font">
       <div className="name-container">
         <div>
-          <span className="name">{name}</span>
+          <span className="name">
+            {firstName} {lastName}
+          </span>
+          <span className="time-stamp">Posted on: </span>
           <br />
           <span className="classification">{classification}</span>
         </div>
@@ -40,7 +46,9 @@ export default function FinalPost({
         </span>
       </div>
       <div className="comment-flex">
-        <span className="name">{name}</span>
+        <span className="name">
+          {firstName} {lastName}
+        </span>
         <textarea
           className="comment scrollbar"
           value={userInput}
