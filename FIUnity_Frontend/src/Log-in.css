@@ -9,7 +9,8 @@
     color: #0d2b4c;
     font-family: "New Frank Medium", Helvetica;
     font-size: 30px;
-    font-weight: 500;
+    text-align: center;
+    font-weight: 900;
     margin-bottom: 20px;
 }
 
@@ -24,7 +25,7 @@
 .input-wrapper {
     position: relative;
     width: 300px;
-    margin-bottom: 20px; /* Add margin between input fields */
+    margin-bottom: 20px; 
 }
 
 .input-field {
@@ -65,7 +66,6 @@
     background-color: #d9a31e;
 }
 
-/* Form styles */
 .form-container {
   max-width: 400px;
   margin: 0 auto;
@@ -104,6 +104,42 @@
 
 .form-group button:hover {
   background-color: #0056b3;
+}
+
+.OR-line{
+  margin-left: 30px;
+  color: #b6862c;
+}
+
+.line {
+  margin-top: 50px;
+  display: inline-block;
+  width: 140px; 
+  border-bottom: 2px solid #b6862c;
+  font-family: "New Frank Medium", Helvetica; 
+  vertical-align: 4px;
+}
+
+.registration-button{
+  
+  background-color: #e6aa14;
+    border: none;
+    border-radius: 15px;
+    color: #ffffff;
+    cursor: pointer;
+    font-family: "New Frank Light", Helvetica;
+    font-size: 18px;
+    font-weight: 300;
+    height: 54px; 
+    width: 330px; 
+    justify-content: center;
+    margin-top: 10px;
+    margin-left: 30px;
+   
+}
+
+.registration-button:hover {
+  background-color: #b68400;
 }
 
 

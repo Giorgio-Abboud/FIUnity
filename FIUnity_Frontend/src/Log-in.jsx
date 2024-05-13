@@ -20,26 +20,31 @@ export default function RegistrationLogIn() {
             email: email,
             pantherId: pantherId
         };
-    
-        // Send a POST request to the backend with the login information as JSON
-        fetch("/api/login", {
-            method: "POST",
+
+
+        axios.post('http://10.108.229.73:8000/login/', loginInfo, {
             headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(loginInfo)
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log("Login successful");
-                // Here we can redirect the user to home page
-            } else {
-                console.error("Login failed");
+                'Content-Type': 'application/json'
             }
         })
-        .catch(error => {
-            console.error("Error sending login request:", error);
-        });
+            .then(response => {
+                if (response.ok) {
+                    console.log('Login successful');
+                    // Redirect the user to the home page
+                    window.location.href = 'http://10.108.229.73:8000/homepage/';
+                } else {
+                    console.error('Login failed');
+                    setErrorMessage('Login failed. Please check your credentials.');
+                }
+            })
+            .catch(error => {
+                console.error('Error sending login request:', error);
+                setErrorMessage('An error occurred while logging in. Please try again later.');
+            });
+    };
+
+    const handleRegisterClick = () => {
+        window.location.href = 'http://10.108.229.73:8000/register/';
     };
 
     return (
@@ -69,6 +74,13 @@ export default function RegistrationLogIn() {
                         Submit
                     </button>
                 </div>
+                <p class = "OR-line">
+                    <span class="line"></span> OR <span class="line"></span>
+                </p>
+                <button className="registration-button" onClick={handleRegisterClick}>
+                    Register Here
+                </button>
+
             </div>
         </div>
     );
