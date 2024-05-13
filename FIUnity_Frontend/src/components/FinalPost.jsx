@@ -10,18 +10,11 @@ export default function FinalPost({
   classification,
   description,
   imgUrl,
-  profilePic1,
-  profilePic,
 }) {
   const [userInput, setUserInput] = useState("");
   return (
     <div className=" final-post-box font">
       <div className="name-container">
-        <img
-          src={profilePic1}
-          alt="profile picture"
-          className="profile-pic-1"
-        />
         <div>
           <span className="name">{name}</span>
           <br />
@@ -47,7 +40,7 @@ export default function FinalPost({
         </span>
       </div>
       <div className="comment-flex">
-        <img src={profilePic} alt="profile picture" className="profile-pic-2" />
+        <span className="name">{name}</span>
         <textarea
           className="comment scrollbar"
           value={userInput}

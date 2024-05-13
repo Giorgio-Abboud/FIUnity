@@ -3,7 +3,7 @@ import { useState } from "react";
 import { SlPicture } from "react-icons/sl";
 import { FaRegCalendarAlt } from "react-icons/fa";
 
-export default function WritePost({ profilePic1 }) {
+export default function WritePost({ name }) {
   const [userInput, setUserInput] = useState("");
   const handleIconClick = () => {
     document.getElementById("dockpicker").click();
@@ -11,7 +11,7 @@ export default function WritePost({ profilePic1 }) {
   return (
     <>
       <div className="large-post-box font">
-        <img src={profilePic1} alt="profile picture" className="profile-pic" />
+        <span className="name">{name}</span>
         <div className="text-area-container">
           <textarea
             className="text-box scrollbar"
