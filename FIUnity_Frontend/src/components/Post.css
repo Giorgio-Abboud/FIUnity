@@ -33,7 +33,6 @@
   min-height: 60px;
   max-height: 300px;
   padding-top: 10px;
-  margin-top: 10px;
   padding-left: 10px;
   margin-bottom: 10px;
 }
@@ -62,6 +61,11 @@
 
 .text-box::-ms-input-placeholder {
   color: #0c3d72ab;
+}
+
+.time-stamp {
+  color: #0c3d72ab;
+  padding-left: 420px;
 }
 
 .post-button {

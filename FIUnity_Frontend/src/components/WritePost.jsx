@@ -1,17 +1,43 @@
 import "./Post.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SlPicture } from "react-icons/sl";
 import { FaRegCalendarAlt } from "react-icons/fa";
+import axios from "axios";
 
-export default function WritePost({ name }) {
+export default function WritePost({ firstName, lastName }) {
   const [userInput, setUserInput] = useState("");
+  const [datePosted, setDatePosted] = useState("");
+
   const handleIconClick = () => {
     document.getElementById("dockpicker").click();
+  };
+
+  const handleSubmit = async () => {
+    const currentDateTime = new Date().toLocaleString();
+    setDatePosted(currentDateTime);
+
+    const postData = {
+      description: userInput,
+      datePosted: currentDateTime,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://10.108.229.73:8000/writePost/",
+        postData
+      );
+      console.log("Post submitted:", response.data);
+      setUserInput("");
+    } catch (error) {
+      console.error("Failed to submit post:", error);
+    }
   };
   return (
     <>
       <div className="large-post-box font">
-        <span className="name">{name}</span>
+        <span className="name">
+          {firstName} {lastName}
+        </span>
         <div className="text-area-container">
           <textarea
             className="text-box scrollbar"
@@ -33,7 +59,9 @@ export default function WritePost({ name }) {
                 Event
               </span>
             </div>
-            <button className="post-button">Submit post</button>
+            <button onClick={handleSubmit} className="post-button">
+              Submit post
+            </button>
           </div>
         </div>
       </div>
