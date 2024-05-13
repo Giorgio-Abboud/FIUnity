@@ -21,24 +21,25 @@ export default function RegistrationLogIn() {
             pantherId: pantherId
         };
     
-        // Send a POST request to the backend with the login information as JSON
-        fetch("/api/login", {
-            method: "POST",
+    
+        axios.post('http://10.108.229.73:8000/login/', loginInfo, {
             headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(loginInfo)
+                'Content-Type': 'application/json'
+            }
         })
         .then(response => {
             if (response.ok) {
-                console.log("Login successful");
-                // Here we can redirect the user to home page
+                console.log('Login successful');
+                // Redirect the user to the home page
+                window.location.href = 'http://10.108.229.73:8000/homepage/';
             } else {
-                console.error("Login failed");
+                console.error('Login failed');
+                setErrorMessage('Login failed. Please check your credentials.');
             }
         })
         .catch(error => {
-            console.error("Error sending login request:", error);
+            console.error('Error sending login request:', error);
+            setErrorMessage('An error occurred while logging in. Please try again later.');
         });
     };
 
