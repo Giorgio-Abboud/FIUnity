@@ -4,7 +4,7 @@ import { SlPicture } from "react-icons/sl";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import axios from "axios";
 
-export default function WritePost({ firstName, lastName }) {
+export default function CreatePost({ firstName, lastName }) {
   const [userInput, setUserInput] = useState("");
   const [datePosted, setDatePosted] = useState("");
 
