@@ -22,7 +22,7 @@ export default function FinalPost({
           <span className="name">
             {firstName} {lastName}
           </span>
-          <span className="time-stamp">Posted on: </span>
+          <span className="time-stamp">Posted on: {}</span>
           <br />
           <span className="classification">{classification}</span>
         </div>
