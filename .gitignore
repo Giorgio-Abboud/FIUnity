@@ -1,0 +1,6 @@
+FIUnity_Backend/
+
+# IDE and tool-specific files
+.vite/
+.anima/
+node_modules
