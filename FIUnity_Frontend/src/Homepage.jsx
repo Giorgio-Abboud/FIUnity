@@ -3,7 +3,7 @@ import WritePost from "./components/WritePost";
 import FinalPost from "./components/FinalPost";
 import React, { useState } from "react";
 
-function App() {
+function Homepage() {
   // const [writePost, setWritePost] = useState("")
   // const getWritePost = () => {
   //   axios
