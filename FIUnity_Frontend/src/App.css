@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-image: url('./public/FIU.jpg');
+    background-image: url('./FIU.jpg');
     background-size: cover; 
     background-position: center;
     }

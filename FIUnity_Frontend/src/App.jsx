@@ -66,6 +66,7 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Form values: ", values);
   };
 
   const onChange = (e) => {
