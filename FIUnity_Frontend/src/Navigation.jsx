@@ -1,7 +1,7 @@
 import React from 'react'
 import NavBar from './Components/NavBar/NavBar'
 
-const App = () => {
+const Navigation = () => {
   
   return (
     <div className='container'>
@@ -11,4 +11,4 @@ const App = () => {
   )
 }
 
-export default App
+export default Navigation
