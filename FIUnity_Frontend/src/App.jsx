@@ -1,6 +1,7 @@
 import "./App.css";
 import WritePost from "./components/WritePost";
 import FinalPost from "./components/FinalPost";
+import React, { useState } from "react";
 
 function App() {
   // const [writePost, setWritePost] = useState("")
@@ -12,7 +13,11 @@ function App() {
   // };
   return (
     <>
-      <WritePost firstName={"Roary"} lastName={"Royce"} />
+      <WritePost
+        firstName={"Roary"}
+        lastName={"Royce"}
+        // setTimestamp={setTimestamp}
+      />
       <FinalPost
         firstName={"Roary"}
         lastName={"Royce"}
@@ -21,6 +26,7 @@ function App() {
         }
         classification={"Student"}
         imgUrl={"/images/roary-post-img.png"}
+        // timestamp={"5/13/2024 3:54:33 PM"}
       />
     </>
   );
