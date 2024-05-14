@@ -8,7 +8,11 @@ import Jobs_icon from "../../assets/Jobs icon.png";
 
 const JobDropdown = ({ isOpen, toggleDropdown }) => {
   return (
-    <div className="job-dropdown" onMouseEnter={() => toggleDropdown(true)} onMouseLeave={() => toggleDropdown(false)}>
+    <div
+      className="job-dropdown"
+      onMouseEnter={() => toggleDropdown(true)}
+      onMouseLeave={() => toggleDropdown(false)}
+    >
       <div className="job-btn" onClick={toggleDropdown}>
         <img src={Jobs_icon} alt="" className="job-icon" />
         <span className="label">
@@ -64,6 +68,7 @@ const NavBar = () => {
         </div>
 
         <JobDropdown isOpen={isOpen} toggleDropdown={toggleDropdown} />
+        <button className="Logout">Logout</button>
       </div>
     </div>
   );
