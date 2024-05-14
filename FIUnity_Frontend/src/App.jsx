@@ -4,36 +4,36 @@ import FormInput from "./components/FormInput";
 
 const App = () => {
   const [values, setValues] = useState({
-    firstName: "",
-    lastName: "",
+    //firstName: "",
+    //lastName: "",
     email: "",
     pid: "",
     password: ""
   });
 
   const inputs = [
-    {
-      id: 1,
-      name: "firstName",
-      type: "text",
-      placeholder: "First Name",
-      errorMessage:
-        "Firstname should be 3-16 characters and shouldn't include any special character!",
-      label: "First Name",
-      pattern: "^[A-Za-z0-9]{3,16}$",
-      required: true,
-    },
-    {
-      id: 2,
-      name: "lastName",
-      type: "text",
-      placeholder: "Last Name",
-      errorMessage:
-        "Lastname should be 3-16 characters and shouldn't include any special character!",
-      label: "Last Name",
-      pattern: "^[A-Za-z0-9]{3,16}$",
-      required: true,
-    },
+    // {
+    //   id: 1,
+    //   name: "firstName",
+    //   type: "text",
+    //   placeholder: "First Name",
+    //   errorMessage:
+    //     "Firstname should be 3-16 characters and shouldn't include any special character!",
+    //   label: "First Name",
+    //   pattern: "^[A-Za-z0-9]{3,16}$",
+    //   required: true,
+    // },
+    // {
+    //   id: 2,
+    //   name: "lastName",
+    //   type: "text",
+    //   placeholder: "Last Name",
+    //   errorMessage:
+    //     "Lastname should be 3-16 characters and shouldn't include any special character!",
+    //   label: "Last Name",
+    //   pattern: "^[A-Za-z0-9]{3,16}$",
+    //   required: true,
+    // },
     {
       id: 3,
       name: "email",
