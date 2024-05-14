@@ -1,35 +1,93 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import FormInput from "./components/FormInput";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [values, setValues] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    pid: "",
+    password: ""
+  });
+
+  const inputs = [
+    {
+      id: 1,
+      name: "firstName",
+      type: "text",
+      placeholder: "First Name",
+      errorMessage:
+        "Firstname should be 3-16 characters and shouldn't include any special character!",
+      label: "First Name",
+      pattern: "^[A-Za-z0-9]{3,16}$",
+      required: true,
+    },
+    {
+      id: 2,
+      name: "lastName",
+      type: "text",
+      placeholder: "Last Name",
+      errorMessage:
+        "Lastname should be 3-16 characters and shouldn't include any special character!",
+      label: "Last Name",
+      pattern: "^[A-Za-z0-9]{3,16}$",
+      required: true,
+    },
+    {
+      id: 3,
+      name: "email",
+      type: "email",
+      placeholder: "Email",
+      errorMessage: "It should be a valid email address!",
+      label: "Email",
+      required: true,
+    },
+    {
+      id: 4,
+      name: "pid",
+      type: "text",
+      placeholder: "PID",
+      label: "PID",
+      required: true,
+    },
+    {
+      id: 5,
+      name: "password",
+      type: "password",
+      placeholder: "Password",
+      errorMessage:
+        "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
+      label: "Password",
+      pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
+      required: true,
+    }
+  ];
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  const onChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="app">
+      <form onSubmit={handleSubmit}>
+        <h1>Register</h1>
+        {inputs.map((input) => (
+          <FormInput
+            key={input.id}
+            {...input}
+            value={values[input.name]}
+            onChange={onChange}
+          />
+        ))}
+        <button>Submit</button>
+      </form>
+    </div>
+  );
+};
 
-export default App
+export default App;
