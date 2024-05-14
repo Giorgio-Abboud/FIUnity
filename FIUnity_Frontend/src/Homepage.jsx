@@ -1,7 +1,7 @@
-import "./App.css";
-import WritePost from "./components/WritePost";
+import "./index.css";
 import FinalPost from "./components/FinalPost";
 import React, { useState } from "react";
+import CreatePost from "./components/CreatePost";
 
 function Homepage() {
   // const [writePost, setWritePost] = useState("")
@@ -13,7 +13,7 @@ function Homepage() {
   // };
   return (
     <>
-      <WritePost
+      <CreatePost
         firstName={"Roary"}
         lastName={"Royce"}
         // setTimestamp={setTimestamp}
@@ -32,4 +32,4 @@ function Homepage() {
   );
 }
 
-export default App;
+export default Homepage;
