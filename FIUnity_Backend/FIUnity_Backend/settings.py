@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost',
+    'http://127.0.0.1',
+    'http://0.0.0.0',
+    'http://10.108.229.73:8000',
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+# Tells browser that web app is running at 1 origin
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -37,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Execution',
+    'Execution.apps.ExecutionConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders'
@@ -51,20 +63,17 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
-# Done to not reject React framework from interacting witgh Django
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-        ]
-    }
-
-# Tells browser that web app is running at 1 origin
-CORS_ORIGIN_ALLOW_ALL = True
-
 ROOT_URLCONF = 'FIUnity_Backend.urls'
+
+# Done to not reject React framework from interacting witgh Django
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.AllowAny',
+#         ]
+#     }
 
 TEMPLATES = [
     {
@@ -106,6 +115,16 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'Execution.AppUser'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -142,6 +161,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = '/static/' #  UNSURE  #
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

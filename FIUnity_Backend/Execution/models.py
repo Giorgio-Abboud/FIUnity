@@ -1,39 +1,40 @@
 from django.db import models
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
-# Create user models
-class User(models.Model):
-    email = models.CharField(max_length=80)
-    PID = models.CharField(max_length=7)
+class AppUserManager(BaseUserManager):
+	def create_user(self, email, password=None):
+		if not email:
+			raise ValueError('Email required.')
+		if not password:
+			raise ValueError('Password required.')
+		email = self.normalize_email(email)
+		user = self.model(email=email)
+		user.set_password(password)
+		user.save()
+		return user
+	def create_superuser(self, email, password=None):
+		if not email:
+			raise ValueError('Email required.')
+		if not password:
+			raise ValueError('Password required.')
+		user = self.create_user(email, password)
+		user.is_superuser = True
+		user.save()
+		return user
 
-# class Student(models.Model):
-#     username = models.CharField(max_length=30)
-#     password = models.CharField(max_length=30)
-#     first_name = models.CharField(max_length=30)
-#     last_name = models.CharField(max_length=30)
-#     email = models.CharField(max_length=80, unique=True)
-#     career_interest = models.CharField(max_length=50)
-#     pather_ID = models.IntegerField(null=False, unique=True)
-#     grad_year = models.IntegerField(null=False)
-#     class_standing = models.CharField(max_length=30)
-#     linkedin = models.CharField(max_length=30, unique=True)
 
-# class Alumni(models.Model):
-#     username = models.CharField(max_length=30)
-#     password = models.CharField(max_length=30)
-#     first_name = models.CharField(max_length=30)
-#     last_name = models.CharField(max_length=30)
-#     email = models.CharField(max_length=80, unique=True)
-#     career = models.CharField(max_length=50)
-#     pather_ID = models.IntegerField(null=False, unique=True)
-#     grad_year = models.IntegerField(null=False)
-#     job_position = models.CharField(max_length=30)
-#     company = models.CharField(max_length=30)
-#     city = models.CharField(max_length=30)
-#     state = models.CharField(max_length=30)
-#     country = models.CharField(max_length=30)
-#     years_experience = models.IntegerField(null=False)
-#     linkedin = models.CharField(max_length=80, unique=True)
+class AppUser(AbstractBaseUser, PermissionsMixin):
+	user_id = models.AutoField(primary_key=True)
+	email = models.EmailField(max_length=50, unique=True)
+	PID = models.CharField(max_length=7, unique=True)
+	first_name = models.CharField(max_length=50)
+	last_name = models.CharField(max_length=50)
+	USERNAME_FIELD = 'email'
+	REQUIRED_FIELDS = ['PID']
+	objects = AppUserManager()
+	def __str__(self):
+		return self.PID
 
 # The only authentication in pather email and pather ID
 # Also check for graduation date to know if student or alumni
-
