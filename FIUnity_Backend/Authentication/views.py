@@ -49,3 +49,16 @@ class UserView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+
+
+class PostJobView(View):
+    def get(self, request):
+        form = JobPostingForm()
+        return render(request, 'post_job.html', {'form': form})
+
+    def post(self, request):
+        form = JobPostingForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('jobs')  # Redirect to the jobs page after successful submission
+        return render(request, 'post_job.html', {'form': form})
