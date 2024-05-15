@@ -8,6 +8,7 @@ const JobAddingPosting = () => {
     const [jobPosition, setJobPosition] = useState('');
     const [jobID, setJobID] = useState('');
     const [companyName, setCompanyName] = useState('');
+    const [jobDescription, setJobDescription] = useState('');
     const [salary, setSalary] = useState('');
     const [type, setType] = useState('');
     const [mode, setMode] = useState('');
@@ -26,7 +27,7 @@ const JobAddingPosting = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         if (!jobPosition || !companyName || !salary || !type || !mode || !startDate || !usWorkAuthorization
             || !usCitizenship || !usResidency || !applicationLink) {
             setIsError(true);
@@ -39,6 +40,7 @@ const JobAddingPosting = () => {
             jobPosition,
             jobID,
             companyName,
+            jobDescription,
             salary,
             type,
             mode,
@@ -99,6 +101,14 @@ const JobAddingPosting = () => {
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
                         required
+                    />
+
+                    <label htmlFor="jobDescription">Description:</label>
+                    <input
+                        type="text"
+                        id="jobDescription"
+                        value={jobDescription}
+                        onChange={(e) => setJobDescription(e.target.value)}
                     />
 
                     <label htmlFor="salary">Salary: <span className="required">*</span></label>
