@@ -4,7 +4,7 @@ import { AiOutlineLike } from "react-icons/ai";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { IoShareOutline } from "react-icons/io5";
 import { BiRepost } from "react-icons/bi";
-import axios from "axios";
+// import axios from "axios";
 
 export default function FinalPost({
   firstName,
@@ -19,11 +19,12 @@ export default function FinalPost({
     <div className=" final-post-box font">
       <div className="name-container">
         <div>
-          <span className="name">
-            {firstName} {lastName}
-          </span>
-          <span className="time-stamp">Posted on: {}</span>
-          <br />
+          <div className="time-container">
+            <span className="name">
+              {firstName} {lastName}
+            </span>
+            <span className="time-stamp">Posted on: {timestamp}</span>
+          </div>
           <span className="classification">{classification}</span>
         </div>
       </div>

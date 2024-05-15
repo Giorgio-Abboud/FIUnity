@@ -65,8 +65,12 @@
 
 .time-stamp {
   color: #0c3d72ab;
-  padding-left: 420px;
-  padding-top:5px;
+}
+
+.time-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .post-button {
@@ -129,13 +133,6 @@
 .classification {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   color: #ffcc00;
-}
-
-.name-container {
-  gap: 15px;
-  display: flex;
-  /* flex-direction: column; 
-  align-items: flex-start; */
 }
 
 .post-pic {
