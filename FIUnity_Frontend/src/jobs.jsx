@@ -2,182 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './jobs.css';
 
-const dummyJobs = [
-    {
-        jobPosition: 'Software Engineer',
-        jobId: '12345',
-        companyName: 'ABC Inc.',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum. Integer eget malesuada turpis. ',
-        salary: '$80,000 - $100,000',
-        type: 'Full-Time',
-        mode: 'Remote',
-        startDate: '2024-06-01',
-        endDate: '2024-12-31',
-        otherRequirements: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum.',
-        usWorkAuthorization: true,
-        usCitizenship: false,
-        usResidency: true,
-        applicationLink: 'https://www.google.com'
-    },
-    {
-        jobPosition: 'Data Analyst',
-        jobId: '67890',
-        companyName: 'XYZ Corp.',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum. Integer eget malesuada turpis. ',
-        salary: '$60,000 - $80,000',
-        type: 'Part-Time',
-        mode: 'In-Person',
-        startDate: '2024-07-01',
-        endDate: '',
-        otherRequirements: '',
-        usWorkAuthorization: true,
-        usCitizenship: false,
-        usResidency: true,
-        applicationLink: 'https://example.com/job/67890'
-    },
-    {
-        jobPosition: 'Frontend Developer',
-        jobId: '54321',
-        companyName: 'DEF Ltd.',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum. Integer eget malesuada turpis. ',
-        salary: '$70,000 - $90,000',
-        type: 'Full-Time',
-        mode: 'Hybrid',
-        startDate: '2024-08-01',
-        endDate: '2025-02-28',
-        otherRequirements: '',
-        usWorkAuthorization: true,
-        usCitizenship: false,
-        usResidency: true,
-        applicationLink: 'https://www.example.com'
-    },
-    {
-        jobPosition: 'Product Manager',
-        jobId: '98765',
-        companyName: 'GHI Enterprises',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum. Integer eget malesuada turpis. ',
-        salary: '$90,000 - $110,000',
-        type: 'Full-Time',
-        mode: 'Remote',
-        startDate: '2024-09-01',
-        endDate: '',
-        otherRequirements: '',
-        usWorkAuthorization: true,
-        usCitizenship: false,
-        usResidency: true,
-        applicationLink: 'https://www.example.com/job/98765'
-    },
-    {
-        jobPosition: 'UX/UI Designer',
-        jobId: '13579',
-        companyName: 'JKL Solutions',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum. Integer eget malesuada turpis. ',
-        salary: '$75,000 - $95,000',
-        type: 'Full-Time',
-        mode: 'In-Person',
-        startDate: '2024-10-01',
-        endDate: '2025-04-30',
-        otherRequirements: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum.',
-        usWorkAuthorization: true,
-        usCitizenship: false,
-        usResidency: true,
-        applicationLink: 'https://www.example.com/job/13579'
-    },
-    {
-        jobPosition: 'Marketing Manager',
-        jobId: '24680',
-        companyName: 'MNO Marketing',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum. Integer eget malesuada turpis. ',
-        salary: '$85,000 - $105,000',
-        type: 'Full-Time',
-        mode: 'Remote',
-        startDate: '2024-11-01',
-        endDate: '',
-        otherRequirements: '',
-        usWorkAuthorization: true,
-        usCitizenship: false,
-        usResidency: true,
-        applicationLink: 'https://www.example.com/job/24680'
-    },
-    {
-        jobPosition: 'HR Coordinator',
-        jobId: '36912',
-        companyName: 'PQR HR Solutions',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum. Integer eget malesuada turpis. ',
-        salary: '$55,000 - $75,000',
-        type: 'Part-Time',
-        mode: 'In-Person',
-        startDate: '2024-12-01',
-        endDate: '',
-        otherRequirements: '',
-        usWorkAuthorization: true,
-        usCitizenship: false,
-        usResidency: true,
-        applicationLink: 'https://www.example.com/job/36912'
-    },
-    {
-        jobPosition: 'Financial Analyst',
-        jobId: '11111',
-        companyName: 'RST Finance',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum. Integer eget malesuada turpis. ',
-        salary: '$70,000 - $90,000',
-        type: 'Full-Time',
-        mode: 'Remote',
-        startDate: '2025-01-01',
-        endDate: '2025-07-31',
-        otherRequirements: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum.',
-        usWorkAuthorization: true,
-        usCitizenship: false,
-        usResidency: true,
-        applicationLink: 'https://www.example.com/job/11111'
-    },
-    {
-        jobPosition: 'Customer Support Specialist',
-        jobId: '22222',
-        companyName: 'UVW Services',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum. Integer eget malesuada turpis. ',
-        salary: '$45,000 - $65,000',
-        type: 'Full-Time',
-        mode: 'Hybrid',
-        startDate: '2025-02-01',
-        endDate: '',
-        otherRequirements: '',
-        usWorkAuthorization: true,
-        usCitizenship: false,
-        usResidency: true,
-        applicationLink: 'https://www.example.com/job/22222'
-    },
-    {
-        jobPosition: 'Graphic Designer',
-        jobId: '33333',
-        companyName: 'WXY Designs',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum. Integer eget malesuada turpis. ',
-        salary: '$60,000 - $80,000',
-        type: 'Full-Time',
-        mode: 'Remote',
-        startDate: '2025-03-01',
-        endDate: '2025-09-30',
-        otherRequirements: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat odio vel risus posuere, at blandit magna bibendum.',
-        usWorkAuthorization: true,
-        usCitizenship: false,
-        usResidency: true,
-        applicationLink: 'https://www.example.com/job/33333'
-    }
-];
-
 
 const JobsList = () => {
-    const [jobs, setJobs] = useState(dummyJobs);
+    
+    const [jobs, setJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
-
-    const handleJobClick = (jobPosition) => {
-        // Find the selected job from the dummy data
-        const selected = dummyJobs.find(job => job.jobPosition === jobPosition);
-        setSelectedJob(selected);
-    };
-
-    //const [jobs, setJobs] = useState([]);
-    //const [selectedJob, setSelectedJob] = useState(null);
 
     useEffect(() => {
         // Fetch job posting data from your backend
@@ -190,7 +19,7 @@ const JobsList = () => {
             });
     }, []);
 
-    /*
+    
     const handleJobClick = (jobPosition) => {
         // Fetch job posting details for the selected job
         axios.get(`http://10.108.229.73:8000/job-posting/${jobPosition}`)
@@ -201,7 +30,7 @@ const JobsList = () => {
                 console.error('Error fetching job details:', error);
             });
     };
-    */
+    
 
     return (
         <>
