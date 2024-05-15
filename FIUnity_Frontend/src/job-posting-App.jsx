@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './App.css'
+import './job-posting-App'
 import JobAddingPosting from './job-posting'
 
 function App() {
