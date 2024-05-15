@@ -8,13 +8,14 @@ input{
     padding: 15px;
     margin: 10px 0px;
     border-radius: 5px;
-    border: 1px solid gray;
-}
+    border: 1px solid #081e3f;
+};
+
 
 
 label{
     font-size: 12px;
-    color: gray;
+    color: #081e3f;
 }
 
 span{

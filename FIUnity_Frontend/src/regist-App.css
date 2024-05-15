@@ -1,6 +1,11 @@
+*{
+    color: #081e3f;
+}
+
 body{
     margin: 0;
     padding: 0;
+
 }
 
 .app {
@@ -8,10 +13,14 @@ body{
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-image: url('./FIU.jpg');
     background-size: cover; 
     background-position: center;
-    }
+    background: linear-gradient(180deg,
+      rgba(91.16, 134.1, 181.32, 0.5) 0%, /* Start with the blue color */
+      rgba(173.08, 194.55, 218.16, 0.62) 50%, /* Middle color */
+      rgba(255, 255, 255, 0.75) 100% /* End with the white color */
+    );
+}
 
     form{
         background-color: white;
@@ -29,7 +38,7 @@ body{
         height: 50px;
         padding: 10px;
         border: none;
-        background-color: rgb(138, 134, 2);
+        background-color: #ffcc00b0;
         color: white;
         border-radius: 5px;
         font-weight: bold;
@@ -38,3 +47,7 @@ body{
         margin-top: 15px;
         margin-bottom: 30px;
     }
+
+button:hover{
+    background-color: #b6862c;
+}
