@@ -1,0 +1,156 @@
+.NavBar {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    background-color: #081e3f;
+    padding: 15px 5%;
+    color: white;
+  }
+  
+  .logo {
+    height: 70px;
+    width: 20;
+    cursor: pointer;
+    margin-right: 30px;
+  }
+
+  /* Search bar */
+  .searchBox {
+    display: flex;
+    align-items: center;
+    background-color: aliceblue;
+    padding: 10px 20px;
+    border-radius: 50px;
+    width: 400px;
+}
+  
+  .searchBox input {
+    padding: 6px;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: black;
+    font-size: 12;
+    width: 400px;
+  }
+
+  .bold-search {
+    font-weight: bold;
+  }
+  
+  .searchBox.bold-search input {
+    font-weight: bold;
+  }
+  
+
+
+
+  /* Icons */
+  .NavBar_Icons {
+    display: flex;
+    padding: 15px 5%;
+    margin-top: 10px;
+  }
+  
+  .icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 200px;
+  }
+  
+  .icon {
+    height: 30px;
+    margin-bottom: 7px;
+  }
+  
+  
+  .icon-container a {
+    font-size: 18px;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .icon-container a:hover {
+    color: yellow;
+  }
+
+
+
+
+  /* Dropdown */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  min-width: 150px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #000000;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+
+.job-dropdown:hover .dropdown-content{
+  display: block;
+}
+
+/* Jobs button and icon */
+.job-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    margin-right: 90px;
+  }
+  
+  .job-btn:hover {
+    color: yellow;
+  }
+  
+  .job-btn .job-icon {
+    height: 30px; /* Adjust as needed */
+    width: 30px;
+    margin-bottom: 7px; /* Adjust as needed */
+  }  
+  
+  .job-btn a {
+    margin: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .job-btn a:hover {
+    color: yellow;
+  }
+
+  .Logout{
+    display: flex;
+    align-items: center;
+    background-color: aliceblue;
+    padding: 10px 15px;
+    border-radius: 10px;
+    height: 40px;
+    margin-top: 8px;
+  }
+  
+  .Logout:hover{
+    background: yellow;
+    cursor: pointer;
+  }
