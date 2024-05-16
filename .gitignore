@@ -1,3 +1,9 @@
+node_modules/
+
+# IDE and tool-specific files
+.vite/
+.anima/
+node_modules
 # Logs
 logs
 *.log
