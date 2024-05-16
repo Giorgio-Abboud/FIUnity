@@ -36,7 +36,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 	def __str__(self):
 		return self.PID
 
-# The only authentication in pather email and pather ID
+# The only authentication in panther email and panther ID
 # Also check for graduation date to know if student or alumni
 
 # class JobPosting(models.Model):
