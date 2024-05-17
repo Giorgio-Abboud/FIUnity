@@ -40,6 +40,11 @@ CORS_ALLOW_CREDENTIALS = True
 # Tells browser that web app is running at 1 origin
 CORS_ORIGIN_ALLOW_ALL = True
 
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8000',
+    'http://10.108.229.73:8000',
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -50,6 +55,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Authentication.apps.AuthenticationConfig',
+    # 'Authentication',
+    'Homepage.apps.HomepageConfig',
+    # 'Homepage',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders'
@@ -110,7 +118,7 @@ DATABASES = {
 
         'HOST': 'localhost',
 
-        'PORT': '5433',
+        'PORT': '5432',
 
     }
 }
