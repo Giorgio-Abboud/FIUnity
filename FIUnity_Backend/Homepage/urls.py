@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import views, FeedView
 
 # from Post.views import *
 
@@ -20,12 +20,11 @@ urlpatterns = [
     # path('comments/replies/', ReplyView.as_view()),
     # path('comments/replies/<int:pk>/', SingleReplyView.as_view()),
 
-    
-    # path('feed/', FeedView.as_view()),
+    path('feed/', FeedView.as_view()),
 ]
 
-    # path('repost/', RePostView.as_view()),
     # path('activity/', ActivityView.as_view()),
+    # path('repost/', RePostView.as_view()),
     
      
     # path('replies/reactions/', ReplyReactionView.as_view()),
