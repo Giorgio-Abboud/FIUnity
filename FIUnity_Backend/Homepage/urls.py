@@ -4,14 +4,15 @@ from . import views, FeedView
 # from Post.views import *
 
 urlpatterns = [
-    path('create/', views.PostView.as_view()),
+    path('posts/', views.PostView.as_view()),
+    path('comments/', views.PostCommentView.as_view()),
+    path('feed/', views.FeedView.as_view()),
     
     # path('<int:pk>/', SinglePostView.as_view()),
     
     # path('reactions/', PostReactionView.as_view()),
     # path('reactions/<int:pk>/', SinglePostReactionView.as_view()),
     
-    path('comments/', views.PostCommentView.as_view()),
     # path('comments/<int:pk>/', SinglePostCommentView.as_view()),
     
     # path('comments/reactions/', CommentReactionView.as_view()),

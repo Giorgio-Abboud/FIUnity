@@ -20,6 +20,5 @@ from Authentication.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('authentication/', include('Authentication.urls')),
-    path('homepage/', include ('Homepage.urls'))
-    # path('jobs/', include('Jobs.urls')),
+    path('homepage/', include('Homepage.urls')),
 ]
