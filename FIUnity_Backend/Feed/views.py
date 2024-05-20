@@ -16,7 +16,7 @@ def check_post_exists_in_response(post, response):
         for item in response:
             if post.id == item['id']:
                 return True
-        return False  
+        return False
 
 class PostView(CreateAPIView):
     
