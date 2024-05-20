@@ -8,6 +8,7 @@ import FinalPost from "../Homepage/FinalPost";
 import CreatePost from "../Homepage/CreatePost";
 import { Route, Routes } from "react-router-dom";
 
+
 const Navigation = () => {
   return (
     <>
@@ -20,6 +21,7 @@ const Navigation = () => {
           <Route path="/form-input" element={<FormInput />}></Route>
           <Route path="/final-post" element={<FinalPost />}></Route>
           <Route path="/create-post" element={<CreatePost />}></Route>
+          {/* <Route path ="/logout" element={}></Route> */}
         </Routes>
       </div>
     </>
