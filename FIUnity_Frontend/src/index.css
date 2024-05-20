@@ -1,6 +1,7 @@
 *{
-  margin: 0;  
+  margin: 0; 
 }
+
 
 #root {
   width: 100%;
@@ -11,6 +12,3 @@
       rgba(255, 255, 255, 0.75) 100% /* End with the white color */
   );
 }
-
-
-
