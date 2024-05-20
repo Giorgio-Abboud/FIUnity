@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import "./Log-in.css";
+import axios from "axios"; // Don't forget to import axios
 
+import "./Log-in.css";
 
 export default function RegistrationLogIn() {
     const [email, setEmail] = useState("");
@@ -21,26 +22,25 @@ export default function RegistrationLogIn() {
             pantherId: pantherId
         };
 
-
         axios.post('http://10.108.229.73:8000/login/', loginInfo, {
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Login successful');
-                    // Redirect the user to the home page
-                    window.location.href = 'http://10.108.229.73:8000/homepage/';
-                } else {
-                    console.error('Login failed');
-                    setErrorMessage('Login failed. Please check your credentials.');
-                }
-            })
-            .catch(error => {
-                console.error('Error sending login request:', error);
-                setErrorMessage('An error occurred while logging in. Please try again later.');
-            });
+        .then(response => {
+            if (response.ok) {
+                console.log('Login successful');
+                // Redirect the user to the home page
+                window.location.href = 'http://10.108.229.73:8000/homepage/';
+            } else {
+                console.error('Login failed');
+                setErrorMessage('Login failed. Please check your credentials.');
+            }
+        })
+        .catch(error => {
+            console.error('Error sending login request:', error);
+            setErrorMessage('An error occurred while logging in. Please try again later.');
+        });
     };
 
     const handleRegisterClick = () => {
@@ -74,14 +74,13 @@ export default function RegistrationLogIn() {
                         Submit
                     </button>
                 </div>
-                <p class = "OR-line">
-                    <span class="line"></span> OR <span class="line"></span>
+                <p className="OR-line">
+                    <span className="line"></span> OR <span className="line"></span>
                 </p>
                 <button className="registration-button" onClick={handleRegisterClick}>
                     Register Here
                 </button>
-
             </div>
         </div>
     );
-};
+}
