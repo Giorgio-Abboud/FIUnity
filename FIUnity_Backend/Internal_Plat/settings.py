@@ -1,3 +1,4 @@
+
 """
 Django settings for Internal_Plat project.
 
@@ -55,9 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Authentication.apps.AuthenticationConfig',
-    # 'Authentication',
-    'Homepage.apps.HomepageConfig',
-    # 'Homepage',
+    'Feed',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders'
@@ -114,7 +113,7 @@ DATABASES = {
 
         'USER': 'postgres',
 
-        'PASSWORD': 'root',
+        'PASSWORD': 'P0$tgr3$q1',
 
         'HOST': 'localhost',
 
@@ -175,3 +174,4 @@ STATIC_ROOT = '/static/' #  UNSURE  #
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
