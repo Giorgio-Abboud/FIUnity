@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './jobs.css';
-
+import { Link } from 'react-router-dom';
 
 const JobsList = () => {
     
@@ -14,7 +14,7 @@ const JobsList = () => {
             .then(response => {
                 setJobs(response.data);
             })
-            .catch(error => {
+            .catch(error => {a
                 console.error('Error fetching jobs:', error);
             });
     }, []);
@@ -35,11 +35,11 @@ const JobsList = () => {
     return (
         <>
             <div className="job-list-container">
-                <a href="http://10.108.229.73:8000/job-posting/" >
+                <Link to= "/create-job" >
                     <button className="post-job-button">
                         Post a Job
                     </button>
-                </a>
+                </Link>
                 <div className="job-list">
                     <h2>Job Postings</h2>
                     <ul>

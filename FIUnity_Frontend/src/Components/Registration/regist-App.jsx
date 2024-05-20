@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./regist-App.css";
 import FormInput from "./components/FormInput";
 
-const App = () => {
+const Registration = () => {
   const [values, setValues] = useState({
     //firstName: "",
     //lastName: "",
@@ -91,4 +91,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Registration;

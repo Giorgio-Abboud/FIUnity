@@ -1,7 +1,6 @@
-import "./index.css";
-import FinalPost from "./components/FinalPost";
+import FinalPost from "./FinalPost";
 import React, { useState } from "react";
-import CreatePost from "./components/CreatePost";
+import CreatePost from "./CreatePost";
 
 function Homepage() {
   // const [writePost, setWritePost] = useState("")
