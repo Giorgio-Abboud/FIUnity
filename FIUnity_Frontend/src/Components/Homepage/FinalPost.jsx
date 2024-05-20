@@ -36,16 +36,16 @@ export default function FinalPost({
         <img src={imgUrl} alt="post picture" className="post-pic" />
       </div>
       <div className="post-features icon-cursor">
-        <div className="icon-color">
+        <div className="Post-icon-color">
           <AiOutlineLike /> Like
         </div>
-        <div className="icon-color">
+        <div className="Post-icon-color">
           <FaRegCommentAlt /> Comment
         </div>
-        <div className="icon-color">
+        <div className="Post-icon-color">
           <IoShareOutline /> Share
         </div>
-        <div className="icon-color">
+        <div className="Post-icon-color">
           <BiRepost /> Repost
         </div>
       </div>

@@ -138,17 +138,19 @@
   }
 
   .Logout{
-    display: flex;
+    color: white;
+    text-decoration: none;
     align-items: center;
-    background-color: aliceblue;
-    padding: 10px 15px;
+    background-color: #d9a31e;
+    padding: 0px 15px;
     border-radius: 10px;
     height: 40px;
     margin-top: 8px;
+    font-size: 14px;
   }
   
   .Logout:hover{
-    background: yellow;
+    background: #b68400;
     cursor: pointer;
   }
 

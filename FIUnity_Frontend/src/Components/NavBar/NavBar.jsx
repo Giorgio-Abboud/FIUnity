@@ -69,7 +69,12 @@ const NavBar = () => {
         </div>
 
         <JobDropdown isOpen={isOpen} toggleDropdown={toggleDropdown} />
-        <button className="Logout">Logout</button>
+
+        <div className="Log-out">
+          <Link to="/logout">
+            <button className="Logout">Logout</button>
+          </Link>
+        </div>
       </div>
     </div>
   );

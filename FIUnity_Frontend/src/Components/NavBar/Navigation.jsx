@@ -3,23 +3,32 @@ import NavBar from "./NavBar";
 import CreateJob from "../JobsPosting/job-posting-App";
 import ViewJobs from "../Jobs/jobs-App";
 import Homepage from "../Homepage/Homepage";
-import FormInput from "../Registration/FormInput";
 import FinalPost from "../Homepage/FinalPost";
 import CreatePost from "../Homepage/CreatePost";
-import { Route, Routes } from "react-router-dom";
+import RegistrationLogIn from "../Login Page/Log-in";
+import Registration from "../Registration/regist-App";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 const Navigation = () => {
+  const location = useLocation();
+
+  const showNavBar =
+    location.pathname !== "/logout" && location.pathname !== "/register";
+
   return (
     <>
-      <NavBar></NavBar>
+      {showNavBar && <NavBar />}
       <div className="container">
         <Routes>
-          <Route path="/newsfeed" element={<Homepage />}></Route>
-          <Route path="/create-job" element={<CreateJob />}></Route>
-          <Route path="/jobs-list" element={<ViewJobs />}></Route>
-          <Route path="/form-input" element={<FormInput />}></Route>
-          <Route path="/final-post" element={<FinalPost />}></Route>
-          <Route path="/create-post" element={<CreatePost />}></Route>
+          <Route path="/newsfeed" element={<Homepage />} />
+          <Route path="/create-job" element={<CreateJob />} />
+          <Route path="/jobs-list" element={<ViewJobs />} />
+          <Route path="/final-post" element={<FinalPost />} />
+          <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/logout" element={<RegistrationLogIn />} />
+          <Route path="/register" element={<Registration />} />
+          <Route path="/register-submit" element={<Homepage />} />
+          <Route path="/login-submit" element={<Homepage />} />
         </Routes>
       </div>
     </>

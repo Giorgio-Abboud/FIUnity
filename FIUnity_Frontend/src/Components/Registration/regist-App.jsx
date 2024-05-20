@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./regist-App.css";
-import FormInput from "./components/FormInput";
+import FormInput from "./FormInput";
+import { Link } from "react-router-dom";
 
 const Registration = () => {
   const [values, setValues] = useState({
@@ -8,7 +9,7 @@ const Registration = () => {
     //lastName: "",
     email: "",
     pid: "",
-    password: ""
+    password: "",
   });
 
   const inputs = [
@@ -61,7 +62,7 @@ const Registration = () => {
       label: "Password",
       pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
       required: true,
-    }
+    },
   ];
 
   const handleSubmit = (e) => {
@@ -74,9 +75,9 @@ const Registration = () => {
   };
 
   return (
-    <div className="app">
-      <form onSubmit={handleSubmit}>
-        <h1>Register</h1>
+    <div className="registration-formatting">
+      <form onSubmit={handleSubmit} className="Registration-container">
+        <h1 className="Registration-title">Register</h1>
         {inputs.map((input) => (
           <FormInput
             key={input.id}
@@ -85,7 +86,12 @@ const Registration = () => {
             onChange={onChange}
           />
         ))}
-        <button>Submit</button>
+
+        <div className="registration-submit-button">
+          <Link to="/register-submit" className="Register-text">
+            <button className="RegistrationSubmitButton">Register</button>
+          </Link>
+        </div>
       </form>
     </div>
   );

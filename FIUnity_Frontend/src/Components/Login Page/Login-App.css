@@ -1,9 +1,3 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
 
 .logo {
   height: 6em;
@@ -40,19 +34,3 @@
 .read-the-docs {
   color: #888;
 }
-
-body {
-  background: linear-gradient(
-      180deg,
-      rgba(91.16, 134.1, 181.32, 0.5) 0%, /* Start with the blue color */
-      rgba(173.08, 194.55, 218.16, 0.62) 50%, /* Middle color */
-      rgba(255, 255, 255, 0.75) 100% /* End with the white color */
-  );
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-

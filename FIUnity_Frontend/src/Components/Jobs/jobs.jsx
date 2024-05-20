@@ -66,7 +66,7 @@ const JobsList = () => {
                             )}
 
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className='Jobs-svg'>
                                     <rect x="4" y="8" width="24" height="16" rx="2" stroke="#0C3D72" strokeWidth="2" />
                                     <path d="M8 12H10.6667" stroke="#0C3D72" strokeWidth="2" strokeLinecap="round" />
                                     <path d="M21.333 20H23.9997" stroke="#0C3D72" strokeWidth="2" strokeLinecap="round" />
@@ -75,7 +75,7 @@ const JobsList = () => {
                                 <p>{selectedJob.salary}</p>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className='Jobs-svg'>
                                     <g clip-path="url(#clip0_52_145)">
                                         <path d="M13.9641 22.1786H0.821289V6.57141L7.39272 0.821411L13.9641 6.57141V22.1786Z" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         <path d="M13.9639 22.1785H22.1782V10.6785H13.9639" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -92,7 +92,7 @@ const JobsList = () => {
                                 <p>{selectedJob.type}</p>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"className='Jobs-svg'>
                                     <g clip-path="url(#clip0_52_140)">
                                         <path d="M18.8931 8.21427C18.8931 13.1428 11.5003 18.8928 11.5003 18.8928C11.5003 18.8928 4.10742 13.1428 4.10742 8.21427C4.10742 4.18763 7.47364 0.821411 11.5003 0.821411C15.5269 0.821411 18.8931 4.18763 18.8931 8.21427Z" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         <path d="M11.4994 10.6786C12.8604 10.6786 13.9637 9.57528 13.9637 8.21429C13.9637 6.85329 12.8604 5.75 11.4994 5.75C10.1384 5.75 9.03516 6.85329 9.03516 8.21429C9.03516 9.57528 10.1384 10.6786 11.4994 10.6786Z" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -109,7 +109,7 @@ const JobsList = () => {
 
 
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"className='Jobs-svg'>
                                     <rect x="3" y="6" width="18" height="15" rx="2" stroke="#0C3D72" stroke-width="2" />
                                     <path d="M4 11H20" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" />
                                     <path d="M9 16H15" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" />
@@ -132,7 +132,7 @@ const JobsList = () => {
 
                             <div>
                                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0px' }}>
-                                    <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"className='Jobs-svg'>
                                         <rect x="6.45801" y="5.16669" width="18.0833" height="21.9583" rx="2" stroke="#0C3D72" stroke-width="2" />
                                         <path d="M11.625 11.625H19.375" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" />
                                         <path d="M11.625 16.7917H19.375" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" />
