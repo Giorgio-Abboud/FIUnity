@@ -1,12 +1,12 @@
 from django.db import models
-from cloudinary_storage.storage import RawMediaCloudinaryStorage, VideoMediaCloudinaryStorage
 
+from Authentication.models import AppUser
 
 class Post(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
 
-    parent_post = models.ForeignKey("Post.Post", on_delete=models.CASCADE, blank=True, null = True)
+    parent_post = models.ForeignKey("self", on_delete=models.CASCADE, blank=True, null = True)
     description = models.TextField()
       
     created_at = models.DateTimeField(auto_now_add=True)
@@ -29,8 +29,7 @@ class PostImages(models.Model):
      
 
 class Comment(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    PID = models.ForeignKey(AppUser, on_delete=models.CASCADE)
 
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     text = models.TextField()
