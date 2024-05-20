@@ -1,16 +1,17 @@
 # from rest_framework import status
 from rest_framework.generics import *
-from Homepage.serializers import *
-from rest_framework.permissions import IsAuthenticated #, IsAuthenticatedOrReadOnly, AllowAny
-# from rest_framework.response import Response
+from Feed.serializers import *
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 from .models import *
-# from django.core.exceptions import ObjectDoesNotExist
-# from django.shortcuts import get_object_or_404
-# from itertools import chain
-# from django.contrib.postgres.search import SearchVector, SearchQuery, TrigramSimilarity
-# from rest_framework.views import APIView
-# from rest_framework.pagination import PageNumberPagination
-     
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
+from itertools import chain
+from django.contrib.postgres.search import SearchVector, SearchQuery, TrigramSimilarity
+from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
+
+
 def check_post_exists_in_response(post, response):
         for item in response:
             if post.id == item['id']:
@@ -43,7 +44,7 @@ class PostView(CreateAPIView):
     
 class PostCommentView(ListCreateAPIView):
     
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = PostCommentSerializer
     
     def get_queryset(self):
@@ -70,7 +71,7 @@ class FeedView(views.APIView):
                 if not check_post_exists_in_response(reaction.post,response):
                     
                     data = PostSerializer(instance = reaction.post, context = {"request": self.request}).data
-                    data['message'] = f"{reaction.post.post_owner.full_name} reacted to this Post."
+                    # data['message'] = f"{reaction.post.post_owner.full_name} reacted to this Post."
                     response.append(data)
 
             for comment in profile.comment_set.all():
