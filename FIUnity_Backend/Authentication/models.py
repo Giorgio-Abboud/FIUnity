@@ -4,8 +4,13 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 class AppUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
+        
         if not email:
-            raise ValueError('The Email field is required.')
+            raise ValueError('Users must have an email address')
+        
+        if not password:
+            raise ValueError('Users must have a Password')
+
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -45,39 +50,3 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'App User'
         verbose_name_plural = 'App Users'
-
-
-# The only authentication in panther email and panther ID
-# Also check for graduation date to know if student or alumni
-
-# class JobPosting(models.Model):
-#     job_position = models.CharField(max_length=100)
-#     company_name = models.CharField(max_length=100)
-#     job_description = models.TextField()
-#     salary = models.CharField(max_length=50)
-
-#     TYPE_CHOICES = [
-#         ('Internship'),
-#         ('Part-Time'),
-#         ('Full-Time'),
-#     ]
-
-#     type = models.CharField(max_length=20, choices=TYPE_CHOICES)
-
-#     MODE_CHOICES = [
-#         ('In-Person'),
-#         ('Hybrid'),
-#         ('Remote')
-#     ]
-
-#     mode = models.CharField(max_length=20, choices=MODE_CHOICES)
-#     start_date = models.DateField()
-# 	end_date = models.DateField()
-# 	other_requirements = models.TextField()
-# 	us_work_authorization = models.BooleanField()
-#     us_citizenship = models.BooleanField()
-#     us_residency = models.BooleanField()
-#     application_link = models.URLField()
-
-#     def __str__(self):
-#         return self.job_position
