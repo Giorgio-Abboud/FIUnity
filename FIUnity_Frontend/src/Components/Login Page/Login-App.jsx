@@ -3,7 +3,7 @@ import './Login-App.css'
 import RegistrationLogIn from './Log-in'
 
 
-function App() {
+function Login() {
  
 
   return (
@@ -15,4 +15,4 @@ function App() {
   )
 }
 
-export default App
+export default Login

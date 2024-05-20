@@ -65,7 +65,7 @@ export default function CreatePost({ firstName, lastName }) {
           </div>
         </div>
       </div>
-      <div className="line"></div>
+      <div className="Post-line"></div>
     </>
   );
 }
