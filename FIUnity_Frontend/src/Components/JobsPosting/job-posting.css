@@ -1,6 +1,12 @@
 *{
     font-family: "New Frank", Helvetica;
     color: #081e3f;
+    
+}
+
+
+.form{
+    margin-top: 40px;
 }
 
 .required {
@@ -9,14 +15,17 @@
 
 
 .job-posting {
+    
     width: 600px;
     max-width: 800px;
-    margin-top: 1000px;
     padding: 2rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     background-color: #fff;
-    justify-content: center;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    margin: 0 auto; 
 }
 
 .job-posting h2 {

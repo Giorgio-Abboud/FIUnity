@@ -35,9 +35,9 @@ export default function CreatePost({ firstName, lastName }) {
   return (
     <>
       <div className="large-post-box font">
-        <span className="name">
+        <div className="name">
           {firstName} {lastName}
-        </span>
+        </div>
         <div className="text-area-container">
           <textarea
             className="text-box scrollbar"
@@ -49,15 +49,15 @@ export default function CreatePost({ firstName, lastName }) {
           />
           <div className="icon-button-style">
             <div className="icon icon-cursor">
-              <span onClick={handleIconClick}>
+              <div onClick={handleIconClick}>
                 <input type="file" id="dockpicker" accept=".png,.jpg" />
                 <SlPicture />
                 Media
-              </span>
-              <span>
+              </div>
+              <div>
                 <FaRegCalendarAlt />
                 Event
-              </span>
+              </div>
             </div>
             <button onClick={handleSubmit} className="post-button">
               Submit post

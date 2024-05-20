@@ -3,8 +3,9 @@ import "./NavBar.css";
 import FIUnity_logo from "../../assets/fiunity logo.png";
 import Pawprint_icon from "../../assets/paw print.png";
 import Home_icon from "../../assets/home icon.png";
-import Events_icon from "../../assets/Event icon.png";
+import Newsfeed_icon from "../../assets/Newsfeed icon.png";
 import Jobs_icon from "../../assets/Jobs icon.png";
+import { Link } from "react-router-dom";
 
 const JobDropdown = ({ isOpen, toggleDropdown }) => {
   return (
@@ -15,14 +16,14 @@ const JobDropdown = ({ isOpen, toggleDropdown }) => {
     >
       <div className="job-btn" onClick={toggleDropdown}>
         <img src={Jobs_icon} alt="" className="job-icon" />
-        <span className="label">
-          <a href="index.html">Jobs</a>
-        </span>
+        <Link to="/jobs-list" className="nav-link">
+          Jobs
+        </Link>
       </div>
       {isOpen && (
         <div className="dropdown-content">
-          <a href="#">Create Job</a>
-          <a href="#">View Jobs</a>
+          <Link to="/create-job">Create Job</Link>
+          <Link to="/jobs-list">View Jobs</Link>
         </div>
       )}
     </div>
@@ -56,15 +57,15 @@ const NavBar = () => {
       <div className="NavBar_Icons">
         <div className="icon-container">
           <img src={Home_icon} alt="" className="icon" />
-          <span className="label">
-            <a href="index.html">Home</a>
-          </span>
+          <Link to="/home" className="nav-link">
+            Home
+          </Link>
         </div>
         <div className="icon-container">
-          <img src={Events_icon} alt="" className="icon" />
-          <span className="label">
-            <a href="index.html">Events</a>
-          </span>
+          <img src={Newsfeed_icon} alt="" className="icon" />
+          <Link to="/newsfeed" className="newsfeed nav-link">
+            Newsfeed
+          </Link>
         </div>
 
         <JobDropdown isOpen={isOpen} toggleDropdown={toggleDropdown} />

@@ -41,6 +41,11 @@ CORS_ALLOW_CREDENTIALS = True
 # Tells browser that web app is running at 1 origin
 CORS_ORIGIN_ALLOW_ALL = True
 
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8000',
+    'http://10.108.229.73:8000',
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -108,7 +113,7 @@ DATABASES = {
 
         'USER': 'postgres',
 
-        'PASSWORD': 'P0$tgr3$q1',
+        'PASSWORD': 'root',
 
         'HOST': 'localhost',
 

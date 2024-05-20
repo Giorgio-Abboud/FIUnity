@@ -74,7 +74,7 @@ const JobAddingPosting = () => {
 
     return isPosted ? <Redirect to={redirectUrl} /> : (
         <>
-            <div>
+            <div className = "form">
                 <form className="job-posting" onSubmit={handleSubmit}>
                     <h2>Post a Job to the Community</h2>
                     <label htmlFor="jobPosition">Job Position: <span className="required">*</span></label>

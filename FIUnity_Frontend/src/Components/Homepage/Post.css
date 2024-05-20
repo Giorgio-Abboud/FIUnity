@@ -1,4 +1,6 @@
+
 .font {
+  margin-top: 30px;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
@@ -6,7 +8,6 @@
   width: 70%;
   max-width: 700px;
   padding: 20px;
-  margin-top: 3%;
   margin-left: auto;
   margin-right: auto;
   border-radius: 10px;
@@ -47,6 +48,7 @@
 
 .icon-button-style span {
   display: flex;
+  color: #b68400;
   gap: 10px;
 }
 
@@ -68,6 +70,7 @@
 }
 
 .time-container {
+  color: #0c3d72ab;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -91,7 +94,7 @@
   background-color: #b68400;
 }
 
-.icon-cursor:hover span {
+.icon-cursor:hover div {
   cursor: pointer;
 }
 
@@ -137,6 +140,11 @@
 
 .post-pic {
   width: 100%;
+  margin-top: 10px;
+}
+
+.icon-color {
+  color: #b68400;
 }
 
 .post-features {
@@ -152,7 +160,7 @@
   margin-bottom: 15px;
 }
 
-.post-features span {
+.post-features div {
   gap: 5px;
   font-weight: bold;
   display: flex;
