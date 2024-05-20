@@ -1,17 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import Navigation from "./Navigation.jsx";
-import Homepage from './Homepage.jsx'
-import "./index.css";
+import Navigation from "./Components/NavBar/Navigation";
 import { BrowserRouter } from "react-router-dom";
+import "./index.css";
 
-
-ReactDOM.createRoot(document.getElementById("root")).render(
+const root = ReactDOM.createRoot(document.getElementById("root"))
+root.render(
   <React.StrictMode>
-    
     <BrowserRouter>
-    <Navigation />
-    <Homepage />
+      <Navigation />
     </BrowserRouter>
   </React.StrictMode>
 );

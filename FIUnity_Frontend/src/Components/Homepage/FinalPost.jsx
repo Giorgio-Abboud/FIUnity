@@ -21,12 +21,14 @@ export default function FinalPost({
       <div className="name-container">
         <div>
           <div className="time-container">
-            <span className="name">
+            <div className="name">
               {firstName} {lastName}
-            </span>
-            <span className="time-stamp">Posted on: {timestamp}</span>
+            </div>
+            <div className="time-stamps">
+                Posted on: {timestamp}
+            </div>
           </div>
-          <span className="classification">{classification}</span>
+          <div className="classification">{classification}</div>
         </div>
       </div>
       <p>{description}</p>
@@ -34,23 +36,23 @@ export default function FinalPost({
         <img src={imgUrl} alt="post picture" className="post-pic" />
       </div>
       <div className="post-features icon-cursor">
-        <span>
+        <div className="icon-color">
           <AiOutlineLike /> Like
-        </span>
-        <span>
+        </div>
+        <div className="icon-color">
           <FaRegCommentAlt /> Comment
-        </span>
-        <span>
+        </div>
+        <div className="icon-color">
           <IoShareOutline /> Share
-        </span>
-        <span>
+        </div>
+        <div className="icon-color">
           <BiRepost /> Repost
-        </span>
+        </div>
       </div>
       <div className="comment-flex">
-        <span className="name">
+        <div className="name">
           {firstName} {lastName}
-        </span>
+        </div>
         <textarea
           className="comment scrollbar"
           value={userInput}
