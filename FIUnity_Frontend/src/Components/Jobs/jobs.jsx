@@ -10,7 +10,7 @@ const JobsList = () => {
 
     useEffect(() => {
         // Fetch job posting data from your backend
-        axios.get('http://10.108.229.73:8000/job-posting/')
+        axios.get('http://localhost:8000/job-posting/')
             .then(response => {
                 setJobs(response.data);
             })
@@ -22,7 +22,7 @@ const JobsList = () => {
     
     const handleJobClick = (jobPosition) => {
         // Fetch job posting details for the selected job
-        axios.get(`http://10.108.229.73:8000/job-posting/${jobPosition}`)
+        axios.get(`http://localhost:8000/job-posting/${jobPosition}`)
             .then(response => {
                 setSelectedJob(response.data);
             })
@@ -35,7 +35,7 @@ const JobsList = () => {
     return (
         <>
             <div className="job-list-container">
-                <Link to= "/create-job" >
+                <Link to= "/job-posting" >
                     <button className="post-job-button">
                         Post a Job
                     </button>

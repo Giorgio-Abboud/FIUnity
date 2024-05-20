@@ -54,12 +54,12 @@ const JobAddingPosting = () => {
         };
 
         // Send a POST request to the backend with the job posting information as JSON
-        axios.post("http://10.108.229.73:8000/job-posting", jobPostingData)
+        axios.post("http://localhost:8000/jobs/job-posting/", jobPostingData)
             .then(response => {
                 if (response.status === 200) {
                     console.log("Job posting successful");
                     setIsPosted(true);
-                    setRedirectUrl('http://10.108.229.73:8000/jobs');
+                    setRedirectUrl('http://localhost:8000/jobs/');
                 } else {
                     console.error("Job posting failed");
                 }
