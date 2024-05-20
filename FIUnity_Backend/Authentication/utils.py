@@ -21,7 +21,7 @@ class CustomValidation(APIException):
                 self.detail = {"non_field_errors": force_str(detail)}
             else:
                 self.detail = {field: force_str(detail)}
-                 
+
                 
 def normalize_email(email):
         
