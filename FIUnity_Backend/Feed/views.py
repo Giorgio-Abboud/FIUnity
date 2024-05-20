@@ -57,39 +57,31 @@ class PostCommentView(ListCreateAPIView):
         return super().post(request, *args, **kwargs)
         
 class FeedView(views.APIView):
-    
     permission_classes = [IsAuthenticated]
 
-    
+    def check_post_exists_in_response(self, post, response):
+        # Check if the post is already in the response
+        return any(item['id'] == post.id for item in response)
+
     def get(self, request, *args, **kwargs):
-        response = list()
-        
-        following_profiles = self.request.user.following.all()
-        for profile in following_profiles:
-            
-            for reaction in profile.post_reactions.all():
-                if not check_post_exists_in_response(reaction.post,response):
-                    
-                    data = PostSerializer(instance = reaction.post, context = {"request": self.request}).data
-                    # data['message'] = f"{reaction.post.post_owner.full_name} reacted to this Post."
-                    response.append(data)
+        response = []
 
-            for comment in profile.comment_set.all():
-                if not check_post_exists_in_response(comment.post,response):
-                    data = PostSerializer(instance = comment.post, context = {"request": self.request}).data
-                    data['message'] = f"{comment.post.post_owner.full_name} commented on this Post."
-                    response.append(data)
-                    
-            for post in profile.created_posts.all():
-                if not check_post_exists_in_response(post,response):
-                    data = PostSerializer(instance = post, context = {"request": self.request}).data
-                    response.append(data)
-                    
+        # Fetch all posts
         for post in Post.objects.all():
-            if not check_post_exists_in_response(post,response):
-                data = PostSerializer(instance = post, context = {"request": self.request}).data
+            if not self.check_post_exists_in_response(post, response):
+                data = PostSerializer(instance=post, context={"request": self.request}).data
+                # Fetch and include comments for the post
+                comments = Comment.objects.filter(post=post)
+                comments_data = [{
+                    "first_name": comment.PID.first_name,
+                    "last_name": comment.PID.last_name,
+                    "text": comment.text,
+                    "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M:%S")
+                } for comment in comments]
+                data['comments'] = comments_data
                 response.append(data)
-                
-        page = self.paginate_queryset(response)
-        return self.get_paginated_response(page)
 
+        # Pagination
+        paginator = PageNumberPagination()
+        page = paginator.paginate_queryset(response, request)
+        return paginator.get_paginated_response(page)
