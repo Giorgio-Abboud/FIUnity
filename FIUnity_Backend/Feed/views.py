@@ -1,14 +1,9 @@
 # from rest_framework import status
 from rest_framework.generics import *
 from Feed.serializers import *
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 from .models import *
-from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import get_object_or_404
-from itertools import chain
-from django.contrib.postgres.search import SearchVector, SearchQuery, TrigramSimilarity
-from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 
 
@@ -19,33 +14,25 @@ def check_post_exists_in_response(post, response):
         return False
 
 class PostView(CreateAPIView):
-    
     permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication]
     serializer_class = PostSerializer
     
     def post(self, request, *args, **kwargs):
-        
         print(request.data)
         try:
             request.data._mutable = True
         except AttributeError:
             pass
-        # request.data.update({"post_owner" : Profile.objects.get(user = request.user).id,
-        #                      "parent_post": None})
         return super().post(request, *args, **kwargs)
-    
-    # def delete(self, request, *args, **kwargs):
-    #     # post_reaction = get_object_or_404(PostReaction,id = kwargs['pk'])
-    #     # if not post_reaction.reacted_by.user == self.request.user:
-    #     #     return Response({"detail": "You are not allowed to perform this action"},
-    #     #                     status = status.HTTP_405_METHOD_NOT_ALLOWED)
-    #     return super().delete(request, *args, **kwargs)
     
     
 class PostCommentView(ListCreateAPIView):
     
     # permission_classes = [IsAuthenticated]
     serializer_class = PostCommentSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication]
     
     def get_queryset(self):
         
@@ -58,6 +45,7 @@ class PostCommentView(ListCreateAPIView):
         
 class FeedView(views.APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication]
 
     def check_post_exists_in_response(self, post, response):
         # Check if the post is already in the response
