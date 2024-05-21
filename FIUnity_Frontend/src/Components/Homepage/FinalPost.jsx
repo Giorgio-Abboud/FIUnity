@@ -4,8 +4,6 @@ import { AiOutlineLike } from "react-icons/ai";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { IoShareOutline } from "react-icons/io5";
 import { BiRepost } from "react-icons/bi";
-// import axios from "axios";
-import axios from "axios";
 
 export default function FinalPost({
   firstName,
