@@ -3,39 +3,72 @@ import axios from 'axios';
 import './jobs.css';
 import { Link } from 'react-router-dom';
 
+const getTypeLabel = (type) => {
+    switch (type) {
+        case 'option1':
+            return 'Internship';
+        case 'option2':
+            return 'Part-Time'
+        case 'option3':
+            return 'Full-Time';
+        default:
+            return type;
+    }
+};
+
+const getModeLabel = (mode) => {
+    switch (mode) {
+        case 'option1':
+            return 'In-Person';
+        case 'option2':
+            return 'Hybrid'
+        case 'option3':
+            return 'Remote';
+        default:
+            return mode;
+}
+};
+
 const JobsList = () => {
-    
+
     const [jobs, setJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
 
     useEffect(() => {
         // Fetch job posting data from your backend
-        axios.get('http://localhost:8000/job-posting/')
+        axios.get('http://localhost:8000/jobs/job-posting/')
             .then(response => {
                 setJobs(response.data);
             })
-            .catch(error => {a
+            .catch(error => {
+                a
                 console.error('Error fetching jobs:', error);
             });
     }, []);
 
-    
     const handleJobClick = (jobPosition) => {
         // Fetch job posting details for the selected job
-        axios.get(`http://localhost:8000/job-posting/${jobPosition}`)
+        axios.get(`http://localhost:8000/jobs/job-posting/`)
             .then(response => {
-                setSelectedJob(response.data);
+                console.log(response.data);
+                const selectedJobIndex = jobs.findIndex(job => job.jobPosition === jobPosition);
+                if (selectedJobIndex !== -1) {
+                    // If the selected job is found, update the selectedJob state with the corresponding job
+                    setSelectedJob(jobs[selectedJobIndex]);
+                } else {
+                    console.error('Error: Selected job not found');
+                }
             })
             .catch(error => {
                 console.error('Error fetching job details:', error);
             });
     };
-    
+
 
     return (
         <>
             <div className="job-list-container">
-                <Link to= "/job-posting" >
+                <Link to="/job-posting" >
                     <button className="post-job-button">
                         Post a Job
                     </button>
@@ -89,10 +122,10 @@ const JobsList = () => {
                                         </clipPath>
                                     </defs>
                                 </svg>
-                                <p>{selectedJob.type}</p>
+                                <p>{getTypeLabel(selectedJob.type)}</p>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"className='Jobs-svg'>
+                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className='Jobs-svg'>
                                     <g clip-path="url(#clip0_52_140)">
                                         <path d="M18.8931 8.21427C18.8931 13.1428 11.5003 18.8928 11.5003 18.8928C11.5003 18.8928 4.10742 13.1428 4.10742 8.21427C4.10742 4.18763 7.47364 0.821411 11.5003 0.821411C15.5269 0.821411 18.8931 4.18763 18.8931 8.21427Z" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         <path d="M11.4994 10.6786C12.8604 10.6786 13.9637 9.57528 13.9637 8.21429C13.9637 6.85329 12.8604 5.75 11.4994 5.75C10.1384 5.75 9.03516 6.85329 9.03516 8.21429C9.03516 9.57528 10.1384 10.6786 11.4994 10.6786Z" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -104,12 +137,12 @@ const JobsList = () => {
                                         </clipPath>
                                     </defs>
                                 </svg>
-                                <p>{selectedJob.mode}</p>
+                                <p>{getModeLabel(selectedJob.mode)}</p>
                             </div>
 
 
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"className='Jobs-svg'>
+                                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className='Jobs-svg'>
                                     <rect x="3" y="6" width="18" height="15" rx="2" stroke="#0C3D72" stroke-width="2" />
                                     <path d="M4 11H20" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" />
                                     <path d="M9 16H15" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" />
@@ -132,7 +165,7 @@ const JobsList = () => {
 
                             <div>
                                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0px' }}>
-                                    <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"className='Jobs-svg'>
+                                    <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className='Jobs-svg'>
                                         <rect x="6.45801" y="5.16669" width="18.0833" height="21.9583" rx="2" stroke="#0C3D72" stroke-width="2" />
                                         <path d="M11.625 11.625H19.375" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" />
                                         <path d="M11.625 16.7917H19.375" stroke="#0C3D72" stroke-width="2" stroke-linecap="round" />
@@ -141,7 +174,7 @@ const JobsList = () => {
                                     <p>US Work Authorization Required: {selectedJob.usWorkAuthorization ? 'Yes' : 'No'}</p>
 
                                 </div>
-                
+
                                 <p style={{ marginLeft: '2.2rem', marginTop: '0' }}>US Citizenship Required: {selectedJob.usCitizenship ? 'Yes' : 'No'}</p>
                                 <p style={{ marginLeft: '2.2rem', marginTop: '0' }}>US Residency Required: {selectedJob.usResidency ? 'Yes' : 'No'}</p>
 
@@ -154,7 +187,8 @@ const JobsList = () => {
                                     </button>
                                 </a>
                             </p>
-                            <p>Posted: {new Date(selectedJob.created_at).toLocaleDateString()}</p>
+                            <p>Posted: {selectedJob.created_at ? new Date(selectedJob.created_at).toLocaleDateString() : 'Unknown'}</p>
+
                         </div>
                     </div>
                 )}

@@ -19,14 +19,17 @@ const JobAddingPosting = () => {
     const [usCitizenship, setUsCitizenship] = useState(false);
     const [usResidency, setUsResidency] = useState(false);
     const [applicationLink, setApplicationLink] = useState('');
-    const [isPosted, setIsPosted] = useState(false);
-    const [redirectUrl, setRedirectUrl] = useState('');
+    //const [isPosted, setIsPosted] = useState(false);
+    //const [redirectUrl, setRedirectUrl] = useState('');
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
 
     const handleSubmit = (e) => {
+        console.log('Form submitted'); 
         e.preventDefault();
+
+        console.log('All fields:', { jobPosition, companyName, salary, type, mode, startDate, usWorkAuthorization, usCitizenship, usResidency, applicationLink });
 
         if (!jobPosition || !companyName || !salary || !type || !mode || !startDate || !usWorkAuthorization
             || !usCitizenship || !usResidency || !applicationLink) {
@@ -54,12 +57,13 @@ const JobAddingPosting = () => {
         };
 
         // Send a POST request to the backend with the job posting information as JSON
+
+
+
         axios.post("http://localhost:8000/jobs/job-posting/", jobPostingData)
             .then(response => {
-                if (response.status === 200) {
+                if (response.status === 201) {
                     console.log("Job posting successful");
-                    setIsPosted(true);
-                    setRedirectUrl('http://localhost:8000/jobs/');
                 } else {
                     console.error("Job posting failed");
                 }
@@ -68,16 +72,19 @@ const JobAddingPosting = () => {
                 console.log("There was an error");
                 console.error("Error sending job posting request:", error);
             });
+
+            
+
     };
 
+    //isPosted ? <Redirect to={redirectUrl} /> : 
 
-
-    return isPosted ? <Redirect to={redirectUrl} /> : (
+    return(
         <>
-            <div className = "form">
+            <div className="form">
                 <form className="job-posting" onSubmit={handleSubmit}>
                     <h2>Post a Job to the Community</h2>
-                    <label htmlFor="jobPosition">Job Position: <span className="required">*</span></label>
+                    <label htmlFor="jobPosition">Job Position: <div className="required-jobs">*</div></label>
                     <input
                         type="text"
                         id="jobPosition"
@@ -94,7 +101,7 @@ const JobAddingPosting = () => {
                         onChange={(e) => setJobID(e.target.value)}
                     />
 
-                    <label htmlFor="companyName">Company name: <span className="required">*</span></label>
+                    <label htmlFor="companyName">Company name: <div className="required-jobs">*</div></label>
                     <input
                         type="text"
                         id="companyName"
@@ -111,7 +118,7 @@ const JobAddingPosting = () => {
                         onChange={(e) => setJobDescription(e.target.value)}
                     />
 
-                    <label htmlFor="salary">Salary: <span className="required">*</span></label>
+                    <label htmlFor="salary">Salary: <div className="required-jobs">*</div></label>
                     <input
                         type="text"
                         id="salary"
@@ -120,7 +127,7 @@ const JobAddingPosting = () => {
                         required
                     />
 
-                    <label htmlFor="type">Type: <span className="required">*</span></label>
+                    <label htmlFor="type">Type: <div className="required-jobs">*</div></label>
                     <select
                         id="type"
                         value={type}
@@ -133,7 +140,7 @@ const JobAddingPosting = () => {
                         <option value="option3">Full-Time</option>
                     </select>
 
-                    <label htmlFor="mode">Mode: <span className="required">*</span></label>
+                    <label htmlFor="mode">Mode: <div className="required-jobs">*</div></label>
                     <select
                         id="mode"
                         value={mode}
@@ -147,7 +154,7 @@ const JobAddingPosting = () => {
                     </select>
 
                     <div className="date-picker">
-                        <label htmlFor="startDate">Start Date: <span className="required">*</span></label>
+                        <label htmlFor="startDate">Start Date: <div className="required-jobs">*</div></label>
                         <input
                             type="date"
                             id="startDate"
@@ -173,7 +180,7 @@ const JobAddingPosting = () => {
                         onChange={(e) => setOtherRequirements(e.target.value)}
                     />
 
-                    <label htmlFor="usWorkAuthorization">US Work Authorization Required: <span className="required">*</span></label>
+                    <label htmlFor="usWorkAuthorization">US Work Authorization Required: <div className="required-jobs">*</div></label>
                     <div className="radio-container">
                         <input
                             type="radio"
@@ -198,7 +205,7 @@ const JobAddingPosting = () => {
                         <label htmlFor="usWorkAuthorizationNo">No</label>
                     </div>
 
-                    <label htmlFor="usCitizenship">US Citizenship Required: <span className="required">*</span></label>
+                    <label htmlFor="usCitizenship">US Citizenship Required: <div className="required-jobs">*</div></label>
                     <div className="radio-container">
                         <input
                             type="radio"
@@ -223,7 +230,7 @@ const JobAddingPosting = () => {
                         <label htmlFor="usCitizenshipNo">No</label>
                     </div>
 
-                    <label htmlFor="usResidency">US Residency Required: <span className="required">*</span></label>
+                    <label htmlFor="usResidency">US Residency Required: <div className="required-jobs">*</div></label>
                     <div className="radio-container">
                         <input
                             type="radio"
@@ -248,7 +255,7 @@ const JobAddingPosting = () => {
                         <label htmlFor="usResidencyNo">No</label>
                     </div>
 
-                    <label htmlFor="applicationLink">Application Link: <span className="required">*</span></label>
+                    <label htmlFor="applicationLink">Application Link: <div className="required-jobs">*</div></label>
                     <input
                         type="text"
                         id="applicationLink"
