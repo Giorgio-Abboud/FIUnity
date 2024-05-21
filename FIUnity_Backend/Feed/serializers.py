@@ -19,8 +19,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'description', 'created_at', 'images', 'images_data', 'comments_count']
 
     def get_comments_count(self, obj):
-        return obj.comments.count()
-
+        return 0
     def create(self, validated_data):
         images = validated_data.pop('images', [])
         post = Post.objects.create(**validated_data)
