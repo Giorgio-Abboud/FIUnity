@@ -4,8 +4,6 @@ import { AiOutlineLike } from "react-icons/ai";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { IoShareOutline } from "react-icons/io5";
 import { BiRepost } from "react-icons/bi";
-// import axios from "axios";
-import axios from "axios";
 
 export default function FinalPost({
   firstName,
@@ -24,16 +22,18 @@ export default function FinalPost({
             <div className="name">
               {firstName} {lastName}
             </div>
-            <div className="time-stamps">
-                Posted on: {timestamp}
-            </div>
+            <div className="time-stamps">Posted on: {timestamp}</div>
           </div>
           <div className="classification">{classification}</div>
         </div>
       </div>
       <p>{description}</p>
       <div>
-        <img src={imgUrl} alt="post picture" className="post-pic" />
+        <img
+          src={imgUrl || "/images/roary-post-img.png"}
+          alt="post picture"
+          className="post-pic"
+        />
       </div>
       <div className="post-features icon-cursor">
         <div className="Post-icon-color">
