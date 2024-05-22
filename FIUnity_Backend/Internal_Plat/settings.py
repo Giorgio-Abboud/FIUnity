@@ -114,13 +114,14 @@ DATABASES = {
 
         'NAME': 'fiunity',
 
-        'USER': 'aramendoza',
+        'USER': 'postgres',
 
-        'PASSWORD': 'Ara042004',
+        'PASSWORD': 'P0$tgr3$q1',
 
         'HOST': 'localhost',
 
         'PORT': '5432',
+
 
     }
 }

@@ -2,9 +2,10 @@
 from rest_framework.generics import *
 from Feed.serializers import *
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import *
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 
 def check_post_exists_in_response(post, response):
@@ -31,8 +32,8 @@ class PostCommentView(ListCreateAPIView):
     
     permission_classes = [AllowAny]
     serializer_class = PostCommentSerializer
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication]
+    # permission_classes = [IsAuthenticated]
+    # authentication_classes = [SessionAuthentication]
     
     def get_queryset(self):
         
@@ -63,6 +64,7 @@ class FeedView(views.APIView):
                 
                 # Fetch and include comments for the post
                 for comment in Comment.objects.filter(post=post):
+                    print(comment.user.first_name)
                     serialized_post['comments'].append({
                         "first_name": comment.user.first_name,
                         "last_name": comment.user.last_name,
@@ -70,6 +72,6 @@ class FeedView(views.APIView):
                     })
 
                 response.append(serialized_post)
-
+        print(response)
         # Pagination
         return Response(response)
