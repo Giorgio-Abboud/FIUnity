@@ -1,10 +1,10 @@
 import "./Post.css";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import { SlPicture } from "react-icons/sl";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import axios from "axios";
 
-export default function CreatePost({ firstName, lastName }) {
+export default function CreatePost({ firstName, lastName, onPostSubmit }) {
   const [userInput, setUserInput] = useState("");
 
   const handleIconClick = () => {
@@ -38,6 +38,9 @@ export default function CreatePost({ firstName, lastName }) {
       );
       console.log("Post submitted:", response.data);
       setUserInput("");
+      if (onPostSubmit) {
+        onPostSubmit(response.data);
+      }
     } catch (error) {
       console.error("Failed to submit post:", error);
     }
@@ -60,12 +63,12 @@ export default function CreatePost({ firstName, lastName }) {
           />
           <div className="icon-button-style">
             <div className="icon icon-cursor">
-              <div onClick={handleIconClick}>
+              <div className="homepage-font" onClick={handleIconClick}>
                 <input type="file" id="dockpicker" accept=".png,.jpg" />
                 <SlPicture />
                 Media
               </div>
-              <div>
+              <div className="homepage-font">
                 <FaRegCalendarAlt />
                 Event
               </div>
