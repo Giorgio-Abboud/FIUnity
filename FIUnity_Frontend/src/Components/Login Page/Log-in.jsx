@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios"; // Don't forget to import axios
+import {makeAuthenticationRequest} from "./auth"
 import { Link } from "react-router-dom";
 
 import "./Log-in.css";
@@ -23,17 +24,14 @@ export default function RegistrationLogIn() {
       pantherId: pantherId,
     };
 
-    axios
-      .post("http://10.108.229.73:8000/login/", loginInfo, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+    makeAuthenticatedRequest("/login/", loginInfo)
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           console.log("Login successful");
+          // Store CSRF token in local storage or a cookie
+          localStorage.setItem("csrfToken", response.data.csrf_token);
           // Redirect the user to the home page
-          window.location.href = "http://10.108.229.73:8000/homepage/";
+          window.location.href = "http://localhost:8001/homepage/";
         } else {
           console.error("Login failed");
           setErrorMessage("Login failed. Please check your credentials.");
@@ -48,7 +46,7 @@ export default function RegistrationLogIn() {
   };
 
   const handleRegisterClick = () => {
-    window.location.href = "http://10.108.229.73:8000/register/";
+    return <Link to="/authentication/register" />;
   };
 
   return (
@@ -84,8 +82,8 @@ export default function RegistrationLogIn() {
           <span className="Login-line"></span>
         </p>
 
-        <Link to="/register">
-          <button className="registration-button" onClick={handleRegisterClick}>
+        <Link to="/authentication/register">
+          <button type='submit' className="registration-button" onClick={handleRegisterClick}>
             Register Here
           </button>
         </Link>

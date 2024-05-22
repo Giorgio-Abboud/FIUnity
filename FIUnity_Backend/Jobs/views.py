@@ -4,12 +4,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import JobPosting
 from .serializers import JobPostingSerializer
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
+#from rest_framework.authentication import SessionAuthentication
+#from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny 
+
 
 class JobPostingView(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication]
+    
+    permission_classes = [AllowAny]
+    #authentication_classes = [SessionAuthentication]
 
     def get(self, request):
         job_postings = JobPosting.objects.all()

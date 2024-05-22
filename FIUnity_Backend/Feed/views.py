@@ -14,8 +14,8 @@ def check_post_exists_in_response(post, response):
         return False
 
 class PostView(CreateAPIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication]
+    
+    permission_classes = [AllowAny]
     serializer_class = PostSerializer
     
     def post(self, request, *args, **kwargs):
@@ -29,7 +29,7 @@ class PostView(CreateAPIView):
     
 class PostCommentView(ListCreateAPIView):
     
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     serializer_class = PostCommentSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
@@ -44,8 +44,7 @@ class PostCommentView(ListCreateAPIView):
         return super().post(request, *args, **kwargs)
         
 class FeedView(views.APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication]
+    permission_classes = [AllowAny]
 
     def check_post_exists_in_response(self, post, response):
         # Check if the post is already in the response
