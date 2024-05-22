@@ -41,6 +41,8 @@ CORS_ALLOW_CREDENTIALS = True
 # Tells browser that web app is running at 1 origin
 CORS_ORIGIN_ALLOW_ALL = True
 
+CORS_ALLOW_HEADERS = '*'
+
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8008',
     'http://10.108.229.73:8000',
