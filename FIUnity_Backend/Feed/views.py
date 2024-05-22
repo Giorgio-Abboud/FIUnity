@@ -56,19 +56,20 @@ class FeedView(views.APIView):
         # Fetch all posts
         for post in Post.objects.all():
             if not self.check_post_exists_in_response(post, response):
-                data = PostSerializer(instance=post, context={"request": self.request}).data
+                serialized_post = {
+                    **PostSerializer(instance=post, context={"request": self.request}).data,
+                    "comments": []
+                }
+                
                 # Fetch and include comments for the post
-                comments = Comment.objects.filter(post=post)
-                comments_data = [{
-                    "first_name": comment.PID.first_name,
-                    "last_name": comment.PID.last_name,
-                    "text": comment.text,
-                    "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M:%S")
-                } for comment in comments]
-                data['comments'] = comments_data
-                response.append(data)
+                for comment in Comment.objects.filter(post=post):
+                    serialized_post['comments'].append({
+                        "first_name": comment.user.first_name,
+                        "last_name": comment.user.last_name,
+                        "text": comment.text,
+                    })
+
+                response.append(serialized_post)
 
         # Pagination
-        paginator = PageNumberPagination()
-        page = paginator.paginate_queryset(response, request)
-        return paginator.get_paginated_response(page)
+        return Response(response)
