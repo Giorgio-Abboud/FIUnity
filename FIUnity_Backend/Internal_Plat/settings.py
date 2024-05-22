@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Authentication.apps.AuthenticationConfig',
     'Feed',
+    'Jobs',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders'
@@ -113,9 +114,9 @@ DATABASES = {
 
         'NAME': 'fiunity',
 
-        'USER': 'postgres',
+        'USER': 'aramendoza',
 
-        'PASSWORD': 'P0$tgr3$q1',
+        'PASSWORD': 'Ara042004',
 
         'HOST': 'localhost',
 

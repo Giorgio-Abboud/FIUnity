@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./regist-App.css";
 import FormInput from "./FormInput";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Registration = () => {
@@ -65,9 +66,21 @@ const Registration = () => {
     },
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form values: ", values);
+
+
+    try {
+      const response = await axios.post("http://localhost:8001/authentication/register", values);
+      console.log("Registration successful:", response.data);
+      // Redirect to a success page or handle success message
+    } catch (error) {
+      console.error("Registration failed:", error);
+      // Display error message to the user
+    }
+
+
   };
 
   const onChange = (e) => {
