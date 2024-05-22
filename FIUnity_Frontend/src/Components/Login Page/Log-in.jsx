@@ -6,21 +6,22 @@ import "./Log-in.css";
 
 export default function RegistrationLogIn() {
   const [email, setEmail] = useState("");
-  const [pantherId, setPantherId] = useState("");
+  const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
 
-  const handlePantherIdChange = (e) => {
-    setPantherId(e.target.value);
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
   };
 
   const handleSubmit = () => {
     const loginInfo = {
       "email": email,
-      "password": pantherId,
+      "password": password,
     };
   
     axios.post("http://localhost:8008/authentication/login/", loginInfo, {
@@ -47,6 +48,11 @@ export default function RegistrationLogIn() {
       });
   };  
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
+  
+
   return (
     <div className="registration-log-in">
       <div className="login-title">Login</div>
@@ -62,16 +68,25 @@ export default function RegistrationLogIn() {
         </div>
         <div className="input-wrapper">
           <input
-            type="text"
+            type={showPassword ? "text" : "password"}
             className="input-field"
-            placeholder="Panther ID"
-            value={pantherId}
-            onChange={handlePantherIdChange}
+            placeholder="Password"
+            value={password}
+            onChange={handlePasswordChange}
           />
-          <button className="submit-button" onClick={handleSubmit}>
-            Submit
+          <button
+            type="button"
+            className="show-password-button"
+            onClick={toggleShowPassword}
+          >
+            {showPassword ? "🙈" : "👁"}
           </button>
-        </div>
+          <Link to="/login-submit">
+            <button className="submit-button" onClick={handleSubmit}>
+              Submit
+            </button>
+          </Link>
+        </div>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <p className="OR-line">
           <span className="Login-line"></span> OR{" "}

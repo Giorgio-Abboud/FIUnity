@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializer import UserRegistrationSerializer, UserLoginSerializer, UserSerializer
 from rest_framework import permissions, status
-from .validations import custom_validation, validate_email, validate_password
-from django.middleware.csrf import get_token, rotate_token
+from .validations import custom_validation
+from django.middleware.csrf import rotate_token
 from django.core.exceptions import ValidationError
 from rest_framework.authtoken.models import Token
 
@@ -92,16 +92,24 @@ class UserLogin(APIView):
 
 
 class UserLogout(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
-    
+    permission_classes = [permissions.AllowAny]
+
     def post(self, request):
+        # Get the authentication token associated with the user
+        try:
+            token = Token.objects.get(user=request.user)
+            # Delete the token
+            token.delete()
+        except Token.DoesNotExist:
+            pass  # Token does not exist, no need to delete
+
+        # Logout the user
         logout(request)
 
         # Rotate CSRF token to invalidate the old token
         rotate_token(request)
 
-        return Response(status=status.HTTP_200_OK)
+        return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
 
 
 class UserView(APIView):
