@@ -21,23 +21,19 @@ const JobAddingPosting = () => {
     const [applicationLink, setApplicationLink] = useState('');
     //const [isPosted, setIsPosted] = useState(false);
     //const [redirectUrl, setRedirectUrl] = useState('');
-    const [isError, setIsError] = useState(false);
+    //const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         console.log('Form submitted'); 
         e.preventDefault();
 
         console.log('All fields:', { jobPosition, companyName, salary, type, mode, startDate, usWorkAuthorization, usCitizenship, usResidency, applicationLink });
 
-        if (!jobPosition || !companyName || !salary || !type || !mode || !startDate || !usWorkAuthorization
-            || !usCitizenship || !usResidency || !applicationLink) {
-            setIsError(true);
-            setErrorMessage("Please fill out all required fields.");
-            return;
-        }
-
+        
+        
+        console.log('Hello');
         // Create an object with the job posting information
         const jobPostingData = {
             jobPosition,
@@ -56,28 +52,25 @@ const JobAddingPosting = () => {
             applicationLink
         };
 
+        console.log("hello");
         // Send a POST request to the backend with the job posting information as JSON
-
-
-
-        axios.post("http://localhost:8000/jobs/job-posting/", jobPostingData)
-            .then(response => {
-                if (response.status === 201) {
-                    console.log("Job posting successful");
-                } else {
-                    console.error("Job posting failed");
-                }
-            })
-            .catch(error => {
-                console.log("There was an error");
-                console.error("Error sending job posting request:", error);
-            });
-
+        try {
+            const response = await axios.post("http://localhost:8001/jobs/job-posting/", jobPostingData);
+            if (response.status === 201) {
+                console.log("Job posting successful");
+                //setIsPosted(true);
+                //setRedirectUrl('http://localhost:5173/jobs-list/');
+            } else {
+                console.error("Job posting failed");
+            }
+        } catch (error) {
+            console.error("Error sending job posting request:", error);
+        }
             
 
     };
 
-    //isPosted ? <Redirect to={redirectUrl} /> : 
+
 
     return(
         <>

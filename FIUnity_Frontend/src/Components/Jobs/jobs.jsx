@@ -41,7 +41,7 @@ const JobsList = () => {
                 setJobs(response.data);
             })
             .catch(error => {
-                a
+                
                 console.error('Error fetching jobs:', error);
             });
     }, []);
