@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4(fn#&(&^^_4j!w!hn0x7(fn)h+s0e-o4r)!2qzt#^nc925)gd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -44,7 +44,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = '*'
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8000',
+    'http://localhost:8008',
     'http://10.108.229.73:8000',
 ]
 
@@ -115,8 +115,9 @@ DATABASES = {
         'NAME': 'fiunity',
 
         'USER': 'postgres',
+        'USER': 'postgres',
 
-        'PASSWORD': 'P0$tgr3$q1',
+        'PASSWORD': 'root',
 
         'HOST': 'localhost',
 
