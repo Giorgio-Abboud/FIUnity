@@ -6,14 +6,52 @@ import { IoShareOutline } from "react-icons/io5";
 import { BiRepost } from "react-icons/bi";
 
 export default function FinalPost({
+  postId,
   firstName,
   lastName,
   classification,
   description,
   imgUrl,
   timestamp,
+  comments,
+  onCommentSubmit,
 }) {
   const [userInput, setUserInput] = useState("");
+
+  const handleCommentSubmit = async () => {
+    const currentDateTime = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+
+    const commentData = {
+      post: postId,
+      user: 1,
+      description: userInput,
+      created_at: currentDateTime,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/feed/comments/",
+        commentData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            mode: "cors",
+          },
+        }
+      );
+      console.log("Comment submitted:", response.data);
+      setUserInput("");
+      if (onCommentSubmit) {
+        onCommentSubmit(postId, response.data);
+      }
+    } catch (error) {
+      console.error("Failed to submit comment:", error);
+    }
+  };
+
   return (
     <div className=" final-post-box font">
       <div className="name-container">
@@ -22,12 +60,14 @@ export default function FinalPost({
             <div className="name">
               {firstName} {lastName}
             </div>
-            <div className="time-stamps">Posted on: {timestamp}</div>
+            <div className="time-stamps homepage-time-font">
+              Posted on: {timestamp}
+            </div>
           </div>
           <div className="classification">{classification}</div>
         </div>
       </div>
-      <p>{description}</p>
+      <p className="homepage-font">{description}</p>
       <div>
         <img
           src={imgUrl || "/images/roary-post-img.png"}
@@ -36,16 +76,16 @@ export default function FinalPost({
         />
       </div>
       <div className="post-features icon-cursor">
-        <div className="Post-icon-color">
+        <div className="Post-icon-color homepage-font">
           <AiOutlineLike /> Like
         </div>
-        <div className="Post-icon-color">
+        <div className="Post-icon-color homepage-font">
           <FaRegCommentAlt /> Comment
         </div>
-        <div className="Post-icon-color">
+        <div className="Post-icon-color homepage-font">
           <IoShareOutline /> Share
         </div>
-        <div className="Post-icon-color">
+        <div className="Post-icon-color homepage-font">
           <BiRepost /> Repost
         </div>
       </div>
@@ -61,7 +101,24 @@ export default function FinalPost({
           }}
           placeholder="Add a comment..."
         />
-        <button className="post-button">Post</button>
+        <button className="post-button" onClick={handleCommentSubmit}>
+          Post
+        </button>
+      </div>
+      <div>
+        {comments.map((comment) => (
+          <div key={comment.id} className="comment-post-box font">
+            <div className="time-container">
+              <p className="name">
+                {comment.first_name} {comment.last_name}
+              </p>
+              <div className="time-stamps homepage-time-font">
+                Posted on: {comment.created_at}
+              </div>
+            </div>
+            <p className="comment-descript">{comment.text}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

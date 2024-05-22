@@ -1,6 +1,7 @@
 import FinalPost from "./FinalPost";
 import React, { useEffect, useState } from "react";
 import CreatePost from "./CreatePost";
+import Comments from "./Comments";
 import axios from "axios";
 
 function Homepage() {
@@ -26,25 +27,53 @@ function Homepage() {
       setAllPosts(response.data);
     })();
   }, []);
+
+  const handlePostSubmit = (newPost) => {
+    setAllPosts((prevPosts) => [newPost, ...prevPosts]);
+  };
+
+  const handleCommentSubmit = (postId, newComment) => {
+    setAllPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? { ...post, comments: [newComment, ...post.comments] }
+          : post
+      )
+    );
+  };
+
   return (
     <>
       <CreatePost
         firstName={"Roary"}
         lastName={"Royce"}
-        // setTimestamp={setTimestamp}
+        onPostSubmit={handlePostSubmit}
       />
       {allPosts.map(
-        ({ first_name, last_name, description, image, created_at }) => (
+        ({
+          id,
+          first_name,
+          last_name,
+          description,
+          image,
+          created_at,
+          comments,
+        }) => (
           <FinalPost
+            key={id}
+            post={id}
             firstName={first_name}
             lastName={last_name}
             description={description}
-            classification={"Student"}
+            classification={"Unknown"}
             imgUrl={image}
             timestamp={created_at}
+            comments={comments}
+            onCommentSubmit={handleCommentSubmit}
           />
         )
       )}
+      {/* <Comments/> */}
     </>
   );
 }
