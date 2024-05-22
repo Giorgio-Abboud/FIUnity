@@ -9,7 +9,8 @@
     margin-top: 40px;
 }
 
-.required {
+.required-jobs {
+    display: inline;
     color: red;
 }
 
