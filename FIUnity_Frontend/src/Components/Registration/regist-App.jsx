@@ -72,7 +72,7 @@ const Registration = () => {
 
 
     try {
-      const response = await axios.post("http://localhost:8001/authentication/register", values);
+      const response = await axios.post("http://localhost:8008/authentication/register", values);
       console.log("Registration successful:", response.data);
       // Redirect to a success page or handle success message
     } catch (error) {

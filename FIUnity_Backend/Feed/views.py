@@ -1,7 +1,6 @@
-# from rest_framework import status
 from rest_framework.generics import *
 from Feed.serializers import *
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import *
 from rest_framework.pagination import PageNumberPagination
@@ -15,7 +14,8 @@ def check_post_exists_in_response(post, response):
 
 class PostView(CreateAPIView):
     
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     serializer_class = PostSerializer
     
     def post(self, request, *args, **kwargs):
@@ -29,10 +29,9 @@ class PostView(CreateAPIView):
     
 class PostCommentView(ListCreateAPIView):
     
-    permission_classes = [AllowAny]
     serializer_class = PostCommentSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     
     def get_queryset(self):
         
@@ -44,13 +43,15 @@ class PostCommentView(ListCreateAPIView):
         return super().post(request, *args, **kwargs)
         
 class FeedView(views.APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def check_post_exists_in_response(self, post, response):
         # Check if the post is already in the response
         return any(item['id'] == post.id for item in response)
 
     def get(self, request, *args, **kwargs):
+        print(request.user)
         response = []
 
         # Fetch all posts
