@@ -1,7 +1,6 @@
 import axios from "./axiosInstance";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
 import "./Log-in.css";
 
 export default function RegistrationLogIn() {
@@ -18,22 +17,27 @@ export default function RegistrationLogIn() {
     setPassword(e.target.value);
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleSubmit = () => {
     const loginInfo = {
-      "email": email,
-      "password": password,
+      email: email,
+      password: password,
     };
-  
+
     axios.post("http://localhost:8008/authentication/login/", loginInfo, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     })
       .then((response) => {
         if (response.status === 200) {
           console.log("Login successful");
-          // Store CSRF token in local storage
-          localStorage.setItem("csrfToken", response.data.csrf_token);
+          // Store CSRF token and user_id in local storage
+          localStorage.setItem("csrfToken", response.data.token);
+          localStorage.setItem("user_id", response.data.user_id);
           window.location.href = "http://localhost:5173/newsfeed";
         } else {
           console.error("Login failed");
@@ -46,12 +50,7 @@ export default function RegistrationLogIn() {
           "An error occurred while logging in. Please try again later."
         );
       });
-  };  
-
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword)
-  }
-  
+  };
 
   return (
     <div className="registration-log-in">
@@ -67,35 +66,34 @@ export default function RegistrationLogIn() {
           />
         </div>
         <div className="input-wrapper">
-          <input
-            type={showPassword ? "text" : "password"}
-            className="input-field"
-            placeholder="Password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-          <button
-            type="button"
-            className="show-password-button"
-            onClick={toggleShowPassword}
-          >
-            {showPassword ? "🙈" : "👁"}
-          </button>
-          <Link to="/login-submit">
-            <button className="submit-button" onClick={handleSubmit}>
-              Submit
+          
+            <input
+              type={showPassword ? "text" : "password"}
+              className="input-field"
+              placeholder="Password"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+            <button
+              type="button"
+              className="toggle-password-button"
+              onClick={toggleShowPassword}
+            >
+              {showPassword ? "Hide" : "Show"}
             </button>
-          </Link>
-        </div>
+          
+          <button className="submit-button" onClick={handleSubmit}>
+            Submit
+          </button>
+        </div>
+
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <p className="OR-line">
           <span className="Login-line"></span> OR{" "}
           <span className="Login-line"></span>
         </p>
         <Link to="/authentication/register">
-          <button className="registration-button">
-            Register Here
-          </button>
+          <button className="registration-button">Register Here</button>
         </Link>
       </div>
     </div>

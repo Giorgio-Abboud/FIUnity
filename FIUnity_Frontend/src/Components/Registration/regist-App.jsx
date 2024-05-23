@@ -68,6 +68,7 @@ const Registration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("handleSubmit function called"); // Add this line to check if handleSubmit is called
     console.log("Form values: ", values);
 
 
@@ -102,7 +103,7 @@ const Registration = () => {
 
         <div className="registration-submit-button">
           <Link to="/register-submit" className="Register-text">
-            <button className="RegistrationSubmitButton">Register</button>
+            <button type="submit" className="RegistrationSubmitButton">Register</button>
           </Link>
         </div>
       </form>
