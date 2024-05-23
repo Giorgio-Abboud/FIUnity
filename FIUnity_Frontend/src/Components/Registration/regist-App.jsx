@@ -3,7 +3,6 @@ import "./regist-App.css";
 import FormInput from "./FormInput";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import axios from "axios";
 
 const Registration = () => {
   const [values, setValues] = useState({
