@@ -77,7 +77,7 @@ export default function RegistrationLogIn() {
               Submit
             </button>
           </Link>
-          
+
         </div>
         <p className="OR-line">
           <span className="Login-line"></span> OR{" "}
@@ -89,6 +89,7 @@ export default function RegistrationLogIn() {
             Register Here
           </button>
         </Link>
+
       </div>
     </div>
   );

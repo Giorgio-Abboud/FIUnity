@@ -8,15 +8,7 @@ import CreatePost from "../Homepage/CreatePost";
 import RegistrationLogIn from "../Login Page/Log-in";
 import Registration from "../Registration/regist-App";
 import { Route, Routes, useLocation } from "react-router-dom";
-import axios from "axios";
 
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken";
-axios.defaults.withCredentials = true;
-
-const client = axios.create({
-  baseURL: "http://127.0.0.1:8000",
-});
 
 const Navigation = () => {
   const location = useLocation();

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./regist-App.css";
 import FormInput from "./FormInput";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Registration = () => {
   const [values, setValues] = useState({
