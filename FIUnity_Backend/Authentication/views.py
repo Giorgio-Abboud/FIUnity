@@ -34,20 +34,16 @@ class UserLogin(APIView):
         print("is valid start")
         serializer.is_valid(raise_exception=True)
         print("is valid done")
-        
-        # Get validated data
-        # print(serializer.email)
-        # email = serializer.validated_data.get('email')
-        # password = serializer.validated_data.get('password')
 
         email = serializer.email
         password = serializer.password
+
         print("start")
         # Authenticate user
         user = authenticate(email=email, password=password)
         print("finish")
         print(user)
-
+        
         if user is not None:
             print("We got here")
             # User is authenticated, login the user
@@ -56,39 +52,12 @@ class UserLogin(APIView):
             # Generate or retrieve an authentication token for the user
             token, created = Token.objects.get_or_create(user=user)
 
+            print("We got futher")
             # Return response with token
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
+            return Response({'token': token.key, 'user_id': user.user_id}, status=status.HTTP_200_OK)
         else:
             # Authentication failed
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        
-    # permission_classes = (permissions.AllowAny,)
-    # authentication_classes = (SessionAuthentication,)
-
-    # def post(self, request):
-    #     data = request.data
-    #     try:
-    #         validate_email(data['email'])
-    #         validate_password(data['password'])
-
-    #         serializer = UserLoginSerializer(data=data, context={'request': request})
-    #         if serializer.is_valid(raise_exception=True):
-    #             print("Here")
-    #             user = serializer.check_user(data)
-    #             login(request, user)
-
-    #             # Get CSRF token
-    #             csrf_token = get_token(request)
-
-    #             # Include CSRF token in response data
-    #             response_data = serializer.data
-    #             response_data['csrf_token'] = csrf_token
-
-    #             return Response(response_data, status=status.HTTP_200_OK)
-    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #     except ValidationError as e:
-    #         return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLogout(APIView):
