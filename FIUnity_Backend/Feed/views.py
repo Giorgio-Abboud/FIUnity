@@ -40,10 +40,45 @@ class PostCommentView(ListCreateAPIView):
         post = self.request.GET.get('post')
         return Comment.objects.filter(post = post)
     
+    # def post(self, request, *args, **kwargs):
+    #     postId = request.data.get('post')
+    #     commentData = {
+    #         'post': postId,
+    #         'user': 1,  
+    #         'text': request.data.get('description'), 
+    #         'created_at': request.data.get('created_at', None),
+    #     }
+    #     serializer = PostCommentSerializer(data=commentData)
+    #     print('start')
+    #     serializer.is_valid(raise_exception=True)
+    #     print('done')
+    #     self.perform_create(serializer)
+    #     return Response(serializer.data)
+    
     def post(self, request, *args, **kwargs):
-        # request.data.update({"comment_owner" : Profile.objects.get(user = request.user).id})
-        return super().post(request, *args, **kwargs)
+        postId = request.data.get('post')
+        commentData = {
+            'post': postId,
+            'user': 1,  
+            'text': request.data.get('text'), 
+            'created_at': request.data.get('created_at', None),
+        }
+        serializer = PostCommentSerializer(data=commentData)
         
+        print('Before is_valid() call')
+        print(commentData)  # Print the comment data to ensure it's correct
+        
+        # Check serializer validation
+        if not serializer.is_valid():
+            print('Serializer is invalid:', serializer.errors)  # Print any errors if present
+            return Response(serializer.errors)
+        
+        print('After is_valid() call')
+        
+        self.perform_create(serializer)
+        return Response(serializer.data)
+
+            
 class FeedView(views.APIView):
     permission_classes = [AllowAny]
 
@@ -64,14 +99,12 @@ class FeedView(views.APIView):
                 
                 # Fetch and include comments for the post
                 for comment in Comment.objects.filter(post=post):
-                    print(comment.user.first_name)
                     serialized_post['comments'].append({
                         "first_name": comment.user.first_name,
                         "last_name": comment.user.last_name,
                         "text": comment.text,
+                        "created_at": comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                     })
 
                 response.append(serialized_post)
-        print(response)
-        # Pagination
         return Response(response)

@@ -1,9 +1,6 @@
 import "./Post.css";
-import { useState } from "react";
-import axios from "axios";
 
 export default function Comments() {
-  const [userInput, setUserInput] = useState("");
 
   return (
     <>

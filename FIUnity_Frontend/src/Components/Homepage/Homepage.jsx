@@ -1,30 +1,26 @@
 import FinalPost from "./FinalPost";
 import React, { useEffect, useState } from "react";
 import CreatePost from "./CreatePost";
-import Comments from "./Comments";
 import axios from "axios";
 
 function Homepage() {
-  // const [writePost, setWritePost] = useState("")
-  // const getWritePost = () => {
-  //   axios
-  //     .get("http://10.108.229.73:8000/writePost/")
-  //     .then(res => {console.log(res.data.content) setWritePost(res.data.content)})
-  //     .catch(err => {consol.log(err)});
-  // };
-
   const [allPosts, setAllPosts] = useState([]);
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
 
   useEffect(() => {
     (async function () {
-      const response = await axios.get("http://127.0.0.1:8000/feed/feed/", {
-        headers: {
-          "Content-Type": "application/json",
-          mode: "cors",
-        },
-      });
-
-      setAllPosts(response.data);
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/feed/feed/", {
+          headers: {
+            "Content-Type": "application/json",
+            mode: "cors",
+          },
+        });
+        setAllPosts(response.data);
+      } catch (error) {
+        console.error("Failed to fetch posts:", error);
+      }
     })();
   }, []);
 
@@ -33,6 +29,15 @@ function Homepage() {
   };
 
   const handleCommentSubmit = (postId, newComment) => {
+    console.log(postId, newComment, "look at me");
+    console.log(newComment.created_at)
+    newComment = {
+      created_at: newComment["created_at"],
+      first_name: firstName,
+      last_name: lastName,
+      text: newComment.text,
+    };
+    
     setAllPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === postId
@@ -41,7 +46,7 @@ function Homepage() {
       )
     );
   };
-
+  console.log(allPosts)
   return (
     <>
       <CreatePost
@@ -61,7 +66,7 @@ function Homepage() {
         }) => (
           <FinalPost
             key={id}
-            post={id}
+            postId={id}
             firstName={first_name}
             lastName={last_name}
             description={description}
@@ -73,7 +78,6 @@ function Homepage() {
           />
         )
       )}
-      {/* <Comments/> */}
     </>
   );
 }
