@@ -4,6 +4,7 @@ import { AiOutlineLike } from "react-icons/ai";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { IoShareOutline } from "react-icons/io5";
 import { BiRepost } from "react-icons/bi";
+import axios from "axios";
 
 export default function FinalPost({
   postId,
@@ -19,18 +20,22 @@ export default function FinalPost({
   const [userInput, setUserInput] = useState("");
 
   const handleCommentSubmit = async () => {
-    const currentDateTime = new Date()
-      .toISOString()
-      .slice(0, 19)
-      .replace("T", " ");
+
+    const currDate = new Date().toLocaleDateString();
+    const currTime = new Date().toLocaleTimeString();
+
+    const currentDateTime = new Date().toISOString().slice(0, 19).replace("T", " ");
 
     const commentData = {
       post: postId,
       user: 1,
-      description: userInput,
+      first_name: firstName,
+      last_name: lastName,
+      text: userInput,
       created_at: currentDateTime,
     };
-
+    console.log('commentData')
+    console.log(commentData)
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/feed/comments/",
@@ -42,16 +47,17 @@ export default function FinalPost({
           },
         }
       );
-      console.log("Comment submitted:", response.data);
+      // console.log("Comment submitted:", response.data);
       setUserInput("");
       if (onCommentSubmit) {
-        onCommentSubmit(postId, response.data);
+        console.log(response.data)
+        onCommentSubmit(postId, commentData);
       }
     } catch (error) {
-      console.error("Failed to submit comment:", error);
+      // console.error("Failed to submit comment:", error);
     }
   };
-
+  // console.log(comments);
   return (
     <div className=" final-post-box font">
       <div className="name-container">
@@ -85,7 +91,7 @@ export default function FinalPost({
         <div className="Post-icon-color homepage-font">
           <IoShareOutline /> Share
         </div>
-        <div className="Post-icon-color homepage-font">
+        <div className="Post-icon-color homepage-fonta">
           <BiRepost /> Repost
         </div>
       </div>
