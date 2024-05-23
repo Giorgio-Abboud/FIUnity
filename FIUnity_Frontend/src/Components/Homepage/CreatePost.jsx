@@ -1,37 +1,51 @@
 import "./Post.css";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import { SlPicture } from "react-icons/sl";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import axios from "axios";
 
-export default function CreatePost({ firstName, lastName }) {
+export default function CreatePost({ firstName, lastName, onPostSubmit }) {
   const [userInput, setUserInput] = useState("");
-  const [datePosted, setDatePosted] = useState("");
 
   const handleIconClick = () => {
     document.getElementById("dockpicker").click();
   };
 
   const handleSubmit = async () => {
-    const currentDateTime = new Date().toLocaleString();
-    setDatePosted(currentDateTime);
+    const currentDateTime = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
 
     const postData = {
+      user: 1,
       description: userInput,
-      datePosted: currentDateTime,
+      created_at: currentDateTime,
+      comment_count: 0,
     };
 
     try {
       const response = await axios.post(
-        "http://10.108.229.73:8000/writePost/",
-        postData
+        "http://127.0.0.1:8000/feed/posts/",
+        postData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            mode: "cors",
+            // Add Authorization header if needed
+          },
+        }
       );
       console.log("Post submitted:", response.data);
       setUserInput("");
+      if (onPostSubmit) {
+        onPostSubmit(response.data);
+      }
     } catch (error) {
       console.error("Failed to submit post:", error);
     }
   };
+
   return (
     <>
       <div className="large-post-box font">
@@ -49,12 +63,12 @@ export default function CreatePost({ firstName, lastName }) {
           />
           <div className="icon-button-style">
             <div className="icon icon-cursor">
-              <div onClick={handleIconClick}>
+              <div className="homepage-font" onClick={handleIconClick}>
                 <input type="file" id="dockpicker" accept=".png,.jpg" />
                 <SlPicture />
                 Media
               </div>
-              <div>
+              <div className="homepage-font">
                 <FaRegCalendarAlt />
                 Event
               </div>

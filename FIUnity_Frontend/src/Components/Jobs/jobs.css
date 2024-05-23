@@ -4,7 +4,6 @@
 
 svg {
     margin-right: 10px;
-   
 } 
 
 .post-job-button {
@@ -39,7 +38,7 @@ svg {
    
     margin-left: 0;
     margin-right: 0;
-    margin-top: 400px;
+    margin-top: 100px;
     flex: 1;
     padding-left: 0;
     padding-right: 0;
@@ -85,7 +84,7 @@ svg {
 
 .job-details {
     
-    margin-top: 400px;
+    margin-top: 100px;
     flex: 2;
     padding: 2rem;
     background-color: #fff;

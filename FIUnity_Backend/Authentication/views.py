@@ -1,45 +1,84 @@
-from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth import login, logout, authenticate
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializer import UserRegistrationSerializer, UserLoginSerializer, UserSerializer
 from rest_framework import permissions, status
-from .validations import custom_validation, validate_email, validate_password
-
+from .validations import custom_validation
+from django.middleware.csrf import rotate_token
+from django.core.exceptions import ValidationError
+from rest_framework.authtoken.models import Token
 
 class UserRegister(APIView):
     permission_classes = (permissions.AllowAny,)
+    
     def post(self, request):
-        clean_data = custom_validation(request.data)
-        serializer = UserRegistrationSerializer(data=clean_data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.create(clean_data)
-            if user:
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        try:
+            clean_data = custom_validation(request.data)
+            serializer = UserRegistrationSerializer(data=clean_data)
+            if serializer.is_valid(raise_exception=True):
+                user = serializer.create(clean_data)
+                if user:
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except ValidationError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLogin(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = (SessionAuthentication,)
-
+    permission_classes = [permissions.AllowAny,]
+    
     def post(self, request):
-        data = request.data
-        assert validate_email(data)
-        assert validate_password(data)
-        serializer = UserLoginSerializer(data=data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.check_user(data)
-            login(request, user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
         
+        serializer = UserLoginSerializer(data=request.data)
+        print("is valid start")
+        serializer.is_valid(raise_exception=True)
+        print("is valid done")
+
+        email = serializer.email
+        password = serializer.password
+
+        print("start")
+        # Authenticate user
+        user = authenticate(email=email, password=password)
+        print("finish")
+        print(user)
+        
+        if user is not None:
+            print("We got here")
+            # User is authenticated, login the user
+            login(request, user)
+
+            # Generate or retrieve an authentication token for the user
+            token, created = Token.objects.get_or_create(user=user)
+
+            print("We got futher")
+            # Return response with token
+            return Response({'token': token.key, 'user_id': user.user_id}, status=status.HTTP_200_OK)
+        else:
+            # Authentication failed
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class UserLogout(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
+    permission_classes = [permissions.AllowAny]
+
     def post(self, request):
+        # Get the authentication token associated with the user
+        try:
+            token = Token.objects.get(user=request.user)
+            # Delete the token
+            token.delete()
+        except Token.DoesNotExist:
+            pass  # Token does not exist, no need to delete
+
+        # Logout the user
         logout(request)
-        return Response(status=status.HTTP_200_OK)
+
+        # Rotate CSRF token to invalidate the old token
+        rotate_token(request)
+
+        return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
 
 
 class UserView(APIView):
@@ -49,16 +88,3 @@ class UserView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
-
-
-# class PostJobView(View):
-#     def get(self, request):
-#         form = JobPostingForm()
-#         return render(request, 'post_job.html', {'form': form})
-
-#     def post(self, request):
-#         form = JobPostingForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('jobs')  # Redirect to the jobs page after successful submission
-#         return render(request, 'post_job.html', {'form': form})

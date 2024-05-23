@@ -1,33 +1,83 @@
 import FinalPost from "./FinalPost";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreatePost from "./CreatePost";
+import axios from "axios";
 
 function Homepage() {
-  // const [writePost, setWritePost] = useState("")
-  // const getWritePost = () => {
-  //   axios
-  //     .get("http://10.108.229.73:8000/writePost/")
-  //     .then(res => {console.log(res.data.content) setWritePost(res.data.content)})
-  //     .catch(err => {consol.log(err)});
-  // };
+  const [allPosts, setAllPosts] = useState([]);
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+
+  useEffect(() => {
+    (async function () {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/feed/feed/", {
+          headers: {
+            "Content-Type": "application/json",
+            mode: "cors",
+          },
+        });
+        setAllPosts(response.data);
+      } catch (error) {
+        console.error("Failed to fetch posts:", error);
+      }
+    })();
+  }, []);
+
+  const handlePostSubmit = (newPost) => {
+    setAllPosts((prevPosts) => [newPost, ...prevPosts]);
+  };
+
+  const handleCommentSubmit = (postId, newComment) => {
+    console.log(postId, newComment, "look at me");
+    console.log(newComment.created_at)
+    newComment = {
+      created_at: newComment["created_at"],
+      first_name: firstName,
+      last_name: lastName,
+      text: newComment.text,
+    };
+    
+    setAllPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? { ...post, comments: [newComment, ...post.comments] }
+          : post
+      )
+    );
+  };
+  console.log(allPosts)
   return (
     <>
       <CreatePost
         firstName={"Roary"}
         lastName={"Royce"}
-        // setTimestamp={setTimestamp}
+        onPostSubmit={handlePostSubmit}
       />
-      <FinalPost
-        firstName={"Roary"}
-        lastName={"Royce"}
-        description={
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
-        }
-        timestamp={"5/14/2024 10:05:33 PM"}
-        classification={"Student"}
-        imgUrl={"/images/roary-post-img.png"}
-        // timestamp={"5/13/2024 3:54:33 PM"}
-      />
+      {allPosts.map(
+        ({
+          id,
+          first_name,
+          last_name,
+          description,
+          image,
+          created_at,
+          comments,
+        }) => (
+          <FinalPost
+            key={id}
+            postId={id}
+            firstName={first_name}
+            lastName={last_name}
+            description={description}
+            classification={"Unknown"}
+            imgUrl={image}
+            timestamp={created_at}
+            comments={comments}
+            onCommentSubmit={handleCommentSubmit}
+          />
+        )
+      )}
     </>
   );
 }

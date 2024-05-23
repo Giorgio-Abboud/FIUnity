@@ -1,37 +1,55 @@
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+from django.core.validators import validate_email as django_validate_email
+
 UserModel = get_user_model()
 
 def custom_validation(data):
-    email = data['email'].strip()
-    PID = data['PID'].strip()
-    password = data['password'].strip()
-    ##
-    if not email or UserModel.objects.filter(email=email).exists():
-        raise ValidationError('choose another email')
-    ##
+    email = data.get('email', '').strip()
+    PID = data.get('PID', '').strip()
+    password = data.get('password', '').strip()
+
+    if not email:
+        raise ValidationError('An email is required.')
+    try:
+        django_validate_email(email)
+    except ValidationError:
+        raise ValidationError('Enter a valid email address.')
+    if UserModel.objects.filter(email=email).exists():
+        raise ValidationError('This email is already in use.')
+
     if not password or len(password) < 8:
-        raise ValidationError('choose another password, min 8 characters')
-    ##
-    if not PID:
-        raise ValidationError('invalid Panther ID')
+        raise ValidationError('The password must be at least 8 characters long.')
+
+    if not PID or not PID.isdigit() or len(PID) != 7:
+        raise ValidationError('Invalid Panther ID. It should be a 7-digit number.')
+    if UserModel.objects.filter(PID=PID).exists():
+        raise ValidationError('A user with this Panther ID already exists.')
+
     return data
 
-
-def validate_email(data):
-    email = data['email'].strip()
+def validate_email(email):
+    email = email.strip()
     if not email:
-        raise ValidationError('an email is needed')
+        raise ValidationError('An email is required.')
+    try:
+        django_validate_email(email)
+    except ValidationError:
+        raise ValidationError('Enter a valid email address.')
+    if UserModel.objects.filter(email=email).exists():
+        raise ValidationError('A user with this email already exists.')
     return True
 
-def validate_PID(data):
-    PID = data['PID'].strip()
-    if not PID:
-        raise ValidationError('invalid Panther ID')
+def validate_PID(PID):
+    PID = PID.strip()
+    if not PID or not PID.isdigit() or len(PID) != 7:
+        raise ValidationError('Invalid Panther ID. It should be a 7-digit number.')
+    if UserModel.objects.filter(PID=PID).exists():
+        raise ValidationError('A user with this Panther ID already exists.')
     return True
 
-def validate_password(data):
-    password = data['password'].strip()
-    if not password:
-        raise ValidationError('a password is needed')
+def validate_password(password):
+    password = password.strip()
+    if not password or len(password) < 8:
+        raise ValidationError('The password must be at least 8 characters long.')
     return True
