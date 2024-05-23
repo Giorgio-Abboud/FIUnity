@@ -19,4 +19,4 @@ class JobPostingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = JobPosting
-        fields = '__all__'
+        fields = '_all_'

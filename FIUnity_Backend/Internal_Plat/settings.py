@@ -115,7 +115,6 @@ DATABASES = {
         'NAME': 'fiunity',
 
         'USER': 'postgres',
-        'USER': 'postgres',
 
         'PASSWORD': '1005$huong$PRO',
 

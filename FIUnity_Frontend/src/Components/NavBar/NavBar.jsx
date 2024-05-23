@@ -22,7 +22,7 @@ const JobDropdown = ({ isOpen, toggleDropdown }) => {
       </div>
       {isOpen && (
         <div className="dropdown-content">
-          <Link to="/create-job">Create Job</Link>
+          <Link to="/job-posting">Create Job</Link>
           <Link to="/jobs-list">View Jobs</Link>
         </div>
       )}
