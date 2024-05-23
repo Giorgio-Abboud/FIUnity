@@ -21,8 +21,10 @@ def custom_validation(data):
     if not password or len(password) < 8:
         raise ValidationError('The password must be at least 8 characters long.')
 
-    if not PID or not PID.isdigit() or len(PID) != 7:  # Assuming Panther ID is a 7-digit number
+    if not PID or not PID.isdigit() or len(PID) != 7:
         raise ValidationError('Invalid Panther ID. It should be a 7-digit number.')
+    if UserModel.objects.filter(PID=PID).exists():
+        raise ValidationError('A user with this Panther ID already exists.')
 
     return data
 
@@ -34,12 +36,16 @@ def validate_email(email):
         django_validate_email(email)
     except ValidationError:
         raise ValidationError('Enter a valid email address.')
+    if UserModel.objects.filter(email=email).exists():
+        raise ValidationError('A user with this email already exists.')
     return True
 
 def validate_PID(PID):
     PID = PID.strip()
-    if not PID or not PID.isdigit() or len(PID) != 7:  # Assuming Panther ID is a 7-digit number
+    if not PID or not PID.isdigit() or len(PID) != 7:
         raise ValidationError('Invalid Panther ID. It should be a 7-digit number.')
+    if UserModel.objects.filter(PID=PID).exists():
+        raise ValidationError('A user with this Panther ID already exists.')
     return True
 
 def validate_password(password):

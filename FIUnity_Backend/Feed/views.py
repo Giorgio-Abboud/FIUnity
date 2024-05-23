@@ -1,10 +1,8 @@
-# from rest_framework import status
-import os
-from rest_framework.parsers import MultiPartParser, FormParser
+
 from rest_framework.generics import *
 from Feed.serializers import *
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from .models import *
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -24,7 +22,8 @@ def check_post_exists_in_response(post, response):
 
 class PostView(CreateAPIView):
     
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     serializer_class = PostSerializer
     parser_classes = [MultiPartParser, FormParser]
     
@@ -47,10 +46,9 @@ class PostView(CreateAPIView):
     
 class PostCommentView(ListCreateAPIView):
     
-    permission_classes = [AllowAny]
     serializer_class = PostCommentSerializer
-    # permission_classes = [IsAuthenticated]
-    # authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     
     def get_queryset(self):
         
@@ -97,13 +95,15 @@ class PostCommentView(ListCreateAPIView):
 
             
 class FeedView(views.APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def check_post_exists_in_response(self, post, response):
         # Check if the post is already in the response
         return any(item['id'] == post.id for item in response)
 
     def get(self, request, *args, **kwargs):
+        print(request.user)
         response = []
 
         filtered_post_images = PostImage.objects.filter(post__id=62)  # Filter by related Post id
