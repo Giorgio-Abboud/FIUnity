@@ -1,3 +1,6 @@
+.homepage-font {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
 
 .font {
   margin-top: 30px;
@@ -53,6 +56,7 @@
 }
 
 .icon {
+  color: #b68400;
   display: flex;
   gap: 20px;
 }
@@ -67,6 +71,12 @@
 
 .time-stamp {
   color: #0c3d72ab;
+}
+
+.homepage-time-font {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  color: #0c3d72ab;
+  font-size: 13px;
 }
 
 .time-container {
@@ -196,6 +206,26 @@
 
 .comment::-ms-input-placeholder {
   color: #0c3d72ab;
+}
+
+.comment-post-box {
+  width: 80%;
+  padding: 20px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
+  border: 1px solid #0c3d72ab;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+}
+
+.comment-descript {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  padding-top: 10px;
+  font-size: 13px;
 }
 
 .scrollbar {
