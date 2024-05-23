@@ -27,11 +27,12 @@ export default function RegistrationLogIn() {
       password: password,
     };
 
-    axios.post("http://localhost:8008/authentication/login/", loginInfo, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    axios
+      .post("http://localhost:8008/authentication/login/", loginInfo, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((response) => {
         if (response.status === 200) {
           console.log("Login successful");
@@ -66,22 +67,21 @@ export default function RegistrationLogIn() {
           />
         </div>
         <div className="input-wrapper">
-          
-            <input
-              type={showPassword ? "text" : "password"}
-              className="input-field"
-              placeholder="Password"
-              value={password}
-              onChange={handlePasswordChange}
-            />
-            <button
-              type="button"
-              className="toggle-password-button"
-              onClick={toggleShowPassword}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          
+          <input
+            type={showPassword ? "text" : "password"}
+            className="input-field"
+            placeholder="Password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+          <button
+            type="button"
+            className="toggle-password-button"
+            onClick={toggleShowPassword}
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+
           <button className="submit-button" onClick={handleSubmit}>
             Submit
           </button>
