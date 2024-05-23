@@ -14,14 +14,20 @@ class UserRegister(APIView):
     
     def post(self, request):
         try:
+            print("Even before")
             clean_data = custom_validation(request.data)
+            print("Before")
             serializer = UserRegistrationSerializer(data=clean_data)
+            print("Here")
             if serializer.is_valid(raise_exception=True):
                 user = serializer.create(clean_data)
                 if user:
+                    print("User created")
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
+            print("Bad request 1")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except ValidationError as e:
+            print("Bad request 2")
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 

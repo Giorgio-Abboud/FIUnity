@@ -1,114 +1,241 @@
-import { useState, useEffect } from "react";
-import "./regist-App.css";
-import FormInput from "./FormInput";
-import axios from "axios";
+// import { useState } from "react";
+// import "./regist-App.css";
+// import FormInput from "./FormInput";
+// import axios from "axios";
+
+// const Registration = () => {
+//   const [values, setValues] = useState({
+//     firstName: "",
+//     lastName: "",
+//     email: "",
+//     pid: "",
+//     password: "",
+//   });
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     try {
+//       const response = await axios.post("http://localhost:8000/authentication/register/", values);
+//       console.log("Registration successful:", response.data);
+//       // Redirect to a success page or handle success message
+//     } catch (error) {
+//       console.error("Registration failed:", error);
+//       if (error.response && error.response.data) {
+//         const responseData = error.response.data;
+//         if (responseData.PID && responseData.PID.length > 0) {
+//           // Display error message related to Panther ID
+//           console.error("Panther ID error:", responseData.PID[0]);
+//         } else {
+//           // Display a general error message
+//           console.error("Server error:", responseData);
+//         }
+//       }
+//     }
+//   };
+  
+//   const handleChange = (e) => {
+//     setValues({ ...values, [e.target.name]: e.target.value });
+//   };
+
+//   return (
+//     <div className="registration-formatting">
+//       <form onSubmit={handleSubmit} className="Registration-container">
+//         <h1 className="Registration-title">Register</h1>
+//         <FormInput
+//           name="firstName"
+//           type="text"
+//           placeholder="First Name"
+//           value={values.firstName}
+//           onChange={handleChange}
+//           required
+//         />
+//         <FormInput
+//           name="lastName"
+//           type="text"
+//           placeholder="Last Name"
+//           value={values.lastName}
+//           onChange={handleChange}
+//           required
+//         />
+//         <FormInput
+//           name="email"
+//           type="email"
+//           placeholder="Email"
+//           value={values.email}
+//           onChange={handleChange}
+//           required
+//         />
+//         <FormInput
+//           name="pid"
+//           type="text"
+//           placeholder="Panther ID"
+//           value={values.pid}
+//           onChange={handleChange}
+//           pattern="\d{7}"
+//           title="A valid Panther ID should be a 7-digit number."
+//           required
+//         />
+//         <FormInput
+//           name="password"
+//           type="password"
+//           placeholder="Password"
+//           value={values.password}
+//           onChange={handleChange}
+//           required
+//         />
+//         <div className="registration-submit-button">
+//           <button type="submit" className="RegistrationSubmitButton">Register</button>
+//         </div>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default Registration;
+
+
+import axios from "./axiosInstance";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import "./regist-App.css";
 
-const Registration = () => {
-  const [values, setValues] = useState({
-    //firstName: "",
-    //lastName: "",
-    email: "",
-    pid: "",
-    password: "",
-  });
+export default function Registration() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [pantherID, setPantherID] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const inputs = [
-    // {
-    //   id: 1,
-    //   name: "firstName",
-    //   type: "text",
-    //   placeholder: "First Name",
-    //   errorMessage:
-    //     "Firstname should be 3-16 characters and shouldn't include any special character!",
-    //   label: "First Name",
-    //   pattern: "^[A-Za-z0-9]{3,16}$",
-    //   required: true,
-    // },
-    // {
-    //   id: 2,
-    //   name: "lastName",
-    //   type: "text",
-    //   placeholder: "Last Name",
-    //   errorMessage:
-    //     "Lastname should be 3-16 characters and shouldn't include any special character!",
-    //   label: "Last Name",
-    //   pattern: "^[A-Za-z0-9]{3,16}$",
-    //   required: true,
-    // },
-    {
-      id: 3,
-      name: "email",
-      type: "email",
-      placeholder: "Email",
-      errorMessage: "It should be a valid email address!",
-      label: "Email",
-      required: true,
-    },
-    {
-      id: 4,
-      name: "pid",
-      type: "text",
-      placeholder: "PID",
-      label: "PID",
-      required: true,
-    },
-    {
-      id: 5,
-      name: "password",
-      type: "password",
-      placeholder: "Password",
-      errorMessage:
-        "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
-      label: "Password",
-      pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
-      required: true,
-    },
-  ];
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleFirstNameChange = (e) => {
+    setFirstName(e.target.value);
+  };
+
+  const handleLastNameChange = (e) => {
+    setLastName(e.target.value);
+  };
+
+  const handlePantherIDChange = (e) => {
+    setPantherID(e.target.value);
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("handleSubmit function called"); // Add this line to check if handleSubmit is called
-    console.log("Form values: ", values);
-
+    const registerInfo = {
+      first_name: firstName,
+      last_name: lastName,
+      PID: pantherID,
+      email: email,
+      password: password,
+    };
 
     try {
-      const response = await axios.post("http://localhost:8008/authentication/register", values);
-      console.log("Registration successful:", response.data);
-      // Redirect to a success page or handle success message
+      const response = await axios.post("/authentication/register/", registerInfo, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 201) {
+        console.log("Register successful");
+        // Store CSRF token and user_id in local storage
+        localStorage.setItem("csrfToken", response.data.token);
+        localStorage.setItem("user_id", response.data.user_id);
+        window.location.href = "http://localhost:5173/test";
+      } else {
+        console.error("Register failed");
+        setErrorMessage("Register failed. Please check your credentials.");
+      }
     } catch (error) {
-      console.error("Registration failed:", error);
-      // Display error message to the user
+      console.error("Error sending login request:", error);
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.detail || "An error occurred while registering. Please try again later.");
+      }
     }
-
-
-  };
-
-  const onChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
   };
 
   return (
-    <div className="registration-formatting">
-      <form onSubmit={handleSubmit} className="Registration-container">
-        <h1 className="Registration-title">Register</h1>
-        {inputs.map((input) => (
-          <FormInput
-            key={input.id}
-            {...input}
-            value={values[input.name]}
-            onChange={onChange}
+    <div className="registration-log-in">
+      <div className="login-title">Register</div>
+      <div className="input-container">
+        <div className="input-wrapper">
+          <input
+            type="text"
+            className="input-field"
+            placeholder="First Name"
+            value={firstName}
+            onChange={handleFirstNameChange}
           />
-        ))}
-
-        <div className="registration-submit-button">
-          <Link to="/register-submit" className="Register-text">
-            <button type="submit" className="RegistrationSubmitButton">Register</button>
-          </Link>
         </div>
-      </form>
+
+        <div className="input-wrapper">
+          <input
+            type="text"
+            className="input-field"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={handleLastNameChange}
+          />
+        </div>
+
+        <div className="input-wrapper">
+          <input
+            type="text"
+            className="input-field"
+            placeholder="Panther ID"
+            value={pantherID}
+            onChange={handlePantherIDChange}
+          />
+        </div>
+
+        <div className="input-wrapper">
+          <input
+            type="text"
+            className="input-field"
+            placeholder="Student FIU Email"
+            value={email}
+            onChange={handleEmailChange}
+          />
+        </div>
+        <div className="input-wrapper">
+          <input
+            type={showPassword ? "text" : "password"}
+            className="input-field"
+            placeholder="Password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+          <button
+            type="button"
+            className="toggle-password-button"
+            onClick={toggleShowPassword}
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
+        
+
+        <Link to="/test">
+        <button className="submit-button" onClick={handleSubmit}>
+          Submit</button>        
+          </Link>
+
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+      </div>
     </div>
   );
-};
-
-export default Registration;
+}
