@@ -5,8 +5,8 @@ import axios from "axios";
 
 function Homepage() {
   const [allPosts, setAllPosts] = useState([]);
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   useEffect(() => {
     (async function () {
@@ -29,15 +29,15 @@ function Homepage() {
   };
 
   const handleCommentSubmit = (postId, newComment) => {
-    console.log(postId, newComment, "look at me");
-    console.log(newComment.created_at)
+    // console.log(postId, newComment, "look at me");
+    // console.log(newComment.created_at);
     newComment = {
       created_at: newComment["created_at"],
       first_name: firstName,
       last_name: lastName,
       text: newComment.text,
     };
-    
+
     setAllPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === postId
@@ -46,7 +46,7 @@ function Homepage() {
       )
     );
   };
-  console.log(allPosts)
+  console.log(allPosts);
   return (
     <>
       <CreatePost
@@ -54,13 +54,12 @@ function Homepage() {
         lastName={"Royce"}
         onPostSubmit={handlePostSubmit}
       />
-      {allPosts.map(
+      {allPosts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).map(
         ({
           id,
           first_name,
           last_name,
           description,
-          image,
           created_at,
           comments,
         }) => (
@@ -71,7 +70,7 @@ function Homepage() {
             lastName={last_name}
             description={description}
             classification={"Unknown"}
-            imgUrl={image}
+            imagesData={"http://127.0.0.1:8000/feed/image/" + id}
             timestamp={created_at}
             comments={comments}
             onCommentSubmit={handleCommentSubmit}

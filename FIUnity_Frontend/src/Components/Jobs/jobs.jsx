@@ -68,7 +68,7 @@ const JobsList = () => {
     return (
         <>
             <div className="job-list-container">
-                <Link to="/job-posting" >
+                <Link to="/job-posting">
                     <button className="post-job-button">
                         Post a Job
                     </button>
