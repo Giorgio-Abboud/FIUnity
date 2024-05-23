@@ -1,4 +1,6 @@
 # from rest_framework import status
+import os
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.generics import *
 from Feed.serializers import *
 from rest_framework.authentication import SessionAuthentication
@@ -6,6 +8,12 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import *
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from django.core.serializers import serialize
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.conf import settings
+
+# from  import PostImage 
 
 
 def check_post_exists_in_response(post, response):
@@ -18,6 +26,7 @@ class PostView(CreateAPIView):
     
     permission_classes = [AllowAny]
     serializer_class = PostSerializer
+    parser_classes = [MultiPartParser, FormParser]
     
     def post(self, request, *args, **kwargs):
         print(request.data)
@@ -27,6 +36,14 @@ class PostView(CreateAPIView):
             pass
         return super().post(request, *args, **kwargs)
     
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            print('Serializer errors:', serializer.errors)
+            return Response(serializer.errors, status=400)
+        
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)   
     
 class PostCommentView(ListCreateAPIView):
     
@@ -89,12 +106,17 @@ class FeedView(views.APIView):
     def get(self, request, *args, **kwargs):
         response = []
 
+        filtered_post_images = PostImage.objects.filter(post__id=62)  # Filter by related Post id
+
         # Fetch all posts
         for post in Post.objects.all():
             if not self.check_post_exists_in_response(post, response):
+                serialized_post_images = serialize('json', filtered_post_images)
+                
                 serialized_post = {
                     **PostSerializer(instance=post, context={"request": self.request}).data,
-                    "comments": []
+                    "comments": [],
+                    "image": serialized_post_images,
                 }
                 
                 # Fetch and include comments for the post
@@ -105,6 +127,21 @@ class FeedView(views.APIView):
                         "text": comment.text,
                         "created_at": comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                     })
-
+    
                 response.append(serialized_post)
         return Response(response)
+
+def get_image(request, image_id):
+    post_image = get_object_or_404(PostImage, post_id=image_id)
+
+    # Construct the path to the image file
+    image_path = os.path.join(settings.MEDIA_ROOT, str(post_image.image))
+
+    # Open the image file
+    with open(image_path, 'rb') as f:
+        # Read the content of the image file
+        image_data = f.read()
+
+    # Serve the image file as an HTTP response
+    return HttpResponse(image_data, content_type="image/jpeg")  # Adjust content_type based on your image type
+

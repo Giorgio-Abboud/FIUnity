@@ -14,7 +14,7 @@ class Post(models.Model):
     
 class PostImage(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='post/images/')
+    image = models.ImageField(upload_to='image/')
 
     class Meta:
         verbose_name = 'Post Image'
