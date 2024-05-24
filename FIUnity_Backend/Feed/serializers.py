@@ -17,6 +17,14 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'user', 'description', 'created_at', 'images', 'images_data', 'comments_count']
+        extra_kwargs = {
+            'description': {'required': False}  # Make description field optional
+        }
+
+    # def validate(self, attrs):
+    #     if not attrs.get('description') and not attrs.get('images'):
+    #         raise serializers.ValidationError("Either description or images must be provided.")
+    #     return attrs
 
     def get_comments_count(self, obj):
         return 0

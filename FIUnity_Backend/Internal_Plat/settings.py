@@ -116,12 +116,11 @@ DATABASES = {
 
         'USER': 'postgres',
 
-        'PASSWORD': '1005$huong$PRO',
+        'PASSWORD': 'P0$tgr3$q1',
 
         'HOST': 'localhost',
 
         'PORT': '5432',
-
 
 
     }
