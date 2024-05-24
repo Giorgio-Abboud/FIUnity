@@ -68,10 +68,8 @@ const Registration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("handleSubmit function called"); // Add this line to check if handleSubmit is called
-    console.log("Form values: ", values);
-
-
+    // console.log("handleSubmit function called"); // Add this line to check if handleSubmit is called
+    // console.log("Form values: ", values);
     try {
       const response = await axios.post("http://localhost:8008/authentication/register", values);
       console.log("Registration successful:", response.data);
