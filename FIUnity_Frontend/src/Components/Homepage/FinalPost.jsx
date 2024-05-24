@@ -37,7 +37,7 @@ export default function FinalPost({
     console.log(commentData);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/feed/comments/",
+        "http://127.0.0.1:8008/feed/comments/",
         commentData,
         {
           headers: {

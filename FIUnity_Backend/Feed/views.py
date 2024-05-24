@@ -9,10 +9,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django.core.serializers import serialize
 from django.http import HttpResponse
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import get_object_or_404
 from django.conf import settings
-from rest_framework.parsers import MultiPartParser, FormParser
-
+import os
+from rest_framework.permissions import AllowAny 
 
 # from  import PostImage 
 
@@ -26,7 +27,8 @@ def check_post_exists_in_response(post, response):
 class PostView(CreateAPIView):
     
     permission_classes = [AllowAny]
-    # authentication_classes = [AllowAny]
+    # permission_classes = [IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
     serializer_class = PostSerializer
     parser_classes = [MultiPartParser, FormParser]
     
@@ -51,9 +53,10 @@ class PostView(CreateAPIView):
     
 class PostCommentView(ListCreateAPIView):
     
-    serializer_class = PostCommentSerializer
     permission_classes = [AllowAny]
-    # authentication_classes = [AllowAny]
+    # serializer_class = PostCommentSerializer
+    # permission_classes = [IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
     
     def get_queryset(self):
         
@@ -86,8 +89,10 @@ class PostCommentView(ListCreateAPIView):
 
             
 class FeedView(views.APIView):
+
     permission_classes = [AllowAny]
-    # authentication_classes = [AllowAny]
+    # permission_classes = [IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
 
     def check_post_exists_in_response(self, post, response):
         # Check if the post is already in the response

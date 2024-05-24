@@ -16,7 +16,7 @@ console.log('name:', firstName, lastName)
       setFirstName(first_name);
       setLastName(last_name);
       try {
-        const response = await axios.get("http://127.0.0.1:8000/feed/feed/", {
+        const response = await axios.get("http://127.0.0.1:8008/feed/feed/", {
           headers: {
             "Content-Type": "application/json",
             mode: "cors",
@@ -78,7 +78,7 @@ console.log('name:', firstName, lastName)
               lastName={lastName}
               description={description}
               classification={"Student"}
-              imagesData={"http://127.0.0.1:8000/feed/image/" + id}
+              imagesData={"http://127.0.0.1:8008/feed/image/" + id}
               timestamp={created_at}
               comments={comments}
               onCommentSubmit={handleCommentSubmit}
