@@ -32,7 +32,7 @@ class UserRegister(APIView):
 
 
 class UserLogin(APIView):
-    permission_classes = [permissions.AllowAny,]
+    permission_classes = [permissions.AllowAny]
     
     def post(self, request):
         
@@ -43,6 +43,8 @@ class UserLogin(APIView):
 
         email = serializer.email
         password = serializer.password
+        # first_name = serializer.first_name
+        # last_name = serializer.last_name
 
         print("start")
         # Authenticate user
@@ -60,7 +62,7 @@ class UserLogin(APIView):
 
             print("We got futher")
             # Return response with token
-            return Response({'token': token.key, 'user_id': user.user_id}, status=status.HTTP_200_OK)
+            return Response({'token': token.key, 'user_id': user.user_id, 'first_name': user.first_name, 'last_name': user.last_name}, status=status.HTTP_200_OK)
         else:
             # Authentication failed
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)

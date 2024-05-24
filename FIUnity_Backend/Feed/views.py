@@ -1,8 +1,9 @@
 
+import os
 from rest_framework.generics import *
 from Feed.serializers import *
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import *
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -33,6 +34,8 @@ class PostView(CreateAPIView):
     
     def post(self, request, *args, **kwargs):
         print(request.data)
+        print('hello')
+        # request.data.text = "q"
         try:
             request.data._mutable = True
         except AttributeError:
@@ -59,21 +62,7 @@ class PostCommentView(ListCreateAPIView):
         
         post = self.request.GET.get('post')
         return Comment.objects.filter(post = post)
-    
-    # def post(self, request, *args, **kwargs):
-    #     postId = request.data.get('post')
-    #     commentData = {
-    #         'post': postId,
-    #         'user': 1,  
-    #         'text': request.data.get('description'), 
-    #         'created_at': request.data.get('created_at', None),
-    #     }
-    #     serializer = PostCommentSerializer(data=commentData)
-    #     print('start')
-    #     serializer.is_valid(raise_exception=True)
-    #     print('done')
-    #     self.perform_create(serializer)
-    #     return Response(serializer.data)
+
     
     def post(self, request, *args, **kwargs):
         postId = request.data.get('post')
@@ -152,3 +141,5 @@ def get_image(request, image_id):
     # Serve the image file as an HTTP response
     return HttpResponse(image_data, content_type="image/jpeg")  # Adjust content_type based on your image type
 
+
+       

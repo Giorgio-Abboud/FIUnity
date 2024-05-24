@@ -34,11 +34,15 @@ export default function RegistrationLogIn() {
         },
       })
       .then((response) => {
+        console.log(response);
         if (response.status === 200) {
           console.log("Login successful");
+          console.log('this is the response:',response)
           // Store CSRF token and user_id in local storage
           localStorage.setItem("csrfToken", response.data.token);
           localStorage.setItem("user_id", response.data.user_id);
+          localStorage.setItem("first_name", response.data.first_name);
+          localStorage.setItem("last_name", response.data.last_name);
           window.location.href = "http://localhost:5173/newsfeed";
         } else {
           console.error("Login failed");
