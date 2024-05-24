@@ -22,8 +22,11 @@ class JobPostingView(APIView):
     def post(self, request):
         print("Received JSON data:", request.data)
         serializer = JobPostingSerializer(data=request.data)
+        print("After serializer")
         if serializer.is_valid():
+            print("After valid")
             serializer.save()
+            print("After save")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print(serializer.errors)  # Log the serializer errors to the console

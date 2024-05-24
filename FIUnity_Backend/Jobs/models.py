@@ -31,5 +31,5 @@ class JobPosting(models.Model):
     usResidency = models.BooleanField()
     applicationLink = models.URLField()
 
-    def _str_(self):
-        return self.job_position
+    def __str__(self):  # Corrected method name
+        return self.jobPosition  # Use correct field name
