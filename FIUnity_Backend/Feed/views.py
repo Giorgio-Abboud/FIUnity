@@ -5,11 +5,13 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.permissions import IsAuthenticated
 from .models import *
 from rest_framework.pagination import PageNumberPagination
+# from django.http.multipartparser import MultiPartParser
 from rest_framework.response import Response
 from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.conf import settings
+from rest_framework.parsers import MultiPartParser, FormParser
 
 # from  import PostImage 
 

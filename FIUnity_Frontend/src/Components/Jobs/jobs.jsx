@@ -36,7 +36,7 @@ const JobsList = () => {
 
     useEffect(() => {
         // Fetch job posting data from your backend
-        axios.get('http://8000/jobs/job-posting/')
+        axios.get('http://localhost:8000/jobs/job-posting/')
             .then(response => {
                 setJobs(response.data);
             })

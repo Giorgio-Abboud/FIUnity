@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import JobPosting
 from .serializers import JobPostingSerializer
+
+# from rest_framework.parsers import MultiPartParser, FormParser
 #from rest_framework.authentication import SessionAuthentication
 #from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny 
