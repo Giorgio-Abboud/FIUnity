@@ -3,7 +3,6 @@ import "./job-posting.css";
 import axios, { isCancel, AxiosError } from 'axios';
 
 
-
 const JobAddingPosting = () => {
     const [jobPosition, setJobPosition] = useState('');
     const [jobID, setJobID] = useState('');

@@ -76,6 +76,9 @@
 .job-posting button:hover {
     background-color: #b6862c;
 }
+.job-posting-button{
+    text-decoration: none;
+}
 
 .date-picker {
     display: grid;
@@ -105,3 +108,7 @@
     margin-left: 0;
     padding-left: 0;
 }
+
+/* .post-job-button{
+    text-decoration: none;
+} */
