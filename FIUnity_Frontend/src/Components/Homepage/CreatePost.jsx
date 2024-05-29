@@ -16,7 +16,6 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
     setSelectedFile(event.target.files[0]);
   };
 
-
   const handleSubmit = async () => {
     const currentDateTime = new Date()
       .toISOString()
@@ -34,7 +33,7 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8008/feed/posts/",
+        "http://127.0.0.1:8000/feed/posts/",
         formData,
         {
           headers: {

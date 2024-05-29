@@ -5,15 +5,18 @@ from Feed.serializers import *
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import *
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django.core.serializers import serialize
 from django.http import HttpResponse
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import get_object_or_404
 from django.conf import settings
-import os
+from rest_framework import status
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from rest_framework.permissions import AllowAny 
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 
 # from  import PostImage 
 
@@ -34,27 +37,28 @@ class PostView(CreateAPIView):
     
     def post(self, request, *args, **kwargs):
         print(request.data)
-        print('hello')
-        # request.data.text = "q"
         try:
             request.data._mutable = True
         except AttributeError:
             pass
         return super().post(request, *args, **kwargs)
     
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            print('Serializer errors:', serializer.errors)
-            return Response(serializer.errors, status=400)
-        
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=201, headers=headers)   
+    # def put(self, request, post_id, *args, **kwargs):
+    #     post = get_object_or_404(Post, id=post_id)
+    #     user = request.user
+
+    #     if user in post.likes.all():
+    #         post.likes.remove(user)
+    #         return Response({'detail': 'Post unliked'}, status=status.HTTP_200_OK)
+    #     else:
+    #         post.likes.add(user)
+    #         return Response({'detail': 'Post liked'}, status=status.HTTP_200_OK)
+  
     
 class PostCommentView(ListCreateAPIView):
     
     permission_classes = [AllowAny]
-    # serializer_class = PostCommentSerializer
+    serializer_class = PostCommentSerializer
     # permission_classes = [IsAuthenticated]
     # authentication_classes = [TokenAuthentication]
     
@@ -86,8 +90,18 @@ class PostCommentView(ListCreateAPIView):
         
         self.perform_create(serializer)
         return Response(serializer.data)
+    
+    # def put(self, request, comment_id, *args, **kwargs):
+    #     comment = get_object_or_404(Comment, id=comment_id)
+    #     user = request.user
 
-            
+    #     if request.user not in comment.likes.all():
+    #         comment.likes.add(request.user)
+    #         return Response({'detail': 'Comment liked'}, status=status.HTTP_200_OK)
+    #     else:
+    #         comment.likes.remove(request.user)
+    #         return Response({'detail': 'Comment unliked'}, status=status.HTTP_200_OK)
+
 class FeedView(views.APIView):
 
     permission_classes = [AllowAny]
@@ -141,5 +155,28 @@ def get_image(request, image_id):
     # Serve the image file as an HTTP response
     return HttpResponse(image_data, content_type="image/jpeg")  # Adjust content_type based on your image type
 
+@login_required
+def like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    user = request.user
+    
+    if user in post.likes.all():
+        return HttpResponse("You have already liked this post.")
 
-       
+    post.likes.add(user)
+    like_count = post.likes.count()
+    
+    return HttpResponse(f"Post liked successfully. Total likes: {like_count}")
+
+    # user = request.user
+    # post = get_object_or_404(Post, id=post_id)
+    # liked, created = Likes.objects.get_or_create(user=user, post=post)
+    # if created:
+    #     post.likes += 1
+    #     post.save()
+    #     return HttpResponse('Post liked successfully', status=200)
+    # else:
+    #     liked.delete()
+    #     post.likes -= 1
+    #     post.save()
+    #     return HttpResponse('Post unliked successfully', status=200)
