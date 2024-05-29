@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import defaultProfilePicture from "../../assets/Default_pfp.png";
+import defaultProfilePicture from './assets/Default_pfp.png';
 import "./profileEdit.css";
 
 const ProfileEdit = () => {
@@ -59,7 +59,6 @@ const ProfileEdit = () => {
             projects
         };
 
-        console.log('It got here too')
         try {
             const response = await axios.post("http://localhost:8008/profile/profile-edit/", profileData);
             if (response.status === 201) {
