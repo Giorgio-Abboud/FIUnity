@@ -1,0 +1,97 @@
+.profile-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.profile-editing {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.profile-editing h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.profile-editing label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.profile-editing input[type="text"],
+.profile-editing input[type="date"],
+.profile-editing textarea,
+.profile-editing select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.profile-editing textarea {
+    resize: vertical;
+}
+
+.profile-editing .experience-section,
+.profile-editing .project-section {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.profile-editing button[type="button"] {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.profile-editing button[type="button"]:hover {
+    background-color: #0056b3;
+}
+
+.profile-editing button[type="submit"] {
+    display: block;
+    width: 100%;
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.profile-editing button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.profile-editing .required-jobs {
+    color: red;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.profile-editing .date-picker {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
