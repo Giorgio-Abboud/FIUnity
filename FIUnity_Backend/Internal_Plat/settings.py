@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4(fn#&(&^^_4j!w!hn0x7(fn)h+s0e-o4r)!2qzt#^nc925)gd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -33,7 +33,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://127.0.0.1',
     'http://0.0.0.0',
-    'http://10.108.229.73:8008',
+    'http://10.108.229.73:8000',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -44,8 +44,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = '*'
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8008',
-    'http://10.108.229.73:8008',
+    'http://localhost:8000',
+    'http://10.108.229.73:8000',
 ]
 
 # Application definition
@@ -107,24 +107,15 @@ WSGI_APPLICATION = 'Internal_Plat.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
+DATABASES = { 
     'default': {
-
-        'ENGINE': 'django.db.backends.postgresql',
-
-        'NAME': 'fiunity',
-
-        'USER': 'postgres',
-
-        'PASSWORD': 'root',
-
-        'HOST': 'localhost',
-
-        'PORT': '5432',
-
-
-    }
-}
+         'ENGINE': 'django.db.backends.postgresql', 
+         'NAME': 'fiunity', 
+         'USER': 'postgres', 
+         'PASSWORD': 'P0$tgr3$q1', 
+         'HOST': 'localhost', 
+         'PORT': '5432', } 
+         }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
