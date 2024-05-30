@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./NavBar.css";
-import Logo_icon from "../../assets/New logo icon.png";
+import Logo_icon from "../../assets/FIUnityLogo.png";
 import Pawprint_icon from "../../assets/paw print.png";
 import Newsfeed_icon from "../../assets/Newsfeed icon.png";
 import Jobs_icon from "../../assets/Jobs icon.png";
