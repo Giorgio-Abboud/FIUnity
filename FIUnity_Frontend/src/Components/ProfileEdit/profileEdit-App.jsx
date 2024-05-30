@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './profileEdit-App.css'
 import ProfileEdit from './profileEdit'
+import ProfileEditAlumni from './profileEditAlumni'
 
 
 function ProfileEditing() {
@@ -10,6 +11,7 @@ function ProfileEditing() {
     <>
      <div>
       <ProfileEdit />
+      <ProfileEditAlumni />
      </div>
     </>
   )

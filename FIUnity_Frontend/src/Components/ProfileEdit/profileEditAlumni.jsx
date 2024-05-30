@@ -3,13 +3,13 @@ import axios from 'axios';
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
 
-const ProfileEdit = () => {
+const ProfileEditAlumni = () => {
     const [profile, setProfile] = useState({
         firstName: '',
         lastName: '',
         graduationYear: '',
-        classStanding: '',
-        major: '',
+        yearsExperience: '',
+        current_job_position: '',
         aboutMe: '',
         profilePicture: null
     });
@@ -129,26 +129,22 @@ const ProfileEdit = () => {
                     required
                 />
 
-                <label htmlFor="classStanding">Class Standing <div className="required-fields">*</div> </label>
-                <select
-                    id="classStanding"
-                    value={profile.classStanding}
-                    onChange={(e) => setType(e.target.value)}
-                    required
-                >
-                    <option value="">Choose one</option>
-                    <option value="option1">Freshman</option>
-                    <option value="option2">Sophomore</option>
-                    <option value="option3">Junior</option>
-                    <option value="option4">Senior</option>
-                </select>
-
-                <label htmlFor="major">Major <div className="required-fields">*</div></label>
+                <label htmlFor="yearsExperience">Years of Experience <div className="required-fields">*</div></label>
                 <input
                     type="text"
-                    id="major"
-                    name="major"
-                    value={profile.major}
+                    id="yearsExperience"
+                    name="yearsExperience"
+                    value={profile.yearsExperience}
+                    onChange={handleProfileChange}
+                    required
+                />
+
+                <label htmlFor="current_job_position">Current Job Position <div className="required-fields">*</div></label>
+                <input
+                    type="text"
+                    id="current_job_position"
+                    name="current_job_position"
+                    value={profile.current_job_position}
                     onChange={handleProfileChange}
                     required
                 />
@@ -244,4 +240,4 @@ const ProfileEdit = () => {
     );
 };
 
-export default ProfileEdit;
+export default ProfileEditAlumni;
