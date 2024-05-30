@@ -4,6 +4,7 @@
 
 .profile-font-bold {
   font-weight: bold;
+  color: #b68400;
 }
 
 .profile-linear-gradient {
@@ -124,7 +125,7 @@ color: #b68400;
   margin-left: 15px;
 }
 
-.project-title {
+.profile-title {
   margin-top: 15px;
   margin-left: 15px;
 }
@@ -133,4 +134,18 @@ color: #b68400;
   margin-left: 15px;
   margin-right: 15px;
   margin-top: 8px
+}
+
+.experience-text {
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-top: 5px;
+}
+
+.three-text-flex {
+display: flex;
+}
+
+.three-text-ans {
+  margin-left: 5px;
 }
