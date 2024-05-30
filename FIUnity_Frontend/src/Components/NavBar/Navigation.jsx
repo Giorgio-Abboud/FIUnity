@@ -8,6 +8,7 @@ import CreatePost from "../Homepage/CreatePost";
 import RegistrationLogIn from "../Login Page/Log-in";
 import Registration from "../Registration/regist-App";
 import ProfileEdit from "../ProfileEdit/profileEdit"; 
+import Profile from "../Profile/ProfileAlumApp";
 import { Route, Routes, useLocation } from "react-router-dom";
 
 
@@ -33,7 +34,7 @@ const Navigation = () => {
           <Route path="/register-submit" element={<RegistrationLogIn />} />
           <Route path="/login-submit" element={<Homepage />} />
           <Route path="/test" element={<RegistrationLogIn />} />
-          <Route path="/profile-edit" element={<ProfileEdit />} />
+          <Route path="/view-profile" element={<Profile />} />          
           <Route path="/" element={<RegistrationLogIn />} />
           <Route path="/post-job" element={<ViewJobs />} />
         </Routes>

@@ -1,0 +1,136 @@
+.profile-font {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
+.profile-font-bold {
+  font-weight: bold;
+}
+
+.profile-linear-gradient {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(
+    180deg,
+    rgba(91, 134, 181, 0.5) 0%,
+    rgba(173, 194, 218, 0.62) 50%,
+    rgba(255, 255, 255, 0.75) 100%
+  );
+  padding-top: 20px;
+  box-sizing: border-box;
+}
+
+.profile-large-container {
+  width: 800px;
+  height: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.profile-white-block {
+  /* margin-left: auto;
+  margin-right: auto; */
+  margin-top: 25px;
+  width: 350px;
+  height: 100px;
+  background-color: rgba(255, 255, 255, 0.623);
+  border: 1px solid #ccc;
+  border-radius: 13px;
+  padding-left: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.about-us-container {
+  /* margin-left: auto;
+    margin-right: auto; */
+  margin-top: 25px;
+  width: 360px;
+  height: 200px;
+  background-color: rgba(255, 255, 255, 0.623);
+  border: 1px solid #ccc;
+  border-radius: 13px;
+}
+
+.experience-container {
+  /* margin-left: auto;
+    margin-right: auto; */
+  margin-top: 25px;
+  width: 350px;
+  height: 450px;
+  background-color: rgba(255, 255, 255, 0.623);
+  border: 1px solid #ccc;
+  border-radius: 13px;
+}
+
+.profile-flex {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.project-container {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 25px;
+  width: 740px;
+  height: 180px;
+  background-color: rgba(255, 255, 255, 0.623);
+  border: 1px solid #ccc;
+  border-radius: 13px;
+}
+
+.profile-p-pic {
+  border-radius: 100%;
+  background-color: red;
+  width: 70px;
+  height: 70px;
+}
+
+.profile-size {
+    padding-left: 15px;
+}
+
+.profile-name-size {
+font-size: 26px;
+}
+.profile-class-size {
+font-size: 20px;
+color: #b68400;
+}
+
+
+.title-text {
+    font-size: 18px;
+    padding-left: 15px;
+    padding-top: 15px;
+}
+
+.title-about-line {
+    border-top: 2px solid #b68400;
+    width: 28%;
+    margin-left: 15px;
+}
+
+.title-experience-line {
+  border-top: 2px solid #b68400;
+  width: 34%;
+  margin-left: 15px;
+}
+
+.title-project-line {
+  border-top: 2px solid #b68400;
+  width: 13%;
+  margin-left: 15px;
+}
+
+.project-title {
+  margin-top: 15px;
+  margin-left: 15px;
+}
+
+.profile-descript {
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-top: 8px
+}
