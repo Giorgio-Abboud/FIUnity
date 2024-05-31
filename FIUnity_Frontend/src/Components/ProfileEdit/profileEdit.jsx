@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
+import { Link } from 'react-router-dom';
 
 const ProfileEdit = () => {
     const [profile, setProfile] = useState({
@@ -238,7 +239,12 @@ const ProfileEdit = () => {
                 ))}
                 <button type="button" onClick={addProject}>Add More</button>
 
-                <button type="submit">Save</button>
+                <div className='Edit-Profile-Button'>
+                <Link to="/view-profile" className="edit-profile-button">
+                <button className="edit-profile-submit">Save</button>
+                </Link>
+                </div>
+
             </form>
         </div>
     );
