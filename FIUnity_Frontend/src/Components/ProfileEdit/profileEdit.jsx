@@ -165,7 +165,7 @@ const ProfileEdit = () => {
                 <label htmlFor="aboutMe">About Me</label>
                 <textarea
                     id="aboutMe"
-                    placeholder = "You can write about your years of experience, industry, or skills. People also talk about their achievements or previous job experiences."
+                    placeholder="You can write about your years of experience, industry, or skills. People also talk about their achievements or previous job experiences."
                     name="aboutMe"
                     value={profile.aboutMe}
                     onChange={handleProfileChange}
@@ -294,8 +294,10 @@ const ProfileEdit = () => {
                                 type="checkbox"
                                 name="current"
                                 checked={experience.current}
-                                onChange={(e) => handleExperienceChange(index, e)}
+                                onChange={() => handleExperienceChange(index, { target: { name: 'current', value: !experience.current } })}
                             />
+
+
                             <label className="checkbox-label"> I'm currently in this position</label>
 
                         </div>
@@ -366,6 +368,8 @@ const ProfileEdit = () => {
                 <button type="button" onClick={addSkill}>Add More</button>
 
                 <button type="submit">Save</button>
+
+
             </form>
         </div>
     );
