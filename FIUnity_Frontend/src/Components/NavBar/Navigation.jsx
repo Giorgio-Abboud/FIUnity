@@ -14,9 +14,8 @@ const Navigation = () => {
   const location = useLocation();
 
   const showNavBar =
-    location.pathname !== "/logout" && location.pathname !== "/authentication/register" && location.pathname !== "/register-submit" && location.pathname !== "/test";
-    location.pathname !== "/logout" && location.pathname !== "/authentication/register"
-     && location.pathname !== "/register-submit" && location.pathname !== "/";
+    location.pathname !== "/logout" && location.pathname !== "/authentication/register" && location.pathname !== "/register-submit" && location.pathname !== "/test"
+    && location.pathname !== "/register-submit" && location.pathname !== "/";
 
   return (
     <>

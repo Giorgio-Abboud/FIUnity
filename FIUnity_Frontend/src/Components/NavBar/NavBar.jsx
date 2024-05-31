@@ -14,7 +14,7 @@ const JobDropdown = ({ isOpen, toggleDropdown }) => {
       onMouseEnter={() => toggleDropdown(true)}
       onMouseLeave={() => toggleDropdown(false)}
     >
-      <div className="job-btn" onClick={toggleDropdown}>
+      <div className="job-btn navbar-items" onClick={toggleDropdown}>
         <img src={Jobs_icon} alt="" className="job-icon" />
         <Link to="/jobs-list" className="nav-link">
           Jobs
