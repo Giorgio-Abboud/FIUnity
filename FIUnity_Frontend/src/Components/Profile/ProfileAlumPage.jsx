@@ -8,10 +8,8 @@ export default function ProfileAlumPage({
   yearsOfExperience,
   currJobPosition,
   aboutMe,
-  jobPosition,
-  projectName,
-  projectDescript,
-  experience,
+  projects,
+  experiences,
   profilePic,
 }) {
   return (
@@ -21,31 +19,37 @@ export default function ProfileAlumPage({
           <div className="profile-flex">
             <div>
               <div className="profile-white-block">
-                <div className="profile-p-pic"></div>
+                <img src={profilePic} alt="profile picture" className="profile-p-pic" />
                 <div className="profile-size">
                   <h1 className="profile-font profile-name-size">
-                    Roary Royce
+                    {firstName} {lastName}
                   </h1>
-                  <h2 className="profile-font profile-class-size">Alumni</h2>
+                  <p className="profile-font profile-class-size">
+                    {classification}
+                  </p>
                 </div>
               </div>
               <div className="profile-white-block">
                 <div>
                   <div className="three-text-flex">
                     <p className="profile-font profile-font-bold">Grad Year:</p>
-                    <pm className="three-text-ans profile-font">xyz</pm>
+                    <p className="three-text-ans profile-font">{gradYear}</p>
                   </div>
                   <div className="three-text-flex">
                     <p className="profile-font profile-font-bold">
                       Years of Experience:{" "}
                     </p>
-                    <p className="three-text-ans profile-font">xyz</p>
+                    <p className="three-text-ans profile-font">
+                      {yearsOfExperience}
+                    </p>
                   </div>
                   <div className="three-text-flex">
                     <p className="profile-font profile-font-bold">
                       Job Position:
                     </p>
-                    <p className="three-text-ans profile-font">xyz</p>
+                    <p className="three-text-ans profile-font">
+                      {currJobPosition}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -53,50 +57,48 @@ export default function ProfileAlumPage({
                 <div>
                   <h3 className="title-text profile-font">ABOUT ME</h3>
                   <div className="title-about-line"></div>
-                  <p className="profile-descript profile-font">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit, sed do eiusmod tempor incididunt ut labore et dolore
-                    magna aliqua.{" "}
-                  </p>
+                  <p className="profile-descript profile-font">{aboutMe}</p>
                 </div>
               </div>
             </div>
             <div className="experience-container">
               <h3 className="title-text profile-font">EXPERIENCE</h3>
               <div className="title-experience-line"></div>
-              <div className="profile-font-bold">
-                <p className="profile-title profile-font profile-font-bold">
-                  Job Position
-                </p>
-                <p className="profile-font experience-text profile-font-bold">
-                  Location
-                </p>
-                <p className="profile-font experience-text profile-font-bold">
-                  Time
-                </p>
-              </div>
-              <p className="profile-descript profile-font">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.{" "}
-              </p>
+              {experiences.map((experience, index) => (
+                <div key={index}>
+                  <div>
+                    <p className="profile-title profile-font profile-font-bold">
+                      {experience.jobTitle}
+                    </p>
+                    <p className="profile-font experience-text profile-gold">
+                      {experience.location}
+                    </p>
+                    <p className="profile-font experience-text profile-gold experience-time">
+                      {experience.timePeriod}
+                    </p>
+                  </div>
+                  <p className="profile-descript profile-font">
+                    {experience.description}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
           <div className="project-container">
             <h3 className="title-text profile-font">PROJECTS</h3>
             <div className="title-project-line"></div>
-            <div>
-              <h4 className="profile-title profile-font-bold profile-font">
-                Project 1
-              </h4>
-              <p className="profile-descript profile-font">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.{" "}
-              </p>
-            </div>
+            {projects.map((project, index) => (
+              <div key={index}>
+                <div>
+                  <h4 className="profile-title profile-font-bold profile-font">
+                    {project.name}
+                  </h4>
+                  <p className="profile-descript profile-font">
+                    {project.description}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
