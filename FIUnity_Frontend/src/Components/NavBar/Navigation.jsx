@@ -40,6 +40,7 @@ const Navigation = () => {
           <Route path="/test" element={<RegistrationLogIn />} />
           <Route path="/profile-edit" element={<ProfileEdit />} />
           <Route path="/profile-edit-alumni" element={<ProfileEditAlumni />} />
+          <Route path="/view-profile" element={<Profile />} />
           <Route path="/" element={<RegistrationLogIn />} />
           <Route path="/post-job" element={<ViewJobs />} />
           <Route path="/view-profile" element={<ProfileApp />} />
