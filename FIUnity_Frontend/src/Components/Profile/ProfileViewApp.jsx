@@ -1,4 +1,4 @@
-import ProfileAlumPage from "./ProfileAlumPage";
+import ProfileViewPage from "./ProfileViewPage";
 import axios from "axios";
 
 const exampleExperiences = [
@@ -55,10 +55,10 @@ const skills = [
 ];
 
 
-function ProfileAlumApp() {
+function ProfileViewApp() {
   return (
     <>
-      <ProfileAlumPage
+      <ProfileViewPage
         firstName="Roary"
         lastName="Royce"
         classification="Student"
@@ -76,4 +76,4 @@ function ProfileAlumApp() {
     </>
   );
 }
-export default ProfileAlumApp;
+export default ProfileViewApp;

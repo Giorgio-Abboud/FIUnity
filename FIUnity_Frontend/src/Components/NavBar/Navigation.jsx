@@ -9,7 +9,7 @@ import RegistrationLogIn from "../Login Page/Log-in";
 import Registration from "../Registration/regist-App";
 import ProfileEdit from "../ProfileEdit/profileEdit";
 import ProfileEditAlumni from "../ProfileEdit/profileEditAlumni";
-import ProfileAlumApp from "../Profile/ProfileAlumApp";
+import ProfileViewApp from "../Profile/ProfileViewApp";
 import { Route, Routes, useLocation } from "react-router-dom";
 
 const Navigation = () => {
@@ -40,7 +40,7 @@ const Navigation = () => {
           <Route path="/test" element={<RegistrationLogIn />} />
           <Route path="/profile-edit" element={<ProfileEdit />} />
           <Route path="/profile-edit-alumni" element={<ProfileEditAlumni />} />
-          <Route path="/view-profile" element={<ProfileAlumApp />} />
+          <Route path="/view-profile" element={<ProfileViewApp />} />
           <Route path="/" element={<RegistrationLogIn />} />
           <Route path="/post-job" element={<ViewJobs />} />
         </Routes>

@@ -1,6 +1,6 @@
-import "./Profile.css";
+import "./ProfileView.css";
 
-export default function ProfileAlumPage({
+export default function ProfileViewPage({
   firstName,
   lastName,
   classification,
