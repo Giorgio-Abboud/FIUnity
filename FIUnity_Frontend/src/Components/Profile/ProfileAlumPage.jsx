@@ -123,7 +123,7 @@ export default function ProfileAlumPage({
                     {projects.map((project, index) => (
                       <div key={index}>
                         <div className="skills-project-tab-container">
-                          <h4 className="profile-title profile-font-bold profile-font">
+                          <h4 className="profile-title profile-font-bold profile-font profile-gold">
                             {project.name}
                           </h4>
                           <p className="profile-descript profile-font">
@@ -143,7 +143,7 @@ export default function ProfileAlumPage({
                     {extracurriculars.map((extracurricular, index) => (
                       <div key={index}>
                         <div className="skills-project-tab-container">
-                          <h4 className="profile-title profile-font-bold profile-font">
+                          <h4 className="profile-title profile-font-bold profile-font profile-gold">
                             {extracurricular.name}
                           </h4>
                           <p className="profile-descript profile-font">
@@ -165,7 +165,7 @@ export default function ProfileAlumPage({
                 {skills.map((skill, index) => (
                   <div key={index}>
                     <div className="skills-project-tab-container">
-                      <p className="profile-skills profile-gold profile-font-bold">
+                      <p className="profile-skills profile-font-bold profile-gold">
                         {skill.name}
                       </p>
                     </div>

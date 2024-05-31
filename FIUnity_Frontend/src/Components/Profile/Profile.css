@@ -1,9 +1,10 @@
 .profile-font-bold {
   font-weight: bold;
+  color: #0c3d72;
 }
 
 .profile-gold {
-  color: #b68400;
+  color: #cfaa43;
 }
 
 .profile-box {
@@ -28,7 +29,6 @@
   padding-left: 15px;
   display: flex;
   align-items: center;
-
 }
 
 .about-us-container {
@@ -49,7 +49,7 @@
   padding-bottom: 15px;
   padding-right: 15px;
   margin-right: 15px;
-  padding-right:20px;
+  padding-right: 20px;
   width: 350px;
   min-height: 450px;
   background-color: rgba(255, 255, 255, 0.623);
@@ -92,7 +92,6 @@
   border-radius: 13px;
 }
 
-
 .profile-p-pic {
   border-radius: 100%;
   width: 70px;
@@ -101,50 +100,52 @@
 }
 
 .profile-size {
-    padding-left: 15px;
+  padding-left: 15px;
 }
 
 .profile-name-size {
-font-size: 26px;
+  color: #0c3d72;
+  font-size: 24px;
 }
 
 .profile-class-size {
-font-size: 23px;
-color: #b68400;
+  font-size: 20px;
+  color: #cfaa43;
 }
 
 .title-text {
-    font-size: 18px;
-    padding-top: 20px;
-    margin-left:20px;
+  color: #0c3d72;
+  font-size: 18px;
+  padding-top: 20px;
+  margin-left: 20px;
 }
 
 .title-about-line {
-    border-top: 2px solid #b68400;
-    width: 28%;
-    margin-left: 20px;
+  border-top: 2px solid #cfaa43;
+  width: 28%;
+  margin-left: 20px;
 }
 
 .title-experience-line {
-  border-top: 2px solid #b68400;
+  border-top: 2px solid #cfaa43;
   width: 34%;
   margin-left: 20px;
 }
 
 .title-project-line {
-  border-top: 2px solid #b68400;
+  border-top: 2px solid #cfaa43;
   width: 13%;
   margin-left: 20px;
 }
 
 .title-extra-line {
-  border-top: 2px solid #b68400;
+  border-top: 2px solid #cfaa43;
   width: 26%;
   margin-left: 20px;
 }
 
 .title-skills-line {
-  border-top: 2px solid #b68400;
+  border-top: 2px solid #cfaa43;
   width: 9%;
   margin-left: 20px;
 }
@@ -155,9 +156,10 @@ color: #b68400;
 }
 
 .profile-descript {
+  color: #0c3d72;
   margin-left: 20px;
   margin-right: 15px;
-  margin-top: 8px
+  margin-top: 8px;
 }
 
 .experience-text {
@@ -171,12 +173,14 @@ color: #b68400;
 }
 
 .three-text-flex {
-display: flex;
-padding-bottom: 10px;
+  display: flex;
+  padding-bottom: 10px;
+  color: #0c3d72;
 }
 
 .three-text-ans {
   margin-left: 5px;
+  color: #0c3d72;
 }
 
 .skills-container {
@@ -211,4 +215,3 @@ padding-bottom: 10px;
   margin-right: 15px;
   margin-top: 15px;
 }
-
