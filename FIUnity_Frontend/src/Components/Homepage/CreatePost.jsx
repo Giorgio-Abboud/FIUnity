@@ -16,7 +16,6 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
     setSelectedFile(event.target.files[0]);
   };
 
-
   const handleSubmit = async () => {
     const currentDateTime = new Date()
       .toISOString()

@@ -1,156 +1,257 @@
-
+/* Base styles */
 .NavBar {
-    /* width: 100%; */
-    height: 100px;
-    display: flex;
-    align-items: center;
-    background-color: #081e3f;
-    padding: 5px;
-    color: white;
-  }
-  
-  .logo {
-    height: 40px;
-    width: 10;
-    cursor: pointer;
-  }
-
-  /* Search bar */
-  .searchBox {
-    display: flex;
-    align-items: center;
-    background-color: aliceblue;
-    padding: 5px 10px;
-    border-radius: 50px;
-    width: 400px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  background-color: #081e3f;
+  padding: 5px;
+  color: white;
 }
-  
-  .searchBox input {
-    padding: 6px;
-    background: transparent;
-    border: 0;
-    outline: 0;
-    color: black;
-    font-size: 12;
-    width: 400px;
-  }
 
-  .bold-search {
-    font-weight: bold;
-  }
-  
-  .searchBox.bold-search input {
-    font-weight: bold;
-  }
+.logo {
+  height: auto;
+  width: auto;  
+  cursor: pointer;
+  padding: 0px 5%;
+  margin: 0px 15px;
+}
 
+/* Search bar */
+.searchBox {
+  display: flex;
+  align-items: center;
+  background-color: aliceblue;
+  padding: 5px 10px;
+  border-radius: 50px;
+  width: 600px;
+  margin: 0; /* Adjusted margin for spacing */
+}
 
-  /* Icons */
-  .NavBar_Icons {
-    display: flex;
-    padding: 15px 5%;
-    margin-top: 15px;
-  }
+.searchBox input {
+  padding: 16px;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: black;
+  font-size: 12px;  
+  width: 100%;  
   
-  .icon-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 150px;
-  }
-  
-  .icon {
-    height: 30px;
-    margin-bottom: 7px;
-  }
-  
-  
-  .nav-link {
-    margin: 10px;
-    font-size: 18px;
-    cursor: pointer;
-    color: white;
-    text-decoration: none;
-  }
-  
-  .nav-link:hover {
-    color: yellow;
-  }
+}
 
+.bold-search {
+  font-weight: bold;
+}
 
+.searchBox.bold-search input {
+  font-weight: bold;
+}
 
-  /* Dropdown */
-.dropdown-content {
+/* Icons */
+.NavBar_Icons {
+  display: flex;
+  align-items: center;  
+  padding: 0px 5%;
+  margin-top: 15px;
+}
+
+.icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0; /* Adjusted margin for spacing */
+  justify-content: space-between; 
+  margin-right: 100px;
+}
+
+.icon {
+  height: 30px;
+  margin-bottom: 7px;
+}
+
+.nav-link {
+  margin: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: yellow;
+}
+
+/* Dropdown */
+.jobs-dropdown-content {
   display: none;
   position: absolute;
   background-color: #ffffff;
   min-width: 150px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 1;  
 }
 
-.dropdown-content a {
+.jobs-dropdown-content a {
   display: block;
   padding: 10px;
   text-decoration: none;
   color: #000000;
 }
 
-.dropdown-content a:hover {
+.jobs-dropdown-content a:hover {
   background-color: #f1f1f1;
 }
 
+.job-dropdown:hover .jobs-dropdown-content {
+  display: block;
+}
 
-.job-dropdown:hover .dropdown-content{
+.profile-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  min-width: 150px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;  
+}
+
+.profile-dropdown-content a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #000000;
+}
+
+.profile-dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.profile-dropdown:hover .profile-dropdown-content {
   display: block;
 }
 
 /* Jobs button and icon */
 .job-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    color: white;
-    text-decoration: none;
-    margin-right: 90px;
-  }
-  
-  .job-btn:hover {
-    color: yellow;
-  }
-  
-  .job-btn .job-icon {
-    height: 30px; /* Adjust as needed */
-    width: 30px;
-    margin-bottom: 7px; /* Adjust as needed */
-  }  
-  
-  .job-btn a {
-    margin: 10px;
-    font-size: 18px;
-    cursor: pointer;
-    color: white;
-    text-decoration: none;
-  }
-  
-  .job-btn a:hover {
-    color: yellow;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  margin: 0px 80px; /* Adjusted margin for spacing */
+}
+
+.job-btn:hover {
+  color: yellow;
+}
+
+.job-btn .job-icon {
+  height: 30px;  
+  width: 30px;  
+  margin-bottom: 7px;  
+}
+
+.job-btn a {
+  margin: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+}
+
+.job-btn a:hover {
+  color: yellow;
+}
+
+/* Profile button and icon */
+.profile-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  margin: 0px 80px; /* Adjusted margin for spacing */
+}
+
+.profile-btn:hover {
+  color: yellow;
+}
+
+.profile-btn .profile-icon {
+  height: 30px;  
+  width: 30px;  
+  margin-bottom: 7px;  
+}
+
+.peofile-btn a {
+  margin: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+}
+
+.profile-btn a:hover {
+  color: yellow;
+}
+
+
+.Logout{
+  color: white;
+  text-decoration: none; /* Remove underline */
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+  background-color: #d9a31e;
+  padding: 0px 15px;
+  border-radius: 10px;
+  height: 40px;
+  margin: 0 10px; /* Adjusted margin for spacing */
+  font-size: 14px;
+  margin-left: 100px;
+}
+
+.Logout:hover {
+  background: #b68400;
+  cursor: pointer;
+}
+
+.logout-button{
+  text-decoration: none;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .NavBar {
+    flex-direction: column;  
+    height: auto;  
+    padding: 10px;  
   }
 
-  .Logout{
-    color: white;
-    text-decoration: none;
-    align-items: center;
-    background-color: #d9a31e;
-    padding: 0px 15px;
-    border-radius: 10px;
-    height: 40px;
-    margin-top: 8px;
-    font-size: 14px;
-  }
-  
-  .Logout:hover{
-    background: #b68400;
-    cursor: pointer;
+  .searchBox {
+    width: 100%;  
+    max-width: none;  
+    margin: 10px 0; /* Adjusted margin for spacing */
   }
 
+  .NavBar_Icons {
+    justify-content: center;  
+    margin-top: 10px;  
+  }
+
+  .icon-container,
+  .job-btn {
+    margin: 10px 0; /* Adjusted margin for spacing */
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-link {
+    font-size: 14px;  
+  }
+
+  .Logout {
+    font-size: 12px;  
+    padding: 5px 10px;  
+  }
+}

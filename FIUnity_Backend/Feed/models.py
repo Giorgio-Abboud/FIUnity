@@ -8,6 +8,8 @@ class Post(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    likes = models.ManyToManyField(AppUser, related_name='liked_posts')
+
     class Meta:
         verbose_name = 'Post'
         verbose_name_plural = 'Posts'
@@ -29,9 +31,14 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(AppUser, related_name='liked_comments')
 
     class Meta:
         verbose_name = 'Comment'
         verbose_name_plural = 'Comments'
     def __str__(self):
         return f"Comment by {self.first_name} {self.last_name} on Post {self.post.id}"
+
+class Likes(models.Model):
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name="user_likes")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="post_likes")

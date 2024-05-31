@@ -23,5 +23,6 @@ urlpatterns = [
     path('authentication/', include('Authentication.urls')),
     path('feed/', include ('Feed.urls')),
     path('jobs/', include ('Jobs.urls')),
+    # path('profile/', include (Profile.urls))
     # path('jobs/', include('Jobs.urls')),
 ]

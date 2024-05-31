@@ -4,12 +4,17 @@ import CreatePost from "./CreatePost";
 import axios from "axios";
 
 function Homepage() {
-  const [allPosts, setAllPosts] = useState([]);
+  const [allPosts, setAllPosts] = useState([{ comments: [] }]);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
   useEffect(() => {
     (async function () {
+      const first_name = localStorage.getItem("first_name");
+      const last_name = localStorage.getItem("last_name");
+      console.log("name:", firstName, lastName);
+      setFirstName(first_name);
+      setLastName(last_name);
       try {
         const response = await axios.get("http://127.0.0.1:8000/feed/feed/", {
           headers: {
@@ -37,46 +42,43 @@ function Homepage() {
       last_name: lastName,
       text: newComment.text,
     };
-
+    console.log(allPosts);
     setAllPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === postId
-          ? { ...post, comments: [newComment, ...post.comments] }
+          ? { ...post, comments: [...(post.comments || []), newComment] }
           : post
       )
     );
   };
   console.log(allPosts);
+
+  // first_name = "Roary";
+  // last_name = "Royce";
   return (
     <>
       <CreatePost
-        firstName={"Roary"}
-        lastName={"Royce"}
+        firstName={firstName}
+        lastName={lastName}
         onPostSubmit={handlePostSubmit}
       />
-      {allPosts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).map(
-        ({
-          id,
-          first_name,
-          last_name,
-          description,
-          created_at,
-          comments,
-        }) => (
+      {allPosts
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .map(({ id, description, created_at, comments, likes }) => (
           <FinalPost
             key={id}
             postId={id}
-            firstName={first_name}
-            lastName={last_name}
+            firstName={firstName}
+            lastName={lastName}
             description={description}
-            classification={"Unknown"}
+            classification={"Student"}
             imagesData={"http://127.0.0.1:8000/feed/image/" + id}
+            likesCount={likes}
             timestamp={created_at}
             comments={comments}
             onCommentSubmit={handleCommentSubmit}
           />
-        )
-      )}
+        ))}
     </>
   );
 }
