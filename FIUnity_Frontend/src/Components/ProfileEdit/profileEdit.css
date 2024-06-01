@@ -152,7 +152,7 @@
     background-color: #0f346b;
 }
 
-.profile-editing button[type="submit"] {
+.edit-profile-submit {
     display: block;
     width: 100%;
     background-color: #ffcc00b0;
@@ -163,11 +163,17 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    text-decoration: none;
 }
 
-.profile-editing button[type="submit"]:hover {
+.edit-profile-submit:hover {
     background-color: #b6862c;
 }
+
+.edit-profile-button {
+    text-decoration: none;
+}
+
 
 .profile-editing .required-jobs {
     color: red;
