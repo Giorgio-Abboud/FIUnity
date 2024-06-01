@@ -24,9 +24,9 @@ export default function FinalPost({
 
   // const handleLike = async () => {
   //   try {
-  //     await axios.put(`http://127.0.0.1:8000/feed/posts/${postId}/like/`);
+  //     await axios.put(`http://127.0.0.1:8008/feed/posts/${postId}/like/`);
   //     // Fetch updated likes count separately
-  //     const response = await axios.get(`http://127.0.0.1:8000/feed/posts/`);
+  //     const response = await axios.get(`http://127.0.0.1:8008/feed/posts/`);
   //     setLikesCount(response.data.likes); // Update likes count based on the fetched data
   //   } catch (error) {
   //     console.error("Failed to like post:", error);
@@ -37,13 +37,13 @@ export default function FinalPost({
   // const handleLike = async () => {
   //   try {
   //     const token = localStorage.getItem('token'); // Assume you store the token in localStorage
-  //     await axios.put(`http://127.0.0.1:8000/feed/posts/${postId}/like/`, {}, {
+  //     await axios.put(`http://127.0.0.1:8008/feed/posts/${postId}/like/`, {}, {
   //       headers: {
   //         Authorization: `Bearer ${token}` // Include the token in the Authorization header
   //       }
   //     });
   //     // Fetch updated likes count separately
-  //     const response = await axios.get(`http://127.0.0.1:8000/feed/feed/${postId}`, {
+  //     const response = await axios.get(`http://127.0.0.1:8008/feed/feed/${postId}`, {
   //       headers: {
   //         Authorization: `Bearer ${token}` // Include the token in the Authorization header
   //       }
@@ -73,7 +73,7 @@ export default function FinalPost({
     console.log(commentData);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/feed/comments/",
+        "http://127.0.0.1:8008/feed/comments/",
         commentData,
         {
           headers: {

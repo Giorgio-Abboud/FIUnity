@@ -27,7 +27,7 @@ const ProfileEdit = () => {
         current: '',
         description: ''
     }]);
-    
+
     const [projects, setProjects] = useState([{ projectName: '', description: '' }]);
     const [skills, setSkills] = useState([{ skillName: '', proficiency: '' }]);
 
@@ -371,9 +371,9 @@ const ProfileEdit = () => {
                 <button type="button" onClick={addSkill}>Add More</button>
 
                 <div className='Edit-Profile-Button'>
-                <Link to="/view-profile" className="edit-profile-button">
-                <button className="edit-profile-submit">Save</button>
-                </Link>
+                    <Link to="/view-profile" className="edit-profile-button">
+                        <button className="edit-profile-submit">Save</button>
+                    </Link>
                 </div>
 
             </form>
