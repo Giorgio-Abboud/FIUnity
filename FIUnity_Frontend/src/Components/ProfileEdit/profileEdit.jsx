@@ -15,6 +15,7 @@ const ProfileEdit = () => {
         aboutMe: '',
         profilePicture: null
     });
+
     const [experiences, setExperiences] = useState([{
         jobPosition: '',
         companyName: '',
@@ -25,6 +26,7 @@ const ProfileEdit = () => {
         current: '',
         description: ''
     }]);
+    
     const [projects, setProjects] = useState([{ projectName: '', description: '' }]);
     const [skills, setSkills] = useState([{ skillName: '', proficiency: '' }]);
 
