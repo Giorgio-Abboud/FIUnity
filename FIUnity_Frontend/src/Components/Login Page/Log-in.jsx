@@ -37,7 +37,7 @@ export default function RegistrationLogIn() {
         console.log(response);
         if (response.status === 200) {
           console.log("Login successful");
-          console.log('this is the response:',response)
+          console.log("this is the response:", response);
           // Store CSRF token and user_id in local storage
           localStorage.setItem("csrfToken", response.data.token);
           localStorage.setItem("user_id", response.data.user_id);

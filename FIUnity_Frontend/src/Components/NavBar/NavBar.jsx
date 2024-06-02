@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import "./NavBar.css";
-import Logo_icon from "../../assets/New logo icon.png";
+import Logo_icon from "../../assets/FIUnity-Logo 3.png";
 import Pawprint_icon from "../../assets/paw print.png";
 import Newsfeed_icon from "../../assets/Newsfeed icon.png";
 import Jobs_icon from "../../assets/Jobs icon.png";
+import Profile_icon from "../../assets/Profile icon.png";
 import { Link } from "react-router-dom";
 
 const JobDropdown = ({ isOpen, toggleDropdown }) => {
@@ -20,7 +21,7 @@ const JobDropdown = ({ isOpen, toggleDropdown }) => {
         </Link>
       </div>
       {isOpen && (
-        <div className="dropdown-content">
+        <div className="jobs-dropdown-content">
           <Link to="/job-posting">Create Job</Link>
           <Link to="/jobs-list">View Jobs</Link>
         </div>
@@ -28,6 +29,30 @@ const JobDropdown = ({ isOpen, toggleDropdown }) => {
     </div>
   );
 };
+
+const ProfileDropdown = ({ isOpen, toggleDropdown }) => {
+  return (
+    <div
+      className="profile-dropdown"
+      onMouseEnter={() => toggleDropdown(true)}
+      onMouseLeave={() => toggleDropdown(false)}
+    >
+      <div className="profile-btn" onClick={toggleDropdown}>
+        <img src={Profile_icon} alt="Profile Icon" className="profile-icon" />
+        <Link to="/view-profile" className="nav-link">
+          Profile
+        </Link>
+      </div>
+      {isOpen && (
+        <div className="profile-dropdown-content">
+          <Link to="/view-profile">View Profile</Link>
+          <Link to="/profile-edit">Edit Profile</Link>
+        </div>
+      )}
+    </div>
+  );
+};
+
 
 const NavBar = () => {
   const [isSearchBold, setIsSearchBold] = useState(false);
@@ -62,12 +87,14 @@ const NavBar = () => {
         </div>
 
         <JobDropdown isOpen={isOpen} toggleDropdown={toggleDropdown} />
+        <ProfileDropdown isOpen={isOpen} toggleDropdown={toggleDropdown} />
         
         <div className="Log-out">
           <Link to="/logout" className="logout-button">
             <button className="Logout">Logout</button>
           </Link>
         </div>
+
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { FaRegHeart } from "react-icons/fa";
 import "./Post.css";
 import { useEffect, useState } from "react";
 import { AiOutlineLike } from "react-icons/ai";
@@ -18,13 +19,48 @@ export default function FinalPost({
   onCommentSubmit,
 }) {
   const [userInput, setUserInput] = useState("");
+  const [likesCount, setLikesCount] = useState(0);
   console.log(imagesData);
+
+  // const handleLike = async () => {
+  //   try {
+  //     await axios.put(`http://127.0.0.1:8008/feed/posts/${postId}/like/`);
+  //     // Fetch updated likes count separately
+  //     const response = await axios.get(`http://127.0.0.1:8008/feed/posts/`);
+  //     setLikesCount(response.data.likes); // Update likes count based on the fetched data
+  //   } catch (error) {
+  //     console.error("Failed to like post:", error);
+  //     console.log('response', response)
+  //   }
+  // };
+
+  // const handleLike = async () => {
+  //   try {
+  //     const token = localStorage.getItem('token'); // Assume you store the token in localStorage
+  //     await axios.put(`http://127.0.0.1:8008/feed/posts/${postId}/like/`, {}, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}` // Include the token in the Authorization header
+  //       }
+  //     });
+  //     // Fetch updated likes count separately
+  //     const response = await axios.get(`http://127.0.0.1:8008/feed/feed/${postId}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}` // Include the token in the Authorization header
+  //       }
+  //     });
+  //     setLikesCount(response.data.likes); // Update likes count based on the fetched data
+  //   } catch (error) {
+  //     console.log('response',resopnse)
+  //     console.error("Failed to like post:", error);
+  //   }
+  // };
+
   const handleCommentSubmit = async () => {
     const currentDateTime = new Date()
-      .toISOString()
-      .slice(0, 19)
-      .replace("T", " ");
-
+    .toISOString()
+    .slice(0, 19)
+    .replace("T", " ");
+    
     const commentData = {
       post: postId,
       user: 1,
@@ -46,17 +82,17 @@ export default function FinalPost({
           },
         }
       );
-      // console.log("Comment submitted:", response.data);
+      console.log("Comment submitted:", response.data);
       setUserInput("");
       if (onCommentSubmit) {
         console.log(response.data);
         onCommentSubmit(postId, commentData);
       }
     } catch (error) {
-      // console.error("Failed to submit comment:", error);
+      console.error("Failed to submit comment:", error);
     }
+
   };
-  // console.log(comments);
   return (
     <>
       {console.log("Image Data:", imagesData)}
@@ -75,21 +111,9 @@ export default function FinalPost({
           </div>
         </div>
         <p className="homepage-font">{description}</p>
-        <div>
-          <img
-          src={imagesData}
-          className="post-pic"
-          alt=""
-        />
-          {/* {imagesData && (
-            <div>
-              <img src={imagesData} className="post-pic"/>
-            </div>
-          )} */}
-        </div>
         <div className="post-features icon-cursor">
           <div className="Post-icon-color homepage-font">
-            <AiOutlineLike /> Like
+            {likesCount} <AiOutlineLike />Like
           </div>
           <div className="Post-icon-color homepage-font">
             <FaRegCommentAlt /> Comment
@@ -118,21 +142,6 @@ export default function FinalPost({
           </button>
         </div>
         <div>
-          {/* {comments
-          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-          .map((comment) => (
-            <div key={comment.id} className="comment-post-box font">
-              <div className="time-container">
-                <p className="name">
-                  {comment.first_name} {comment.last_name}
-                </p>
-                <div className="time-stamps homepage-time-font">
-                  Posted on: {comment.created_at}
-                </div>
-              </div>
-              <p className="comment-descript">{comment.text}</p>
-            </div>
-          ))} */}
           {comments && comments.length > 0 ? (
             comments
               .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
@@ -147,6 +156,9 @@ export default function FinalPost({
                     </div>
                   </div>
                   <p className="comment-descript">{comment.text}</p>
+                  <div className="Post-icon-color homepage-font">
+                    0 <AiOutlineLike />
+                  </div>
                 </div>
               ))
           ) : (

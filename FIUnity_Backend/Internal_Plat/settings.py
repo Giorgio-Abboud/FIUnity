@@ -136,24 +136,15 @@ WSGI_APPLICATION = 'Internal_Plat.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
+DATABASES = { 
     'default': {
-
-        'ENGINE': 'django.db.backends.postgresql',
-
-        'NAME': 'fiunity',
-
-        'USER': 'postgres',
-
-        'PASSWORD': 'root',
-
-        'HOST': 'localhost',
-
-        'PORT': '5432',
-
-
-    }
-}
+         'ENGINE': 'django.db.backends.postgresql', 
+         'NAME': 'fiunity', 
+         'USER': 'postregg', 
+         'PASSWORD': 'root', 
+         'HOST': 'localhost', 
+         'PORT': '5432', } 
+         }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
