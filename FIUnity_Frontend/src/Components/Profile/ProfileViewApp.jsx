@@ -50,9 +50,11 @@ const extracurriculars = [
 const skills = [
   {
     name: "Java",
+    proficiency: "beginner",
   },
   {
     name: "Django",
+    proficiency: "intermediate",
   },
 ];
 
