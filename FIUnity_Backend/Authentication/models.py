@@ -3,34 +3,50 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 class AppUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
+
+    def create_user(self, first_name : str, last_name: str, email: str, PID: str, password: str = None, is_staff=False, is_superuser=False) -> "AppUser":
         
         if not email:
             raise ValueError('Users must have an email address')
         
         if not password:
             raise ValueError('Users must have a Password')
+        
+        if not first_name:
+            raise ValueError('Users must have a first name')
 
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        if not last_name:
+            raise ValueError('Users must have a last name')
+
+        user = self.model(email=self.normalize_email(email))
+        user.first_name = first_name
+        user.last_name = last_name
+        user.PID = PID
         user.set_password(password)
-        user.save(using=self._db)
+        user.is_active = True
+        user.is_staff = is_staff
+        user.is_superuser = is_superuser
+        user.save()
+
         return user
 
-    def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_active', True)
+    def create_superuser(self, first_name : str, last_name: str, email: str, PID: str, password: str) -> "AppUser":
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
-
-        return self.create_user(email, password, **extra_fields)
-
+        user = self.create_user(
+            first_name=first_name,
+            last_name=last_name,
+            PID = PID,
+            email=email,
+            password=password,
+            is_staff=True,
+            is_superuser=True
+        )
+        user.save()
+        return user
+    
 
 class AppUser(AbstractBaseUser, PermissionsMixin):
+    
     user_id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=50, unique=True)
     PID = models.CharField(max_length=7, unique=True)
@@ -46,6 +62,9 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.PID
+    
+    def get_user_id(self):
+        return self.pk
 
     class Meta:
         verbose_name = 'App User'
