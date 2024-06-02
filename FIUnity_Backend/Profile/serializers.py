@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Profile, Experience, Project, Extracurricular
+from .models import Profile, Experience, Project, Extracurricular, Skill
 
 # This serializer is for displaying all the details of a profile for a particular user
 class ProfileSerializer(serializers.ModelSerializer):
@@ -23,4 +23,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 class ExtracurricularSerializer(serializers.ModelSerializer):
     class Meta:
         model = Extracurricular
+        fields = "__all__"
+
+class SkillsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
         fields = "__all__"

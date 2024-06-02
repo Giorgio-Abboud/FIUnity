@@ -34,7 +34,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://127.0.0.1',
     'http://0.0.0.0',
-    'http://10.108.229.73:8008',
+    'http://10.108.229.73:8000',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -45,8 +45,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = '*'
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8008',
-    'http://10.108.229.73:8008',
+    'http://localhost:8000',
+    'http://10.108.229.73:8000',
 ]
 
 # Application definition
@@ -140,8 +140,8 @@ DATABASES = {
     'default': {
          'ENGINE': 'django.db.backends.postgresql', 
          'NAME': 'fiunity', 
-         'USER': 'postregg', 
-         'PASSWORD': 'root', 
+         'USER': 'postgres', 
+         'PASSWORD': 'P0$tgr3$q1', 
          'HOST': 'localhost', 
          'PORT': '5432', } 
          }

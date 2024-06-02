@@ -5,6 +5,7 @@ export default function ProfileViewPage({
   lastName,
   classification,
   gradDate,
+  gradTerm,
   currJobPosition,
   careerInterest,
   major,
@@ -40,7 +41,7 @@ export default function ProfileViewPage({
                 <div>
                   <div className="three-text-flex">
                     <p className="profile-font profile-font-bold">Grad Date:</p>
-                    <p className="three-text-ans profile-font">{gradDate}</p>
+                    <p className="three-text-ans profile-font">{gradTerm} {gradDate}</p>
                   </div>
                   <div className="three-text-">
                     {classification == "Alumni" ? (
@@ -97,7 +98,7 @@ export default function ProfileViewPage({
                             {experience.location}
                           </p>
                           <p className="profile-font experience-text profile-gold experience-time-type">
-                            {experience.timePeriod}
+                            {experience.startDate} - {experience.endDate}
                           </p>
                           <p className="profile-font experience-text profile-gold experience-time-type">
                             {experience.jobType}
