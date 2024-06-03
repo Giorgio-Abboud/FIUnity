@@ -17,24 +17,24 @@ export default function FinalPost({
   timestamp,
   comments,
   onCommentSubmit,
+  commentCount
 }) {
 
   const [userInput, setUserInput] = useState("");
   const [postLikesCount, setPostLikesCount] = useState(0);
   const [commentLikesCount, setCommentLikesCount] = useState(0);
-  const [commentCount, setCommentCount] = useState(0);
   const [showCommentSection, setShowCommentSection] = useState(false);
 
   console.log(imagesData);
+  console.log(commentCount)
 
-  const [adjustedTimestamp, setAdjustedTimestamp] = useState(""); // State variable for adjusted timestamp
-  const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState({}); // State variable for adjusted comment timestamps
+  const [adjustedTimestamp, setAdjustedTimestamp] = useState("");
+  const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState({});
 
-  // Function to adjust the timestamp according to the user's local time zone
   function adjustTimestampToTimeZone(timestamp) {
     const date = new Date(timestamp);
     const offsetInMinutes = date.getTimezoneOffset();
-    date.setMinutes(date.getMinutes() - offsetInMinutes); // Adjust minutes by adding the offset
+    date.setMinutes(date.getMinutes() - offsetInMinutes); 
 
     const options = {
       month: "short",
@@ -185,7 +185,7 @@ export default function FinalPost({
                       </div>
                       <p className="comment-descript">{comment.text}</p>
                       <div className="Post-icon-color homepage-font">
-                        {commentLikesCount}<AiOutlineLike />
+                        {commentLikesCount} <AiOutlineLike />
                       </div>
                     </div>
                   ))

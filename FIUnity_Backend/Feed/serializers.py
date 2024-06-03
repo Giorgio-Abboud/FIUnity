@@ -19,14 +19,14 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'user', 'description', 'created_at', 'likes_count','images', 'images_data', 'comments_count']
         extra_kwargs = {
-            'description': {'required': False}  # Make description field optional
+            'description': {'required': False}  
         }
 
     def get_likes_count(self, obj):
         return obj.likes.count()
 
     def get_comments_count(self, obj):
-        return 0
+        return obj.comment_set.count()
 
     def create(self, validated_data):
         images = validated_data.pop('images', [])
