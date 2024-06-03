@@ -2,6 +2,7 @@ import "./ProfileView.css";
 
 export default function ProfileViewPage({
   firstName,
+  middleName,
   lastName,
   classification,
   gradDate,
@@ -30,7 +31,7 @@ export default function ProfileViewPage({
                 />
                 <div className="profile-size">
                   <h1 className="profile-font profile-name-size">
-                    {firstName} {lastName}
+                    {firstName} {middleName} {lastName}
                   </h1>
                   <p className="profile-font profile-class-size">
                     {classification}
@@ -93,6 +94,9 @@ export default function ProfileViewPage({
                         <div>
                           <p className="profile-title profile-font profile-font-bold">
                             {experience.jobTitle}
+                          </p>
+                          <p className="experience-company-name  profile-gold profile-font">
+                            {experience.companyName}
                           </p>
                           <p className="profile-font experience-text profile-gold">
                             {experience.location}

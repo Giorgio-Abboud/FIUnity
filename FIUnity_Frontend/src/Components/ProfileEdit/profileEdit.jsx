@@ -11,8 +11,9 @@ const ProfileEdit = () => {
     middleName: "",
     graduationYear: "",
     gradTerm: "",
-    classStanding: "",
+    // classStanding: "",
     major: "",
+    careerInterest: "",
     aboutMe: "",
     profilePicture: null,
   });
@@ -106,13 +107,12 @@ const ProfileEdit = () => {
 
     const profileData = {
       profile,
-      experiences: experiences.map(exp => ({
+      experiences: experiences.map((exp) => ({
         ...exp,
-        endDate: exp.current ? null : exp.endDate  // Set endDate to null if current
+        endDate: exp.current ? null : exp.endDate, // Set endDate to null if current
       })),
       skills,
     };
-
 
     console.log("It got here too");
     try {
@@ -230,7 +230,7 @@ const ProfileEdit = () => {
           <option value="option3">Fall</option>
         </select>
 
-        <label htmlFor="classStanding">
+        {/* <label htmlFor="classStanding">
           Class Standing <div className="required-fields">*</div>{" "}
         </label>
         <select
@@ -244,7 +244,7 @@ const ProfileEdit = () => {
           <option value="option2">Sophomore</option>
           <option value="option3">Junior</option>
           <option value="option4">Senior</option>
-        </select>
+        </select> */}
 
         <label htmlFor="major">
           Major <div className="required-fields">*</div>
@@ -254,6 +254,18 @@ const ProfileEdit = () => {
           id="major"
           name="major"
           value={profile.major}
+          onChange={handleProfileChange}
+          required
+        />
+
+        <label htmlFor="careerInterest">
+          Career Interest <div className="required-fields">*</div>
+        </label>
+        <input
+          type="text"
+          id="careerInterest"
+          name="careerInterest"
+          value={profile.careerInterest}
           onChange={handleProfileChange}
           required
         />
@@ -331,8 +343,7 @@ const ProfileEdit = () => {
               name="endDate"
               value={experience.endDate}
               onChange={(e) => handleExperienceChange(index, e)}
-              disabled={experience.current}  // Disable end date if current is checked
-
+              disabled={experience.current} // Disable end date if current is checked
             />
 
             <div className="experience-checkbox">
