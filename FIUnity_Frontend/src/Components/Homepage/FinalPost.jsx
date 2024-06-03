@@ -17,24 +17,25 @@ export default function FinalPost({
   timestamp,
   comments,
   onCommentSubmit,
-  commentCount
+  commentCount,
 }) {
-
   const [userInput, setUserInput] = useState("");
   const [postLikesCount, setPostLikesCount] = useState(0);
   const [commentLikesCount, setCommentLikesCount] = useState(0);
   const [showCommentSection, setShowCommentSection] = useState(false);
 
   console.log(imagesData);
-  console.log(commentCount)
+  console.log(commentCount);
 
   const [adjustedTimestamp, setAdjustedTimestamp] = useState("");
-  const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState({});
+  const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState(
+    {}
+  );
 
   function adjustTimestampToTimeZone(timestamp) {
     const date = new Date(timestamp);
     const offsetInMinutes = date.getTimezoneOffset();
-    date.setMinutes(date.getMinutes() - offsetInMinutes); 
+    date.setMinutes(date.getMinutes() - offsetInMinutes);
 
     const options = {
       month: "short",
@@ -42,7 +43,7 @@ export default function FinalPost({
       year: "numeric",
       hour: "numeric",
       minute: "numeric",
-      hour12: true
+      hour12: true,
     };
 
     const adjustedTimestamp = date.toLocaleString(undefined, options);
@@ -59,7 +60,9 @@ export default function FinalPost({
     if (comments && comments.length > 0) {
       const adjustedCommentTimestamps = {};
       comments.forEach((comment) => {
-        const adjustedCommentTimestamp = adjustTimestampToTimeZone(comment.created_at);
+        const adjustedCommentTimestamp = adjustTimestampToTimeZone(
+          comment.created_at
+        );
         adjustedCommentTimestamps[comment.id] = adjustedCommentTimestamp;
       });
       setAdjustedCommentTimestamps(adjustedCommentTimestamps);
@@ -84,7 +87,6 @@ export default function FinalPost({
       created_at: currentDateTime,
     };
 
-    
     console.log("commentData");
     console.log(commentData);
     try {
@@ -100,14 +102,34 @@ export default function FinalPost({
       );
       console.log("Comment submitted:", response.data);
       setUserInput("");
-      
+
       if (onCommentSubmit) {
         console.log(response.data);
         onCommentSubmit(postId, commentData);
       }
-      
     } catch (error) {
       console.error("Failed to submit comment:", error);
+    }
+  };
+
+  const handleLikeClick = async () => {
+    try {
+      const response = await axios.post(
+        `http://127.0.0.1:8000/feed/posts/${postId}/like/`,
+        null,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            mode: "cors",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setPostLikesCount((prevCount) => response.data.likes_count); // Update like count
+      }
+    } catch (error) {
+      console.error("Failed to like the post:", error);
     }
   };
 
@@ -130,15 +152,18 @@ export default function FinalPost({
         </div>
         <p className="homepage-font">{description}</p>
         <div className="post-features icon-cursor">
-          <div className="Post-icon-color homepage-font">
-            {postLikesCount}<AiOutlineLike />
+          <div className="Post-icon-color homepage-font" onClick={handleLikeClick}>
+            {postLikesCount}
+            <AiOutlineLike />
             Like
           </div>
           <div
             className="Post-icon-color homepage-font"
             onClick={() => setShowCommentSection(!showCommentSection)}
           >
-            {commentCount}<FaRegCommentAlt />Comment
+            {commentCount}
+            <FaRegCommentAlt />
+            Comment
           </div>
           <div className="Post-icon-color homepage-font">
             <IoShareOutline /> Share
@@ -147,7 +172,6 @@ export default function FinalPost({
             <BiRepost /> Repost
           </div>
         </div>
-
 
         {showCommentSection && (
           <>
