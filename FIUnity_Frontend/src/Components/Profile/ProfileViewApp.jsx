@@ -68,9 +68,9 @@ function ProfileViewApp() {
         firstName="Roary"
         middleName="Shay"
         lastName="Royce"
-        classification="Student"
+        classification="Alumni"
         gradTerm="Fall"
-        gradDate="2020" //calander?
+        gradDate="2020"
         major="Computer Science"
         currJobPosition="Senior Developer" //set four word limit
         careerInterest="Full-Stack Development"
