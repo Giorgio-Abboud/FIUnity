@@ -18,42 +18,49 @@ export default function FinalPost({
   comments,
   onCommentSubmit,
 }) {
+
   const [userInput, setUserInput] = useState("");
   const [likesCount, setLikesCount] = useState(0);
   console.log(imagesData);
 
-  // const handleLike = async () => {
-  //   try {
-  //     await axios.put(`http://127.0.0.1:8000/feed/posts/${postId}/like/`);
-  //     // Fetch updated likes count separately
-  //     const response = await axios.get(`http://127.0.0.1:8000/feed/posts/`);
-  //     setLikesCount(response.data.likes); // Update likes count based on the fetched data
-  //   } catch (error) {
-  //     console.error("Failed to like post:", error);
-  //     console.log('response', response)
-  //   }
-  // };
+  const [adjustedTimestamp, setAdjustedTimestamp] = useState(""); // State variable for adjusted timestamp
+  const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState({}); // State variable for adjusted comment timestamps
 
-  // const handleLike = async () => {
-  //   try {
-  //     const token = localStorage.getItem('token'); // Assume you store the token in localStorage
-  //     await axios.put(`http://127.0.0.1:8000/feed/posts/${postId}/like/`, {}, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}` // Include the token in the Authorization header
-  //       }
-  //     });
-  //     // Fetch updated likes count separately
-  //     const response = await axios.get(`http://127.0.0.1:8000/feed/feed/${postId}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}` // Include the token in the Authorization header
-  //       }
-  //     });
-  //     setLikesCount(response.data.likes); // Update likes count based on the fetched data
-  //   } catch (error) {
-  //     console.log('response',resopnse)
-  //     console.error("Failed to like post:", error);
-  //   }
-  // };
+  // Function to adjust the timestamp according to the user's local time zone
+  function adjustTimestampToTimeZone(timestamp) {
+    const date = new Date(timestamp);
+    const offsetInMinutes = date.getTimezoneOffset();
+    date.setMinutes(date.getMinutes() - offsetInMinutes); // Adjust minutes by adding the offset
+
+    const options = {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true
+    };
+
+    const adjustedTimestamp = date.toLocaleString(undefined, options);
+    return adjustedTimestamp;
+  }
+
+  useEffect(() => {
+    // Adjust the timestamp for display
+    const adjustedTimestamp = adjustTimestampToTimeZone(timestamp);
+    setAdjustedTimestamp(adjustedTimestamp); // Set the adjusted timestamp in state
+  }, [timestamp]);
+
+  useEffect(() => {
+    if (comments && comments.length > 0) {
+      const adjustedCommentTimestamps = {};
+      comments.forEach((comment) => {
+        const adjustedCommentTimestamp = adjustTimestampToTimeZone(comment.created_at);
+        adjustedCommentTimestamps[comment.id] = adjustedCommentTimestamp;
+      });
+      setAdjustedCommentTimestamps(adjustedCommentTimestamps);
+    }
+  }, [comments]);
 
   const handleCommentSubmit = async () => {
     const currentDateTime = new Date()
@@ -69,6 +76,8 @@ export default function FinalPost({
       text: userInput,
       created_at: currentDateTime,
     };
+
+    
     console.log("commentData");
     console.log(commentData);
     try {
@@ -84,14 +93,17 @@ export default function FinalPost({
       );
       console.log("Comment submitted:", response.data);
       setUserInput("");
+      
       if (onCommentSubmit) {
         console.log(response.data);
         onCommentSubmit(postId, commentData);
       }
+      
     } catch (error) {
       console.error("Failed to submit comment:", error);
     }
   };
+
   return (
     <>
       {console.log("Image Data:", imagesData)}
@@ -102,8 +114,8 @@ export default function FinalPost({
               <div className="name">
                 {firstName} {lastName}
               </div>
-              <div className="time-stamp homepage-time-font final-post-time-stamp">
-                Posted on: {timestamp}
+              <div className="time-stamp-post homepage-time-font final-post-time-stamp">
+                Posted on: {adjustedTimestamp}
               </div>
             </div>
             <div className="classification">{classification}</div>
@@ -151,8 +163,8 @@ export default function FinalPost({
                     <p className="name">
                       {comment.first_name} {comment.last_name}
                     </p>
-                    <div className="time-stamp homepage-time-font">
-                      Posted on: {comment.created_at}
+                    <div className="time-stamp-comment homepage-time-font">
+                      Posted on: {adjustedCommentTimestamps[comment.id]}
                     </div>
                   </div>
                   <p className="comment-descript">{comment.text}</p>
