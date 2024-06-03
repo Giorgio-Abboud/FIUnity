@@ -102,7 +102,7 @@ export default function FinalPost({
               <div className="name">
                 {firstName} {lastName}
               </div>
-              <div className="time-stamps homepage-time-font">
+              <div className="time-stamp homepage-time-font final-post-time-stamp">
                 Posted on: {timestamp}
               </div>
             </div>
@@ -151,7 +151,7 @@ export default function FinalPost({
                     <p className="name">
                       {comment.first_name} {comment.last_name}
                     </p>
-                    <div className="time-stamps homepage-time-font">
+                    <div className="time-stamp homepage-time-font">
                       Posted on: {comment.created_at}
                     </div>
                   </div>

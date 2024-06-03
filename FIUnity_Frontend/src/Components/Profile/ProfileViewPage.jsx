@@ -170,8 +170,14 @@ export default function ProfileViewPage({
                 {skills.map((skill, index) => (
                   <div key={index}>
                     <div className="skills-project-tab-container">
-                      <p className="profile-skills profile-font-bold profile-gold">
+                      <div>
+                        
+                      </div>
+                      <p className="profile-skills profile-font-bold">
                         {skill.name}
+                      </p>
+                      <p className="profile-skills-level profile-gold">
+                        {skill.proficiency}
                       </p>
                     </div>
                   </div>
