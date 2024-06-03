@@ -19,41 +19,16 @@ export default function FinalPost({
   onCommentSubmit,
 }) {
   const [userInput, setUserInput] = useState("");
-  const [likesCount, setLikesCount] = useState(0);
+  const [postLikesCount, setPostLikesCount] = useState(0);
+  const [commentLikesCount, setCommentLikesCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
+  const [showCommentSection, setShowCommentSection] = useState(false);
+
   console.log(imagesData);
 
-  // const handleLike = async () => {
-  //   try {
-  //     await axios.put(`http://127.0.0.1:8000/feed/posts/${postId}/like/`);
-  //     // Fetch updated likes count separately
-  //     const response = await axios.get(`http://127.0.0.1:8000/feed/posts/`);
-  //     setLikesCount(response.data.likes); // Update likes count based on the fetched data
-  //   } catch (error) {
-  //     console.error("Failed to like post:", error);
-  //     console.log('response', response)
-  //   }
-  // };
-
-  // const handleLike = async () => {
-  //   try {
-  //     const token = localStorage.getItem('token'); // Assume you store the token in localStorage
-  //     await axios.put(`http://127.0.0.1:8000/feed/posts/${postId}/like/`, {}, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}` // Include the token in the Authorization header
-  //       }
-  //     });
-  //     // Fetch updated likes count separately
-  //     const response = await axios.get(`http://127.0.0.1:8000/feed/feed/${postId}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}` // Include the token in the Authorization header
-  //       }
-  //     });
-  //     setLikesCount(response.data.likes); // Update likes count based on the fetched data
-  //   } catch (error) {
-  //     console.log('response',resopnse)
-  //     console.error("Failed to like post:", error);
-  //   }
-  // };
+  const handleCommentIconClick = () => {
+    setShowCommentSection(!showCommentSection);
+  };
 
   const handleCommentSubmit = async () => {
     const currentDateTime = new Date()
@@ -112,11 +87,14 @@ export default function FinalPost({
         <p className="homepage-font">{description}</p>
         <div className="post-features icon-cursor">
           <div className="Post-icon-color homepage-font">
-            {likesCount} <AiOutlineLike />
+            {postLikesCount}<AiOutlineLike />
             Like
           </div>
-          <div className="Post-icon-color homepage-font">
-            <FaRegCommentAlt /> Comment
+          <div
+            className="Post-icon-color homepage-font"
+            onClick={() => setShowCommentSection(!showCommentSection)}
+          >
+            {commentCount}<FaRegCommentAlt />Comment
           </div>
           <div className="Post-icon-color homepage-font">
             <IoShareOutline /> Share
@@ -125,48 +103,54 @@ export default function FinalPost({
             <BiRepost /> Repost
           </div>
         </div>
-        <div className="comment-flex">
-          <div className="name">
-            {firstName} {lastName}
-          </div>
-          <textarea
-            className="comment scrollbar"
-            value={userInput}
-            onChange={(event) => {
-              setUserInput(event.target.value);
-            }}
-            placeholder="Add a comment..."
-          />
-          <button className="post-button" onClick={handleCommentSubmit}>
-            Post
-          </button>
-        </div>
-        <div>
-          {comments && comments.length > 0 ? (
-            comments
-              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-              .map((comment) => (
-                <div key={comment.id} className="comment-post-box font">
-                  <div className="time-container">
-                    <p className="name">
-                      {comment.first_name} {comment.last_name}
-                    </p>
-                    <div className="time-stamp homepage-time-font">
-                      Posted on: {comment.created_at}
+        {showCommentSection && (
+          <>
+            <div className="comment-flex">
+              <div className="name">
+                {firstName} {lastName}
+              </div>
+              <textarea
+                className="comment scrollbar"
+                value={userInput}
+                onChange={(event) => {
+                  setUserInput(event.target.value);
+                }}
+                placeholder="Add a comment..."
+              />
+              <button className="post-button" onClick={handleCommentSubmit}>
+                Post
+              </button>
+            </div>
+            <div>
+              {comments && comments.length > 0 ? (
+                comments
+                  .sort(
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                  )
+                  .map((comment) => (
+                    <div key={comment.id} className="comment-post-box font">
+                      <div className="time-container">
+                        <p className="name">
+                          {comment.first_name} {comment.last_name}
+                        </p>
+                        <div className="time-stamp homepage-time-font">
+                          Posted on: {comment.created_at}
+                        </div>
+                      </div>
+                      <p className="comment-descript">{comment.text}</p>
+                      <div className="Post-icon-color homepage-font">
+                        {commentLikesCount}<AiOutlineLike />
+                      </div>
                     </div>
-                  </div>
-                  <p className="comment-descript">{comment.text}</p>
-                  <div className="Post-icon-color homepage-font">
-                    0 <AiOutlineLike />
-                  </div>
-                </div>
-              ))
-          ) : (
-            <p className="no-comment homepage-font">
-              Be the first to comment...
-            </p>
-          )}
-        </div>
+                  ))
+              ) : (
+                <p className="no-comment homepage-font">
+                  Be the first to comment...
+                </p>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </>
   );
