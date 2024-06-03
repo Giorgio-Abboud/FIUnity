@@ -15,7 +15,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             email=clean_data['email'],
             password=clean_data['password'],
             first_name=clean_data['first_name'],
-            last_name=clean_data['last_name']
+            last_name=clean_data['last_name'],
+            PID=clean_data['PID']
         )
         user_obj.PID = clean_data['PID']
         user_obj.save()
