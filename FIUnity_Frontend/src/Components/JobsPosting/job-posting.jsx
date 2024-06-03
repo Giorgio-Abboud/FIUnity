@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./job-posting.css";
-import axios, { isCancel, AxiosError } from 'axios';
-
+import axios, { isCancel, AxiosError } from "axios";
 
 const JobAddingPosting = () => {
   const [jobPosition, setJobPosition] = useState("");
@@ -63,7 +62,7 @@ const JobAddingPosting = () => {
     // Send a POST request to the backend with the job posting information as JSON
     try {
       const response = await axios.post(
-        "http://localhost:8008/jobs/job-posting/",
+        "http://localhost:8000/jobs/job-posting/",
         jobPostingData
       );
       if (response.status === 201) {

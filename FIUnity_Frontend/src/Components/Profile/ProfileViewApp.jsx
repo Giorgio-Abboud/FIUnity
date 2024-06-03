@@ -5,7 +5,8 @@ const exampleExperiences = [
   {
     jobTitle: "Software Engineer",
     location: "San Francisco, CA",
-    timePeriod: "Jan 2020 - Present",
+    startDate: "Jan 2020",
+    endDate: "Present",
     jobType: "Part-time",
     description:
       "Worked on developing web applications using React and Node.js.",
@@ -13,7 +14,8 @@ const exampleExperiences = [
   {
     jobTitle: "Junior Developer",
     location: "New York, NY",
-    timePeriod: "Jun 2018 - Dec 2019",
+    startDate: "Jun 2018",
+    endDate: "Aug 2019",
     jobType: "Internship",
     description:
       "Assisted in developing mobile applications and performing code reviews.", //discuss how size increases and boxes look weird
@@ -48,9 +50,11 @@ const extracurriculars = [
 const skills = [
   {
     name: "Java",
+    proficiency: "beginner",
   },
   {
     name: "Django",
+    proficiency: "intermediate",
   },
 ];
 
@@ -62,7 +66,8 @@ function ProfileViewApp() {
         firstName="Roary"
         lastName="Royce"
         classification="Student"
-        gradDate="Fall 2020" //calander?
+        gradTerm="Fall"
+        gradDate="2020" //calander?
         major="Computer Science"
         currJobPosition="Senior Developer" //set four word limit
         careerInterest="Full-Stack Development"

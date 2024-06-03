@@ -71,7 +71,7 @@ class UserView(APIView):
 
 # Curl command example for logout
 # curl -v -X POST \
-#   http://127.0.0.1:8008/authentication/logout/ \
+#   http://127.0.0.1:8000/authentication/logout/ \
 #   -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE3MTEyNjY3LCJpYXQiOjE3MTcxMTIzNjcsImp0aSI6Ijg2M2ZhODQ0YzBhMjRjOGM5OGNjNTg1Y2NkNzg1ZDBmIiwidXNlcl9pZCI6MTF9.7crxHUGd_G0pHArCLuSyHsQwSAwPlgzaS3RPuroYW4s' \
 #   -H 'Content-Type: application/json' \
 #   -d '{"refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNzE5ODc2NywiaWF0IjoxNzE3MTEyMzY3LCJqdGkiOiIzMTZhYjE4ZGQ2OWI0ZDMxODhmNTBmMDk5NjY0Y2RmZCIsInVzZXJfaWQiOjExfQ.2nNS8-h7EkMWZ8-SChCAO102k7jvER18-IC29PJChJ0"}'

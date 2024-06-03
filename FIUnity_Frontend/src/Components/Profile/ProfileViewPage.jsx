@@ -5,6 +5,7 @@ export default function ProfileViewPage({
   lastName,
   classification,
   gradDate,
+  gradTerm,
   currJobPosition,
   careerInterest,
   major,
@@ -40,7 +41,7 @@ export default function ProfileViewPage({
                 <div>
                   <div className="three-text-flex">
                     <p className="profile-font profile-font-bold">Grad Date:</p>
-                    <p className="three-text-ans profile-font">{gradDate}</p>
+                    <p className="three-text-ans profile-font">{gradTerm} {gradDate}</p>
                   </div>
                   <div className="three-text-">
                     {classification == "Alumni" ? (
@@ -97,7 +98,7 @@ export default function ProfileViewPage({
                             {experience.location}
                           </p>
                           <p className="profile-font experience-text profile-gold experience-time-type">
-                            {experience.timePeriod}
+                            {experience.startDate} - {experience.endDate}
                           </p>
                           <p className="profile-font experience-text profile-gold experience-time-type">
                             {experience.jobType}
@@ -165,8 +166,14 @@ export default function ProfileViewPage({
                 {skills.map((skill, index) => (
                   <div key={index}>
                     <div className="skills-project-tab-container">
-                      <p className="profile-skills profile-font-bold profile-gold">
+                      <div>
+                        
+                      </div>
+                      <p className="profile-skills profile-font-bold">
                         {skill.name}
+                      </p>
+                      <p className="profile-skills-level profile-gold">
+                        {skill.proficiency}
                       </p>
                     </div>
                   </div>
