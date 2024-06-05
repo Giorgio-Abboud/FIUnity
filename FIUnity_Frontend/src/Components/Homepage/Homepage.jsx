@@ -46,7 +46,7 @@ function Homepage() {
     setAllPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === postId
-          ? { ...post, comments: [...(post.comments || []), newComment] }
+          ? { ...post, comments: [...(post.comments || []), newComment], comments_count: post.comments_count + 1 }
           : post
       )
     );
@@ -64,7 +64,7 @@ function Homepage() {
       />
       {allPosts
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-        .map(({ id, description, created_at, comments, likes }) => (
+        .map(({ id, description, created_at, comments, likes_count, comments_count }) => (
           <FinalPost
             key={id}
             postId={id}
@@ -73,8 +73,9 @@ function Homepage() {
             description={description}
             classification={"Student"}
             imagesData={"http://127.0.0.1:8000/feed/image/" + id}
-            likesCount={likes}
+            likesCount={likes_count}
             timestamp={created_at}
+            commentCount={comments_count}
             comments={comments}
             onCommentSubmit={handleCommentSubmit}
           />

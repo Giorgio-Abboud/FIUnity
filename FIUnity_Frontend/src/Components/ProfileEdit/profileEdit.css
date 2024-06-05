@@ -127,7 +127,8 @@
 }
 
 .profile-editing .experience-section,
-.profile-editing .project-section, 
+.profile-editing .project-section,
+.profile-editing .extracurr-section, 
 .profile-editing .skills-section {
     background-color: #f9f9f9;
     padding: 15px;

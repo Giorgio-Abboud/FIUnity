@@ -53,50 +53,140 @@ const ProfileDropdown = ({ isOpen, toggleDropdown }) => {
   );
 };
 
+const dummySearchData = [
+  {
+    firstName: "Roary",
+    lastName: "Royce",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Mathers",
+    classification: "Alumni",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Smith",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Smith",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Smith",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Smith",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Smith",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Chris",
+    lastName: "Hemsworth",
+    classification: "Alumni",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+]; //NEW CODE
 
 const NavBar = () => {
   const [isSearchBold, setIsSearchBold] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState(""); //NEW CODE
+  const [searchResults, setSearchResults] = useState([]); //NEW CODE
 
   const handleSearchClick = () => {
     setIsSearchBold(true);
   };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchInput(value);
+    if (value) {
+      const results = dummySearchData.filter((user) =>
+        `${user.firstName} ${user.lastName}`
+          .toLowerCase()
+          .includes(value.toLowerCase())
+      );
+      setSearchResults(results);
+    } else {
+      setSearchResults([]);
+    }
+  }; //NEW CODE
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <div className="NavBar">
-      <img src={Logo_icon} alt="FIUnity Logo" className="logo" />
+    <>
+      <div className="NavBar">
+        <img src={Logo_icon} alt="FIUnity Logo" className="logo" />
 
-      <div
-        className={`searchBox ${isSearchBold ? "bold-search" : ""}`}
-        onClick={handleSearchClick}
-      >
-        <input type="text" placeholder="Search..." />
-        <img src={Pawprint_icon} alt="Paw Print Icon" />
-      </div>
-
-      <div className="NavBar_Icons">
-        <div className="icon-container">
-          <img src={Newsfeed_icon} alt="Newsfeed Icon" className="icon" />
-          <Link to="/newsfeed" className="nav-link">
-            Newsfeed
-          </Link>
+        <div
+          className={`searchBox ${isSearchBold ? "bold-search" : ""}`}
+          onClick={handleSearchClick}
+        >
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchInput} //NEW CODE
+            onChange={handleSearchChange} //NEW CODE
+          />
+          <img src={Pawprint_icon} alt="Paw Print Icon" />
         </div>
 
-        <JobDropdown isOpen={isOpen} toggleDropdown={toggleDropdown} />
-        <ProfileDropdown isOpen={isOpen} toggleDropdown={toggleDropdown} />
-        
-        <div className="Log-out">
-          <Link to="/logout" className="logout-button">
-            <button className="Logout">Logout</button>
-          </Link>
-        </div>
+        <div className="NavBar_Icons">
+          <div className="icon-container">
+            <img src={Newsfeed_icon} alt="Newsfeed Icon" className="icon" />
+            <Link to="/newsfeed" className="nav-link">
+              Newsfeed
+            </Link>
+          </div>
 
+          <JobDropdown isOpen={isOpen} toggleDropdown={toggleDropdown} />
+          <ProfileDropdown isOpen={isOpen} toggleDropdown={toggleDropdown} />
+
+          <div className="Log-out">
+            <Link to="/logout" className="logout-button">
+              <button className="Logout">Logout</button>
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
+      {searchResults.length > 0 && (
+        <div className="search-dropdown">
+          {searchResults.map((user, index) => (
+            <div key={index} className="search-result">
+              <div className="search-result-text">
+                <div className="bold-search">{`${user.firstName} ${user.lastName}`}</div>
+                <div className="search-result-status">{user.classification}</div>
+              </div>
+              <img
+                src={user.profilePic}
+                alt="Profile"
+                className="search-result-pic"
+              />
+            </div>
+          ))}
+        </div> //NEW CODE FROM SEARCH RESULTS...
+      )}
+    </>
   );
 };
 

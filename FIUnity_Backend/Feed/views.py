@@ -91,17 +91,6 @@ class PostCommentView(ListCreateAPIView):
         self.perform_create(serializer)
         return Response(serializer.data)
     
-    # def put(self, request, comment_id, *args, **kwargs):
-    #     comment = get_object_or_404(Comment, id=comment_id)
-    #     user = request.user
-
-    #     if request.user not in comment.likes.all():
-    #         comment.likes.add(request.user)
-    #         return Response({'detail': 'Comment liked'}, status=status.HTTP_200_OK)
-    #     else:
-    #         comment.likes.remove(request.user)
-    #         return Response({'detail': 'Comment unliked'}, status=status.HTTP_200_OK)
-
 class FeedView(views.APIView):
 
     permission_classes = [AllowAny]

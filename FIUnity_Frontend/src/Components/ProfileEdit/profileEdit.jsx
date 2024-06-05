@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
 import { Link } from "react-router-dom";
 
-const ProfileEdit = () => {
+const ProfileEdit = ({ classification = "Student" }) => {
   const [profile, setProfile] = useState({
     firstName: "",
     lastName: "",
     middleName: "",
     graduationYear: "",
     gradTerm: "",
-    classStanding: "",
+    // classStanding: "",
     major: "",
+    careerInterest: "",
     aboutMe: "",
     profilePicture: null,
   });
@@ -34,6 +35,11 @@ const ProfileEdit = () => {
   const [projects, setProjects] = useState([
     { projectName: "", description: "" },
   ]);
+  
+  const [extracurr, setExtracurr] = useState([
+    { extracurrName: "", description: "" },
+  ]);
+
   const [skills, setSkills] = useState([{ skillName: "", proficiency: "" }]);
 
   const handleProfileChange = (e) => {
@@ -53,6 +59,13 @@ const ProfileEdit = () => {
     const newProjects = projects.slice();
     newProjects[index][name] = value;
     setProjects(newProjects);
+  };
+
+  const handleExtracurrChange = (index, e) => {
+    const { name, value } = e.target;
+    const newExtracurr = extracurr.slice();
+    newExtracurr[index][name] = value;
+    setExtracurr(newExtracurr);
   };
 
   const handleSkillChange = (index, e) => {
@@ -87,6 +100,10 @@ const ProfileEdit = () => {
     setProjects([...projects, { projectName: "", description: "" }]);
   };
 
+  const addExtracurr = () => {
+    setExtracurr([...extracurr, { extracurrName: "", description: "" }]);
+  };
+
   const addSkill = () => {
     setSkills([...skills, { skillName: "", proficiency: "" }]);
   };
@@ -106,13 +123,12 @@ const ProfileEdit = () => {
 
     const profileData = {
       profile,
-      experiences: experiences.map(exp => ({
+      experiences: experiences.map((exp) => ({
         ...exp,
-        endDate: exp.current ? null : exp.endDate  // Set endDate to null if current
+        endDate: exp.current ? null : exp.endDate, // Set endDate to null if current
       })),
       skills,
     };
-
 
     console.log("It got here too");
     try {
@@ -230,7 +246,7 @@ const ProfileEdit = () => {
           <option value="option3">Fall</option>
         </select>
 
-        <label htmlFor="classStanding">
+        {/* <label htmlFor="classStanding">
           Class Standing <div className="required-fields">*</div>{" "}
         </label>
         <select
@@ -244,19 +260,35 @@ const ProfileEdit = () => {
           <option value="option2">Sophomore</option>
           <option value="option3">Junior</option>
           <option value="option4">Senior</option>
-        </select>
+        </select> */}
 
-        <label htmlFor="major">
-          Major <div className="required-fields">*</div>
-        </label>
-        <input
-          type="text"
-          id="major"
-          name="major"
-          value={profile.major}
-          onChange={handleProfileChange}
-          required
-        />
+        {classification === "Student" && (
+          <>
+            <label htmlFor="major">
+              Major <div className="required-fields">*</div>
+            </label>
+            <input
+              type="text"
+              id="major"
+              name="major"
+              value={profile.major}
+              onChange={handleProfileChange}
+              required
+            />
+
+            <label htmlFor="careerInterest">
+              Career Interest <div className="required-fields">*</div>
+            </label>
+            <input
+              type="text"
+              id="careerInterest"
+              name="careerInterest"
+              value={profile.careerInterest}
+              onChange={handleProfileChange}
+              required
+            />
+          </>
+        )}
 
         <h3>Experiences</h3>
         {experiences.map((experience, index) => (
@@ -331,8 +363,7 @@ const ProfileEdit = () => {
               name="endDate"
               value={experience.endDate}
               onChange={(e) => handleExperienceChange(index, e)}
-              disabled={experience.current}  // Disable end date if current is checked
-
+              disabled={experience.current} // Disable end date if current is checked
             />
 
             <div className="experience-checkbox">
@@ -366,33 +397,64 @@ const ProfileEdit = () => {
           Add More
         </button>
 
-        <h3>Projects</h3>
-        {projects.map((project, index) => (
-          <div key={index} className="project-section">
-            <label htmlFor={`projectName-${index}`}>
-              Project Name <div className="required-fields">*</div>
-            </label>
-            <input
-              type="text"
-              id={`projectName-${index}`}
-              name="projectName"
-              value={project.projectName}
-              onChange={(e) => handleProjectChange(index, e)}
-              required
-            />
+        {classification == "Student" && (
+          <>
+            <h3>Projects</h3>
+            {projects.map((project, index) => (
+              <div key={index} className="project-section">
+                <label htmlFor={`projectName-${index}`}>
+                  Project Name <div className="required-fields">*</div>
+                </label>
+                <input
+                  type="text"
+                  id={`projectName-${index}`}
+                  name="projectName"
+                  value={project.projectName}
+                  onChange={(e) => handleProjectChange(index, e)}
+                  required
+                />
 
-            <label htmlFor={`description-${index}`}>Description </label>
-            <textarea
-              id={`description-${index}`}
-              name="description"
-              value={project.description}
-              onChange={(e) => handleProjectChange(index, e)}
-            />
-          </div>
-        ))}
-        <button type="button" onClick={addProject}>
-          Add More
-        </button>
+                <label htmlFor={`description-${index}`}>Description </label>
+                <textarea
+                  id={`description-${index}`}
+                  name="description"
+                  value={project.description}
+                  onChange={(e) => handleProjectChange(index, e)}
+                />
+              </div>
+            ))}
+            <button type="button" onClick={addProject}>
+              Add More
+            </button>
+            <h3>Extracurricular Activities</h3>
+            {extracurr.map((extracurrs, index) => (
+              <div key={index} className="extracurr-section">
+                <label htmlFor={`extracurrName-${index}`}>
+                  Extracurricular Name <div className="required-fields">*</div>
+                </label>
+                <input
+                  type="text"
+                  id={`extracurrName-${index}`}
+                  name="extracurrName"
+                  value={extracurrs.extracurrName}
+                  onChange={(e) => handleExtracurrChange(index, e)}
+                  required
+                />
+
+                <label htmlFor={`description-${index}`}>Description </label>
+                <textarea
+                  id={`description-${index}`}
+                  name="description"
+                  value={extracurrs.description}
+                  onChange={(e) => handleExtracurrChange(index, e)}
+                />
+              </div>
+            ))}
+            <button type="button" onClick={addExtracurr}>
+              Add More
+            </button>
+          </>
+        )}
 
         <h3>Skills</h3>
         {skills.map((skill, index) => (

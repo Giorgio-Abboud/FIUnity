@@ -4,6 +4,7 @@ import axios from "axios";
 const exampleExperiences = [
   {
     jobTitle: "Software Engineer",
+    companyName: "Capital One",
     location: "San Francisco, CA",
     startDate: "Jan 2020",
     endDate: "Present",
@@ -13,6 +14,7 @@ const exampleExperiences = [
   },
   {
     jobTitle: "Junior Developer",
+    companyName: "Google",
     location: "New York, NY",
     startDate: "Jun 2018",
     endDate: "Aug 2019",
@@ -64,10 +66,11 @@ function ProfileViewApp() {
     <>
       <ProfileViewPage
         firstName="Roary"
+        middleName="Shay"
         lastName="Royce"
-        classification="Student"
+        classification="Alumni"
         gradTerm="Fall"
-        gradDate="2020" //calander?
+        gradDate="2020"
         major="Computer Science"
         currJobPosition="Senior Developer" //set four word limit
         careerInterest="Full-Stack Development"
