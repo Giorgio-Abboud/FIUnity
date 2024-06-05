@@ -44,6 +44,7 @@ class PostCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+        read_only_fields = ['likes']
 
     # def get_likes_count(self, obj):
     #     return obj.likes.count()
