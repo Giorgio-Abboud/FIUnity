@@ -16,6 +16,8 @@ const ProfileEdit = ({ classification = "Student" }) => {
     careerInterest: "",
     aboutMe: "",
     profilePicture: null,
+    resume: null,
+    resumeURL: "",
   });
 
   const [experiences, setExperiences] = useState([
@@ -35,7 +37,7 @@ const ProfileEdit = ({ classification = "Student" }) => {
   const [projects, setProjects] = useState([
     { projectName: "", description: "" },
   ]);
-  
+
   const [extracurr, setExtracurr] = useState([
     { extracurrName: "", description: "" },
   ]);
@@ -78,6 +80,12 @@ const ProfileEdit = ({ classification = "Student" }) => {
   const handleProfilePictureChange = (e) => {
     // Update the profile picture state when a new file is selected
     setProfile({ ...profile, profilePicture: e.target.files[0] });
+  };
+
+  const handleResumeChange = (e) => {
+    const file = e.target.files[0];
+    const fileURL = URL.createObjectURL(file);
+    setProfile({ ...profile, resume: file, resumeURL: fileURL });
   };
 
   const addExperience = () => {
@@ -174,6 +182,30 @@ const ProfileEdit = ({ classification = "Student" }) => {
             <label htmlFor="profilePicture" className="choose-image-button">
               Choose Image
             </label>
+            <input
+              type="file"
+              id="resume"
+              name="resume"
+              accept=".pdf,.doc,.docx"
+              style={{ display: "none" }}
+              onChange={handleResumeChange}
+            />
+            <div className="resume">
+              <label htmlFor="resume" className="choose-resume-button">
+                Upload Resume
+              </label>
+            </div>
+            {profile.resumeURL && (
+              <div className="upload-success-message">
+                <a
+                  href={profile.resumeURL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View Resume
+                </a>
+              </div>
+            )}
           </div>
           <div className="name-container">
             <label htmlFor="firstName">

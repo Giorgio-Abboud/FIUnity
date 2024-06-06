@@ -25,6 +25,7 @@ class Profile(models.Model):
     major = models.CharField(max_length=50)
     career_interest = models.CharField(max_length=50)
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     about = models.TextField(max_length=200)
 
     def full_name(self):

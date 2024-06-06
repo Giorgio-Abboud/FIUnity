@@ -26,6 +26,7 @@ export default function FinalPost({
 
   console.log(imagesData);
   console.log(commentCount);
+  
 
   const [adjustedTimestamp, setAdjustedTimestamp] = useState("");
   const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState(
@@ -50,6 +51,7 @@ export default function FinalPost({
     return adjustedTimestamp;
   }
 
+
   useEffect(() => {
     // Adjust the timestamp for display
     const adjustedTimestamp = adjustTimestampToTimeZone(timestamp);
@@ -59,15 +61,18 @@ export default function FinalPost({
   useEffect(() => {
     if (comments && comments.length > 0) {
       const adjustedCommentTimestamps = {};
-      comments.forEach((comment) => {
+      comments.forEach((comment, index) => {
         const adjustedCommentTimestamp = adjustTimestampToTimeZone(
           comment.created_at
         );
-        adjustedCommentTimestamps[comment.id] = adjustedCommentTimestamp;
+        adjustedCommentTimestamps[index] = adjustedCommentTimestamp;
       });
       setAdjustedCommentTimestamps(adjustedCommentTimestamps);
     }
   }, [comments]);
+  
+  
+  
   const handleCommentIconClick = () => {
     setShowCommentSection(!showCommentSection);
   };
@@ -86,6 +91,7 @@ export default function FinalPost({
       text: userInput,
       created_at: currentDateTime,
     };
+    
 
     console.log("commentData");
     console.log(commentData);
@@ -192,19 +198,20 @@ export default function FinalPost({
               </button>
             </div>
             <div>
+            {console.log("Adjusted Comment Timestamps:", adjustedCommentTimestamps)} 
               {comments && comments.length > 0 ? (
                 comments
                   .sort(
                     (a, b) => new Date(b.created_at) - new Date(a.created_at)
                   )
-                  .map((comment) => (
-                    <div key={comment.id} className="comment-post-box font">
+                  .map((comment, index) => (
+                    <div key={index} className="comment-post-box font">
                       <div className="time-container">
                         <p className="name">
                           {comment.first_name} {comment.last_name}
                         </p>
                         <div className="time-stamp-comment homepage-time-font">
-                          Posted on: {adjustedCommentTimestamps[comment.id]}
+                          Posted on: {adjustedCommentTimestamps[index]}
                         </div>
                       </div>
                       <p className="comment-descript">{comment.text}</p>
