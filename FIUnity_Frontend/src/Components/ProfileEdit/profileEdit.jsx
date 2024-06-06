@@ -384,6 +384,7 @@ const ProfileEdit = ({ classification = "Student" }) => {
               id={`startDate-${index}`}
               name="startDate"
               value={experience.startDate}
+              max={new Date().toISOString().split('T')[0]}
               onChange={(e) => handleExperienceChange(index, e)}
               required
             />
