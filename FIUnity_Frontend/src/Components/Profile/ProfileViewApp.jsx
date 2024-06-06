@@ -68,13 +68,14 @@ function ProfileViewApp() {
         firstName="Roary"
         middleName="Shay"
         lastName="Royce"
-        classification="Alumni"
+        classification="Student"
         gradTerm="Fall"
         gradDate="2020"
         major="Computer Science"
         currJobPosition="Senior Developer" //set four word limit
         careerInterest="Full-Stack Development"
         aboutMe="Lorem ipsum dolor sit amet, consectetu" //max char count: 850
+        resumeURL={"https://google.com/"}
         profilePic="/images/roary-profile-pic.jpg"
         experiences={exampleExperiences}
         projects={exampleProjects}
