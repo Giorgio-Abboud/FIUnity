@@ -39,7 +39,7 @@ class UserLogin(GenericAPIView):
 # User logout view that recieves a request from the frontend
 class UserLogout(GenericAPIView):
     serializer_class = UserLogoutSerializer
-    authentication_classes = [TokenAuthentication, JWTAuthentication]  # Only need JWTAuthentication
+    authentication_classes = [JWTAuthentication]  # Only need JWTAuthentication
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
