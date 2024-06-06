@@ -21,8 +21,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://127.0.0.1',
     'http://0.0.0.0',
-    'http://10.108.229.73:8000',
-    'http://localhost:8000',
+    'http://10.108.229.73:8008',
+    'http://localhost:8008',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -33,8 +33,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = '*'
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8000',
-    'http://10.108.229.73:8000',
+    'http://localhost:8008',
+    'http://localhost:8008',
+    'http://10.108.229.73:8008',
 ]
 
 # Application definition
@@ -73,7 +74,7 @@ CORS_ALLOW_ALL_ORIGINS=True
 CORS_ALLOW_CREDENTIALS=True
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:5173",
 ]
 
 ROOT_URLCONF = 'Internal_Plat.urls'
@@ -88,24 +89,6 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.SessionAuthentication',
     ),
 }
-
-# REST_FRAMEWORK={
-#     'NON_FIELD_ERRORS_KEY':'error',
-#         'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework.authentication.SessionAuthentication',
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#     )
-
-# }
-
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.permissions.AllowAny',  # Allows anything
-#         'rest_framework.authentication.SessionAuthentication',  # For CSRF protection
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',  # For JWT authentication
-#         'rest_framework.authentication.TokenAuthentication',  # For token based authentication
-#     ],
-# }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
