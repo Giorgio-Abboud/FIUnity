@@ -97,7 +97,7 @@ export default function FinalPost({
     console.log(commentData);
     try {
       const response = await axios.post(
-        "http://localhost:8000/feed/comments/",
+        "http://127.0.0.1:8008/feed/comments/",
         commentData,
         {
           headers: {
@@ -121,7 +121,7 @@ export default function FinalPost({
   const handleLikeClick = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/feed/posts/${postId}/like/`,
+        `http://127.0.0.1:8008/feed/posts/${postId}/like/`,
         null,
         {
           headers: {
