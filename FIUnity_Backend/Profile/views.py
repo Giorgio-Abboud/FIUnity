@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from .models import Profile, Experience, Project, Extracurricular
 from .serializers import ProfileSerializer, ExperienceSerializer, ProjectSerializer, ExtracurricularSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
+
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
