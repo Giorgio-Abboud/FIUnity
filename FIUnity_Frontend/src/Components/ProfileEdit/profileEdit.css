@@ -22,6 +22,8 @@
   color: #fff;
 }
 
+
+
 .choose-image-button {
   display: inline-block;
   background-color: #ffcc00b0;
@@ -36,11 +38,12 @@
   transition: background-color 0.3s;
 }
 
-.choose-resume-button {
+.profile-form  .choose-resume-button {
     display: inline-block;
     background-color: #ffcc00b0;
     color: white;
-    margin-left: 45px;
+    margin-left: 40px;
+    margin-top: 0px;
     font-size: 12px;
     width: 90px;
     padding: 10px 15px;
