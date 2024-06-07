@@ -91,7 +91,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=100),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
@@ -128,7 +128,7 @@ DATABASES = {
          'ENGINE': 'django.db.backends.postgresql', 
          'NAME': 'fiunity', 
          'USER': 'postgres', 
-         'PASSWORD': 'P0$tgr3$q1', 
+         'PASSWORD': 'root', 
          'HOST': 'localhost', 
          'PORT': '5432', } 
          }
@@ -136,15 +136,6 @@ DATABASES = {
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'Authentication.AppUser'
-
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-    ),
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
