@@ -29,7 +29,7 @@ export default function RegistrationLogIn() {
     };
 
     axios
-      .post("http://localhost:8000/authentication/login/", loginInfo, {
+      .post("http://localhost:8008/authentication/login/", loginInfo, {
         headers: {
           "Content-Type": "application/json",
         },

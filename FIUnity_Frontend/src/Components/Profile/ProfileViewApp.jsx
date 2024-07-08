@@ -68,7 +68,7 @@ function ProfileViewApp() {
         firstName="Roary"
         middleName="Shay"
         lastName="Royce"
-        classification="Student"
+        classification="Alumni"
         gradTerm="Fall"
         gradDate="2020"
         major="Computer Science"
