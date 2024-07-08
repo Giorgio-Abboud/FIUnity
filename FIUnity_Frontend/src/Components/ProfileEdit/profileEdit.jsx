@@ -141,7 +141,7 @@ const ProfileEdit = ({ classification = "Student" }) => {
     console.log("It got here too");
     try {
       const response = await axios.post(
-        "http://localhost:8008/profile/profile-edit/",
+        "http://localhost:8000/profile/profile-edit/",
         profileData
       );
       if (response.status === 201) {
@@ -384,7 +384,7 @@ const ProfileEdit = ({ classification = "Student" }) => {
               id={`startDate-${index}`}
               name="startDate"
               value={experience.startDate}
-              max={new Date().toISOString().split('T')[0]}
+              max={new Date().toISOString().split("T")[0]}
               onChange={(e) => handleExperienceChange(index, e)}
               required
             />

@@ -16,7 +16,7 @@ function Homepage() {
       setFirstName(first_name);
       setLastName(last_name);
       try {
-        const response = await axios.get("http://127.0.0.1:8008/feed/feed/", {
+        const response = await axios.get("http://127.0.0.1:8000/feed/feed/", {
           headers: {
             "Content-Type": "application/json",
             mode: "cors",
@@ -46,7 +46,11 @@ function Homepage() {
     setAllPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === postId
-          ? { ...post, comments: [...(post.comments || []), newComment], comments_count: post.comments_count + 1 }
+          ? {
+              ...post,
+              comments: [...(post.comments || []), newComment],
+              comments_count: post.comments_count + 1,
+            }
           : post
       )
     );
@@ -64,22 +68,31 @@ function Homepage() {
       />
       {allPosts
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-        .map(({ id, description, created_at, comments, likes_count, comments_count }) => (
-          <FinalPost
-            key={id}
-            postId={id}
-            firstName={firstName}
-            lastName={lastName}
-            description={description}
-            classification={"Student"}
-            imagesData={"http://127.0.0.1:8008/feed/image/" + id}
-            likesCount={likes_count}
-            timestamp={created_at}
-            commentCount={comments_count}
-            comments={comments}
-            onCommentSubmit={handleCommentSubmit}
-          />
-        ))}
+        .map(
+          ({
+            id,
+            description,
+            created_at,
+            comments,
+            likes_count,
+            comments_count,
+          }) => (
+            <FinalPost
+              key={id}
+              postId={id}
+              firstName={firstName}
+              lastName={lastName}
+              description={description}
+              classification={"Student"}
+              imagesData={"http://127.0.0.1:8000/feed/image/" + id}
+              likesCount={likes_count}
+              timestamp={created_at}
+              commentCount={comments_count}
+              comments={comments}
+              onCommentSubmit={handleCommentSubmit}
+            />
+          )
+        )}
     </>
   );
 }
