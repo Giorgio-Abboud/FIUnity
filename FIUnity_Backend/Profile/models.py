@@ -1,13 +1,25 @@
+from datetime import date
 from django.db import models
-from Authentication.models import AppUser
+from Internal_Plat.settings import AUTH_USER_MODEL
 
 class Profile(models.Model):
-    user = models.OneToOneField(AppUser, related_name="profile", on_delete=models.CASCADE)
+    user = models.OneToOneField(AUTH_USER_MODEL, related_name="profile", on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
     middle_name = models.CharField(max_length=50, default="")
     last_name = models.CharField(max_length=50)
-    grad_term = models.IntegerField()
-    graduation_year = models.IntegerField()
+
+    SPRING = 'SP'
+    SUMMER = 'SU'
+    FALL = 'FA'
+
+    TERM_CHOICES = [
+        (SPRING, 'Spring'),
+        (SUMMER, 'Summer'),
+        (FALL, 'Fall'),
+    ]
+
+    grad_term = models.CharField(max_length=2, choices=TERM_CHOICES, default=SPRING)
+    graduation_year = models.IntegerField(null=True, blank=True)
 
     FRESHMAN = 'FR'
     SOPHOMORE = 'SO'
@@ -21,7 +33,7 @@ class Profile(models.Model):
         (SENIOR, 'Senior'),
     ]
 
-    class_standing = models.CharField(max_length=2, choices=CLASS_STANDING_CHOICES)
+    class_standing = models.CharField(max_length=2, choices=CLASS_STANDING_CHOICES, default=FRESHMAN)
     major = models.CharField(max_length=50)
     career_interest = models.CharField(max_length=50)
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
@@ -33,6 +45,11 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.full_name()}"
+    
+    def update_graduation_year(self):
+        if self.user.grad_date:
+            self.graduation_year = self.user.grad_date.year
+            self.save()
 
 class Experience(models.Model):
 
@@ -47,7 +64,7 @@ class Experience(models.Model):
         ('SEASONAL', 'Seasonal')
     ]
 
-    user = models.ForeignKey(AppUser, related_name="experiences", on_delete=models.CASCADE)
+    user = models.ForeignKey(AUTH_USER_MODEL, related_name="experiences", on_delete=models.CASCADE)
     job_position = models.CharField(max_length=50)
     job_type = models.CharField(max_length=14, choices=JOB_TYPE_CHOICES)
     start_date = models.DateField()
@@ -55,12 +72,13 @@ class Experience(models.Model):
     current = models.BooleanField(default=False)  
     company = models.CharField(max_length=50)
     description = models.TextField(max_length=200, verbose_name="Experience Description")
+    alumni = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.job_position} at {self.company}"
 
 class Project(models.Model):
-    user = models.ForeignKey(AppUser, related_name="projects", on_delete=models.CASCADE)
+    user = models.ForeignKey(AUTH_USER_MODEL, related_name="projects", on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=200, verbose_name="Project Description")
 
@@ -68,7 +86,7 @@ class Project(models.Model):
         return self.name
 
 class Extracurricular(models.Model):
-    user = models.ForeignKey(AppUser, related_name="extracurriculars", on_delete=models.CASCADE)
+    user = models.ForeignKey(AUTH_USER_MODEL, related_name="extracurriculars", on_delete=models.CASCADE)
     name = models.CharField(max_length=50, verbose_name="Experience Name")
     description = models.TextField(max_length=200, verbose_name="Description")
 
@@ -76,7 +94,7 @@ class Extracurricular(models.Model):
         return self.name
 
 class Skill(models.Model):
-    user = models.ForeignKey(AppUser, related_name="skills", on_delete=models.CASCADE)
+    user = models.ForeignKey(AUTH_USER_MODEL, related_name="skills", on_delete=models.CASCADE)
     name = models.CharField(max_length=50, verbose_name="Skill Name")
     proficiency = models.TextField(max_length=200, verbose_name="Proficiency")
 

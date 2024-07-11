@@ -1,28 +1,33 @@
+from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from rest_framework_simplejwt.tokens import RefreshToken
 from .managers import UserManager
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from Profile.models import Profile
 
 class AppUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=50, unique=True)
     PID = models.CharField(max_length=7, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    grad_date = models.DateField(null=True)
+    grad_year = models.IntegerField(null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'email'
-
-    REQUIRED_FIELDS = ['PID', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['PID', 'first_name', 'last_name', 'grad_date']
 
     objects = UserManager()
 
     def tokens(self):    
         refresh = RefreshToken.for_user(self)
         return {
-            "refresh":str(refresh),
-            "access":str(refresh.access_token)
+            "refresh": str(refresh),
+            "access": str(refresh.access_token)
         }
 
     def __str__(self):
@@ -31,4 +36,14 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     @property
     def get_full_name(self):
         return f"{self.first_name.title()} {self.last_name.title()}"
+
+    @property
+    def is_alumni(self):
+        if self.grad_date and self.grad_date < timezone.now().date():
+            return True
+        return False
     
+    def save(self, *args, **kwargs):
+        if self.grad_date:
+            self.grad_year = self.grad_date.year
+        super(AppUser, self).save(*args, **kwargs)
