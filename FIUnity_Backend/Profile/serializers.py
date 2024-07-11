@@ -3,9 +3,17 @@ from .models import Profile, Experience, Project, Extracurricular, Skill
 
 # This serializer is for displaying all the details of a profile for a particular user
 class ProfileSerializer(serializers.ModelSerializer):
+    is_alumni = serializers.ReadOnlyField(source='user.is_alumni')
+    first_name = serializers.ReadOnlyField(source='user.first_name')
+    last_name = serializers.ReadOnlyField(source='user.last_name')
+    graduation_year = serializers.ReadOnlyField(source='user.grad_year')
+
     class Meta:
         model = Profile
-        fields = "__all__"
+        fields = ['id', 'user', 'first_name', 'middle_name', 'last_name', 'grad_term', 
+                  'graduation_year', 'class_standing', 'major', 'career_interest', 
+                  'picture', 'resume', 'about', 'is_alumni']
+        read_only_fields = ['user', 'first_name', 'last_name', 'is_alumni', 'graduation_year']
 
 # This serializer is for displaying experience information of the user.
 class ExperienceSerializer(serializers.ModelSerializer):

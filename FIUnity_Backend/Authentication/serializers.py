@@ -1,3 +1,4 @@
+from Profile.models import Profile
 from .models import AppUser
 from rest_framework import serializers
 from django.contrib.auth import authenticate
@@ -7,18 +8,34 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 # Creating a new user
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, min_length=8, write_only=True)
+    grad_date = serializers.DateField(required=True)
+    grad_term = serializers.ChoiceField(choices=Profile.TERM_CHOICES, required=False, default=Profile.SPRING)
+    class_standing = serializers.ChoiceField(choices=Profile.CLASS_STANDING_CHOICES, required=False, default=Profile.FRESHMAN)
+    grad_year = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = AppUser
-        fields = ['email', 'first_name', 'last_name', 'PID', 'password']
+        fields = ['email', 'first_name', 'last_name', 'PID', 'password', 'grad_date', 'grad_year', 'grad_term', 'class_standing']
 
     def create(self, validated_data):
         user = AppUser.objects.create_user(
-            email = validated_data['email'],
-            first_name = validated_data['first_name'],
-            last_name = validated_data['last_name'],
-            PID = validated_data['PID'],
-            password = validated_data['password']
+            email=validated_data['email'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            PID=validated_data['PID'],
+            password=validated_data['password'],
+            grad_date=validated_data['grad_date']
+        )
+        Profile.objects.create(
+            user=user,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            grad_year=user.grad_date.year,
+            grad_term=validated_data.get('grad_term', Profile.SPRING),
+            class_standing=validated_data.get('class_standing', Profile.FRESHMAN),
+            major='',
+            career_interest='',
+            about=''
         )
         return user
 
@@ -73,70 +90,3 @@ class UserLogoutSerializer(serializers.Serializer):
             token.blacklist()
         except TokenError:
             return self.fail('bad_token')
-
-
-        
-
-# from rest_framework import serializers
-# from django.contrib.auth import get_user_model, authenticate
-# from .utils import CustomValidation, normalize_email
-# from rest_framework import serializers, status
-
-# UserModel = get_user_model()
-
-# class UserRegistrationSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserModel
-#         fields = ('PID', 'first_name', 'last_name', 'email', 'password')
-    
-#     def create(self, clean_data):
-#         user_obj = UserModel.objects.create_user(
-#             email=clean_data['email'],
-#             password=clean_data['password'],
-#             first_name=clean_data['first_name'],
-#             last_name=clean_data['last_name'],
-#             PID=clean_data['PID']
-#         )
-#         user_obj.PID = clean_data['PID']
-#         user_obj.save()
-#         return user_obj
-
-# class UserLoginSerializer(serializers.Serializer):
-#     email = serializers.EmailField()
-#     password = serializers.CharField()
-
-#     def validate(self, attrs):
-#         email = attrs.get('email')
-#         password = attrs.get('password')
-#         email = normalize_email(email)
-
-#         try:
-#             user = UserModel.objects.get(email__iexact=email)
-#         except UserModel.DoesNotExist:
-#             raise CustomValidation(
-#                 detail='User is not registered with this Email Address',
-#                 field='email',
-#                 status_code=status.HTTP_404_NOT_FOUND
-#             )
-
-#         # Authenticate user
-#         user = authenticate(email=email, password=password)
-#         if not user:
-#             raise CustomValidation(
-#                 detail='Unable to authenticate with provided credentials',
-#                 field='multiple',
-#                 status_code=status.HTTP_401_UNAUTHORIZED
-#             )
-
-#         return {
-#             'email': user.email,
-#             'password': password,
-#         }
-    
-# class UserSerializer(serializers.ModelSerializer):
-#     id = serializers.IntegerField(read_only=True)
-#     first_name = serializers.CharField()
-#     last_name = serializers.CharField()
-#     email = serializers.CharField()
-#     PID = serializers.CharField()
-#     password = serializers.CharField(write_only=True)

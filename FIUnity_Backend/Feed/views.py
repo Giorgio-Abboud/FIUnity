@@ -3,17 +3,16 @@ from .models import Post, Like, Comment
 from .serializers import PostSerializer, LikeSerializer, CommentSerializer
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 # Creating the post
 @api_view(['POST'])
 def create_post(request):
     data = request.data.copy()
-    data['user'] = request.user.id
-    serializer = PostSerializer(data=data, context={'request': request})  # Pass request to context
+    data.pop('user', None)  # Remove 'user' field from data if present
+    serializer = PostSerializer(data=data, context={'request': request})
     if serializer.is_valid():
-        serializer.save()
+        serializer.save(user=request.user)  # Pass 'user' explicitly here
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -21,8 +20,8 @@ def create_post(request):
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [AllowAny]
-    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
 
     # # update method
     # def put(self, request, pk, *args, **kwargs):
@@ -34,12 +33,17 @@ class PostViewSet(viewsets.ModelViewSet):
         post = Post.objects.get(id=pk)
         user = request.user
         try:
-            likes = Like.objects.create(user=user, post=post)
-        except:
-            return Response({'message': 'You have already liked the post'})
-        serializer = LikeSerializer(likes, many=False)
-        response = {'message': 'Liked Post', 'result': serializer.data}
-        return Response(response, status=status.HTTP_200_OK)
+            # Check if the user has already liked the post
+            if post.likes.filter(user=user).exists():
+                return Response({'message': 'You have already liked the post'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Create a new like for the post and user
+            like = Like.objects.create(user=user, post=post)
+            serializer = LikeSerializer(like)  # Use LikeSerializer to serialize the like object
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
     # Deletes the user data from the table if the post is disliked
     @action(detail=True, methods=['DELETE'])
@@ -82,16 +86,16 @@ class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
     http_method_names = ['get']
-    permission_classes = [AllowAny]
-    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
 
 # Class that retrieves the comments
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     http_method_names = ['get', 'delete']
-    permission_classes = [AllowAny]
-    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
 
     # Method for updates (NOT SURE ABOUT THIS PART)
     @action(detail=True, methods=['DELETE'])
