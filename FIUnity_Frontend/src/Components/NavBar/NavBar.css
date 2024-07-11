@@ -292,3 +292,8 @@
   height: 50px;
   border-radius: 50%;
 }
+
+.search-button {
+  cursor: pointer;
+  border: none;
+}

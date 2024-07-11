@@ -29,7 +29,7 @@ export default function RegistrationLogIn() {
     };
 
     axios
-      .post("http://localhost:8008/authentication/login/", loginInfo, {
+      .post("http://localhost:8000/authentication/login/", loginInfo, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -53,7 +53,6 @@ export default function RegistrationLogIn() {
 
           // Log the stored data
           console.log("Stored Data:", storedData);
-          
         } else {
           console.error("Login failed");
           setErrorMessage("Login failed. Please check your credentials.");
