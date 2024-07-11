@@ -12,7 +12,6 @@ router.register('comments', CommentViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('create_post/', create_post),
-
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
 ]
 
