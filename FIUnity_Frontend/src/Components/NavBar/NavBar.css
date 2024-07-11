@@ -272,10 +272,11 @@
   display: flex;
   align-items: center;
   padding: 2px 7px;
+  cursor: pointer;
 }
 
 .search-result:hover {
-  background-color: #b2c1d1b6;;
+  background-color: #b2c1d1b6;
 }
 
 .search-result-text {
