@@ -8,6 +8,7 @@ export default function RegistrationLogIn() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const history = useHistory(); //NEW CODE
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -28,7 +29,7 @@ export default function RegistrationLogIn() {
     };
 
     axios
-      .post("http://localhost:8008/authentication/login/", loginInfo, {
+      .post("http://localhost:8000/authentication/login/", loginInfo, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -43,7 +44,15 @@ export default function RegistrationLogIn() {
           localStorage.setItem("user_id", response.data.user_id);
           localStorage.setItem("first_name", response.data.first_name);
           localStorage.setItem("last_name", response.data.last_name);
-          window.location.href = "http://localhost:5173/newsfeed";
+          history.push("/newsfeed");
+          // window.location.href = "http://localhost:5173/newsfeed";
+          history.push("/newsfeed");
+
+          // Check if data is stored
+          const storedData = localStorage.getItem("csrfToken");
+
+          // Log the stored data
+          console.log("Stored Data:", storedData);
         } else {
           console.error("Login failed");
           setErrorMessage("Login failed. Please check your credentials.");

@@ -148,7 +148,9 @@ const NavBar = () => {
             value={searchInput} //NEW CODE
             onChange={handleSearchChange} //NEW CODE
           />
-          <img src={Pawprint_icon} alt="Paw Print Icon" />
+          <button className="search-button">
+            <img src={Pawprint_icon} alt="Paw Print Icon" />
+          </button>
         </div>
 
         <div className="NavBar_Icons">
@@ -175,7 +177,9 @@ const NavBar = () => {
             <div key={index} className="search-result">
               <div className="search-result-text">
                 <div className="bold-search">{`${user.firstName} ${user.lastName}`}</div>
-                <div className="search-result-status">{user.classification}</div>
+                <div className="search-result-status">
+                  {user.classification}
+                </div>
               </div>
               <img
                 src={user.profilePic}
