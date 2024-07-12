@@ -1,25 +1,23 @@
+from Profile.models import Profile
 from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from rest_framework_simplejwt.tokens import RefreshToken
 from .managers import UserManager
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from Profile.models import Profile
 
 class AppUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=50, unique=True)
     PID = models.CharField(max_length=7, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    grad_date = models.DateField(null=True)
-    grad_year = models.IntegerField(null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    graduation_year = models.IntegerField(default=2024)
+    grad_term = models.CharField(max_length=10, choices=Profile.TERM_CHOICES)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['PID', 'first_name', 'last_name', 'grad_date']
+    REQUIRED_FIELDS = ['PID', 'first_name', 'last_name', 'graduation_year', 'grad_term']
 
     objects = UserManager()
 
@@ -39,11 +37,6 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 
     @property
     def is_alumni(self):
-        if self.grad_date and self.grad_date < timezone.now().date():
-            return True
-        return False
-    
-    def save(self, *args, **kwargs):
-        if self.grad_date:
-            self.grad_year = self.grad_date.year
-        super(AppUser, self).save(*args, **kwargs)
+        current_year = timezone.now().year
+        profile = self.profile  # assuming there is a related_name="profile" in the Profile model
+        return profile.graduation_year < current_year if profile else False

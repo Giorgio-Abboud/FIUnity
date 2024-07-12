@@ -8,9 +8,9 @@ class Profile(models.Model):
     middle_name = models.CharField(max_length=50, default="")
     last_name = models.CharField(max_length=50)
 
-    SPRING = 'SP'
-    SUMMER = 'SU'
-    FALL = 'FA'
+    SPRING = 'Spring'
+    SUMMER = 'Summer'
+    FALL = 'Fall'
 
     TERM_CHOICES = [
         (SPRING, 'Spring'),
@@ -18,38 +18,19 @@ class Profile(models.Model):
         (FALL, 'Fall'),
     ]
 
-    grad_term = models.CharField(max_length=2, choices=TERM_CHOICES, default=SPRING)
-    graduation_year = models.IntegerField(null=True, blank=True)
-
-    FRESHMAN = 'FR'
-    SOPHOMORE = 'SO'
-    JUNIOR = 'JR'
-    SENIOR = 'SR'
-
-    CLASS_STANDING_CHOICES = [
-        (FRESHMAN, 'Freshman'),
-        (SOPHOMORE, 'Sophomore'),
-        (JUNIOR, 'Junior'),
-        (SENIOR, 'Senior'),
-    ]
-
-    class_standing = models.CharField(max_length=2, choices=CLASS_STANDING_CHOICES, default=FRESHMAN)
-    major = models.CharField(max_length=50)
-    career_interest = models.CharField(max_length=50)
+    grad_term = models.CharField(max_length=10, choices=TERM_CHOICES, default=SPRING)
+    graduation_year = models.IntegerField(null=True)
+    major = models.CharField(max_length=50, default='')
+    career_interest = models.CharField(max_length=50, default='')
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
-    about = models.TextField(max_length=200)
+    about = models.TextField(max_length=200, default='')
 
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
     def __str__(self):
         return f"{self.user.username} - {self.full_name()}"
-    
-    def update_graduation_year(self):
-        if self.user.grad_date:
-            self.graduation_year = self.user.grad_date.year
-            self.save()
 
 class Experience(models.Model):
 
@@ -61,7 +42,8 @@ class Experience(models.Model):
         ('CONTRACT', 'Contract'),
         ('INTERNSHIP', 'Internship'),
         ('APPRENTICESHIP', 'Apprenticeship'),
-        ('SEASONAL', 'Seasonal')
+        ('SEASONAL', 'Seasonal'),
+        ('UNEMPLOYED', 'Unemployed')
     ]
 
     user = models.ForeignKey(AUTH_USER_MODEL, related_name="experiences", on_delete=models.CASCADE)

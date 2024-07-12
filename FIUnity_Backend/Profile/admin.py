@@ -3,9 +3,9 @@ from .models import Profile, Experience, Project, Extracurricular
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'first_name', 'last_name', 'graduation_year', 'class_standing', 'career_interest')
+    list_display = ('user', 'first_name', 'last_name', 'graduation_year', 'career_interest')
     search_fields = ('user__username', 'first_name', 'last_name', 'career_interest')
-    list_filter = ('class_standing', 'graduation_year')
+    list_filter = ('graduation_year',)
 
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):
