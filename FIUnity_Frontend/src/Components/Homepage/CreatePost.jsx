@@ -33,7 +33,7 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8008/feed/posts/",
+        "http://127.0.0.1:8000/feed/posts/",
         formData,
         {
           headers: {
@@ -74,7 +74,7 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
                 <input
                   type="file"
                   id="dockpicker"
-                  accept=".png,.jpg"
+                  accept=".png,.jpg,.jpeg,.mp4,.mov,.avi"
                   onChange={handleFileChange}
                 />
                 <SlPicture />

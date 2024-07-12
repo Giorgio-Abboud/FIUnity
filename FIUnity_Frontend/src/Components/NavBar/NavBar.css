@@ -6,6 +6,7 @@
   background-color: #081e3f;
   padding: 5px;
   color: white;
+ 
 }
 
 .logo {
@@ -24,7 +25,6 @@
   padding: 5px 10px;
   border-radius: 50px;
   width: 600px;
-  margin: 0; /* Adjusted margin for spacing */
 }
 
 .searchBox input {
@@ -50,7 +50,10 @@
   display: flex;
   align-items: center;
   padding: 0px 5%;
+  padding-right: 0px;
   margin-top: 15px;
+  margin-right: 0px;
+  margin-left: 0px;
 }
 
 .icon-container {
@@ -59,7 +62,8 @@
   align-items: center;
   margin: 0; /* Adjusted margin for spacing */
   justify-content: space-between;
-  margin-right: 100px;
+  margin-right: 0px;
+  margin-left: 0px;
 }
 
 .icon {
@@ -76,10 +80,13 @@
 }
 
 .nav-link:hover {
-  color: yellow;
+  color: #d9a31e;
 }
 
 /* Dropdown */
+
+
+
 .jobs-dropdown-content {
   display: none;
   position: absolute;
@@ -98,6 +105,10 @@
 
 .jobs-dropdown-content a:hover {
   background-color: #f1f1f1;
+}
+
+.job-dropdown{
+  margin-left: 80px;
 }
 
 .job-dropdown:hover .jobs-dropdown-content {
@@ -124,6 +135,12 @@
   background-color: #f1f1f1;
 }
 
+/* .profile-dropdown{
+  margin-right: 50px;
+  margin-left: 0px;
+  width: 10px;
+}
+ */
 .profile-dropdown:hover .profile-dropdown-content {
   display: block;
 }
@@ -140,7 +157,7 @@
 }
 
 .job-btn:hover {
-  color: yellow;
+  color: #d9a31e;
 }
 
 .job-btn .job-icon {
@@ -158,7 +175,7 @@
 }
 
 .job-btn a:hover {
-  color: yellow;
+  color: #d9a31e;
 }
 
 /* Profile button and icon */
@@ -191,7 +208,7 @@
 }
 
 .profile-btn a:hover {
-  color: yellow;
+  color:#d9a31e;
 }
 
 .Logout {
@@ -201,12 +218,13 @@
   align-items: center;
   justify-content: center;
   background-color: #d9a31e;
+  border-color: transparent;
   padding: 0px 15px;
   border-radius: 10px;
-  height: 40px;
-  margin: 0 10px; /* Adjusted margin for spacing */
+  height: 40px; /* Adjusted margin for spacing */
   font-size: 14px;
-  margin-left: 100px;
+  margin-left: 10px;
+  margin-right: 20px;
 }
 
 .Logout:hover {
