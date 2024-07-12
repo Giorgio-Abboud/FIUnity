@@ -74,7 +74,7 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
                 <input
                   type="file"
                   id="dockpicker"
-                  accept=".png,.jpg"
+                  accept=".png,.jpg,.jpeg,.mp4,.mov,.avi"
                   onChange={handleFileChange}
                 />
                 <SlPicture />

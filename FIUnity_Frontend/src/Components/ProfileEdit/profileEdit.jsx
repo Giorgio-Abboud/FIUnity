@@ -322,7 +322,7 @@ const ProfileEdit = ({ classification = "Student" }) => {
           </>
         )}
 
-        <h3>Experiences</h3>
+        <h3>Add Experience</h3>
         {experiences.map((experience, index) => (
           <div key={index} className="experience-section">
             <label htmlFor={`jobPosition-${index}`}>
@@ -432,7 +432,7 @@ const ProfileEdit = ({ classification = "Student" }) => {
 
         {classification == "Student" && (
           <>
-            <h3>Projects</h3>
+            <h3>Add Project</h3>
             {projects.map((project, index) => (
               <div key={index} className="project-section">
                 <label htmlFor={`projectName-${index}`}>
@@ -459,11 +459,11 @@ const ProfileEdit = ({ classification = "Student" }) => {
             <button type="button" onClick={addProject}>
               Add More
             </button>
-            <h3>Extracurricular Activities</h3>
+            <h3>Add Organizations and Clubs</h3>
             {extracurr.map((extracurrs, index) => (
               <div key={index} className="extracurr-section">
                 <label htmlFor={`extracurrName-${index}`}>
-                  Extracurricular Name <div className="required-fields">*</div>
+                  Organization/Club Name <div className="required-fields">*</div>
                 </label>
                 <input
                   type="text"
@@ -489,11 +489,11 @@ const ProfileEdit = ({ classification = "Student" }) => {
           </>
         )}
 
-        <h3>Skills</h3>
+        <h3>Add Skill</h3>
         {skills.map((skill, index) => (
           <div key={index} className="skills-section">
             <label htmlFor={`skillName-${index}`}>
-              Skill Name <div className="required-fields">*</div>
+              Skill <div className="required-fields">*</div>
             </label>
             <input
               type="text"

@@ -11,6 +11,9 @@ export default function Registration() {
   const [pantherID, setPantherID] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [gradTerm, setGradTerm] = useState("");
+  const [gradYear, setGradYear] = useState("");
+
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -32,6 +35,14 @@ export default function Registration() {
     setPantherID(e.target.value);
   };
 
+  const handleGradTermChange = (e) => {
+    setGradTerm(e.target.value);
+  };
+
+  const handleGradYearChange = (e) => {
+    setGradYear(e.target.value);
+  };
+
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -44,6 +55,8 @@ export default function Registration() {
       PID: pantherID,
       email: email,
       password: password,
+      grad_term: gradTerm,
+      grad_year: gradYear,
     };
 
     try {
@@ -112,6 +125,24 @@ export default function Registration() {
             placeholder="Student FIU Email"
             value={email}
             onChange={handleEmailChange}
+          />
+        </div>
+        <div className="input-wrapper">
+          <input
+            type="text"
+            className="input-field"
+            placeholder="Graduation Term"
+            value={gradTerm}
+            onChange={handleGradTermChange}
+          />
+        </div>
+        <div className="input-wrapper">
+          <input
+            type="text"
+            className="input-field"
+            placeholder="Graduation Year"
+            value={gradYear}
+            onChange={handleGradYearChange}
           />
         </div>
         <div className="input-wrapper">
