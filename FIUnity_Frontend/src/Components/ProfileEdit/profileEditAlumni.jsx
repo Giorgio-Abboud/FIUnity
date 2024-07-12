@@ -94,9 +94,9 @@ const ProfileEditAlumni = () => {
 
     const profileData = {
       profile,
-      experiences: experiences.map(exp => ({
+      experiences: experiences.map((exp) => ({
         ...exp,
-        endDate: exp.current ? null : exp.endDate  // Set endDate to null if current
+        endDate: exp.current ? null : exp.endDate, // Set endDate to null if current
       })),
       skills,
     };
@@ -290,7 +290,7 @@ const ProfileEditAlumni = () => {
               name="endDate"
               value={experience.endDate}
               onChange={(e) => handleExperienceChange(index, e)}
-              disabled={experience.current}  // Disable end date if current is checked
+              disabled={experience.current} // Disable end date if current is checked
             />
 
             <div className="experience-checkbox">
