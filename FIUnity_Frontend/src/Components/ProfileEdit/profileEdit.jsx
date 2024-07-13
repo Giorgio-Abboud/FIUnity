@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Select from "react-select";
 import axios from "axios";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
 import { Link } from "react-router-dom";
 
-const ProfileEdit = ({ classification = "Alumni" }) => {
+const ProfileEdit = ({ classification = "Student" }) => {
   const [profile, setProfile] = useState({
     firstName: "",
     lastName: "",
@@ -732,12 +731,7 @@ const ProfileEdit = ({ classification = "Alumni" }) => {
                 ))}
                 <button
                   type="button"
-                  onClick={
-                  
-                  
-                  
-                  
-                  }
+                  onClick={addProject}
                   className="profile-editing-button"
                 >
                   Add More
