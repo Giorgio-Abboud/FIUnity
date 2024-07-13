@@ -23,7 +23,6 @@
 }
 
 
-
 .choose-image-button {
   display: inline-block;
   background-color: #ffcc00b0;
@@ -63,15 +62,16 @@
   }
 
   .upload-success-message {
-    margin-left: 46px;
+    margin-left: 55px;
     margin-top: 15px;
     font-size: 14px;
   }
 
 .profile-picture-container {
   align-items: center;
-  margin-right: 80px;
+  margin-right: 50px;
   margin-bottom: 20px;
+  position: relative;
 }
 
 .profile-picture-container label {
@@ -91,7 +91,6 @@
 .name-container {
   margin-top: 20px;
   display: inline-block;
-  margin-bottom: 20px;
 }
 
 .name-container input {
@@ -144,6 +143,7 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
+  position: relative; 
 }
 
 .profile-editing textarea {
@@ -153,7 +153,8 @@
 .profile-editing .experience-section,
 .profile-editing .project-section,
 .profile-editing .extracurr-section,
-.profile-editing .skills-section {
+.profile-editing .skills-section,
+.profile-editing .networking-section {
   background-color: #f9f9f9;
   padding: 15px;
   margin-bottom: 20px;
@@ -161,7 +162,7 @@
   border: 1px solid #ddd;
 }
 
-.profile-editing button[type="button"] {
+.profile-editing-button {
   display: inline-block;
   background-color: #081e3f;
   color: #fff;
@@ -173,7 +174,34 @@
   transition: background-color 0.3s;
 }
 
-.profile-editing button[type="button"]:hover {
+.button-container {
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  justify-content: space-between;
+}
+
+.profile-editing-next {
+  background-color: #ffcc00b0;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.profile-editing-back {
+  background-color: #ffcc00b0;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.profile-editing-button:hover {
   background-color: #0f346b;
 }
 
@@ -191,7 +219,7 @@
   text-decoration: none;
 }
 
-.edit-profile-submit:hover {
+.edit-profile-submit:hover, .profile-editing-next:hover, .profile-editing-back:hover {
   background-color: #b6862c;
 }
 
@@ -209,4 +237,62 @@
   display: flex;
   justify-content: space-between;
   gap: 10px;
+}
+
+.url-box {
+  display: inline-block;
+  padding: 10px 23px;
+  border: none;
+  border-radius: 5px;
+  max-width: 150px;
+}
+
+.url-box input[type="url"]::placeholder {
+  font-size: 12px; 
+}
+
+.url-message {
+  margin-top: 10px;
+  color:red;
+  font-size:12px;
+  position: absolute;
+}
+
+.grad-error {
+  color:red;
+  font-size:12px;
+  padding-bottom: 15px;
+}
+
+.skills-list {
+  padding: 0;
+}
+
+.skills-item {
+  background-color: #081e3f;
+  color: #fff;
+  padding-right: 22px;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border: none;
+  border-radius: 3px;
+  font-size: 13px;
+  display: inline-block;
+  max-width: 150px;
+  margin-right: 12px;
+  margin-top: 12px;
+  position: relative;
+  word-wrap: break-word; 
+}
+
+.remove-skill-button{
+  border: none;
+  top: 0;
+  right: 0;
+  color: white;
+  background: none;
+  position:absolute;
+  cursor: pointer;
+
 }
