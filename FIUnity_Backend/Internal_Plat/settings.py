@@ -21,8 +21,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://127.0.0.1',
     'http://0.0.0.0',
-    'http://10.108.229.73:8000',
-    'http://localhost:8000',
+    'http://10.108.229.73:8008',
+    'http://localhost:8008',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -33,9 +33,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = '*'
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8000',
-    'http://localhost:8000',
-    'http://10.108.229.73:8000',
+    'http://localhost:8008',
+    'http://localhost:8008',
+    'http://10.108.229.73:8008',
 ]
 
 # Application definition
@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    #'django.contrib.staticfiles',
     'Authentication',
     'Feed',
     'Jobs',
@@ -128,7 +128,7 @@ DATABASES = {
          'ENGINE': 'django.db.backends.postgresql', 
          'NAME': 'fiunity', 
          'USER': 'postgres', 
-         'PASSWORD': 'P0$tgr3$q1', 
+         'PASSWORD': 'root', 
          'HOST': 'localhost', 
          'PORT': '5432', } 
          }
@@ -171,15 +171,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
 
 # Static files directory
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+# STATICFILES_DIRS = [
+    # os.path.join(BASE_DIR, "static"),
+# ]
 
 # For deployment
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

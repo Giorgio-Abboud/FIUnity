@@ -8,14 +8,12 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 # Creating a new user
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, min_length=8, write_only=True)
-    grad_date = serializers.DateField(required=True)
-    grad_term = serializers.ChoiceField(choices=Profile.TERM_CHOICES, required=False, default=Profile.SPRING)
-    class_standing = serializers.ChoiceField(choices=Profile.CLASS_STANDING_CHOICES, required=False, default=Profile.FRESHMAN)
-    grad_year = serializers.IntegerField(read_only=True)
+    graduation_year = serializers.IntegerField(required=True)
+    grad_term = serializers.ChoiceField(choices=Profile.TERM_CHOICES, required=True)
 
     class Meta:
         model = AppUser
-        fields = ['email', 'first_name', 'last_name', 'PID', 'password', 'grad_date', 'grad_year', 'grad_term', 'class_standing']
+        fields = ['email', 'first_name', 'last_name', 'PID', 'password', 'graduation_year', 'grad_term']
 
     def create(self, validated_data):
         user = AppUser.objects.create_user(
@@ -24,15 +22,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             last_name=validated_data['last_name'],
             PID=validated_data['PID'],
             password=validated_data['password'],
-            grad_date=validated_data['grad_date']
+            graduation_year=validated_data['graduation_year'],
+            grad_term=validated_data['grad_term']
         )
         Profile.objects.create(
             user=user,
             first_name=user.first_name,
             last_name=user.last_name,
-            grad_year=user.grad_date.year,
-            grad_term=validated_data.get('grad_term', Profile.SPRING),
-            class_standing=validated_data.get('class_standing', Profile.FRESHMAN),
+            graduation_year=validated_data['graduation_year'],
+            grad_term=validated_data['grad_term'],
             major='',
             career_interest='',
             about=''

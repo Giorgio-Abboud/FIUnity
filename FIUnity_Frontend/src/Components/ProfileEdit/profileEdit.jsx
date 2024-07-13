@@ -242,7 +242,7 @@ const ProfileEdit = ({ classification = "Alumni" }) => {
     console.log("It got here too");
     try {
       const response = await axios.post(
-        "http://localhost:8000/profile/profile-edit/",
+        "http://localhost:8008/profile/profile-edit/",
         profileData
       );
       if (response.status === 201) {
@@ -572,6 +572,7 @@ const ProfileEdit = ({ classification = "Alumni" }) => {
 
                 <label htmlFor={`type-${index}`}>
                   Type <div className="required-fields">*</div>
+
                 </label>
                 <select
                   id={`type-${index}`}
@@ -731,7 +732,12 @@ const ProfileEdit = ({ classification = "Alumni" }) => {
                 ))}
                 <button
                   type="button"
-                  onClick={addProject}
+                  onClick={
+                  
+                  
+                  
+                  
+                  }
                   className="profile-editing-button"
                 >
                   Add More
