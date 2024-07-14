@@ -703,7 +703,7 @@ const ProfileEdit = ({ classification = "Student" }) => {
                     <input
                       type="text"
                       id={`skillsInput-${index}`}
-                      placeholder="Add a skill you used in this project and press ENTER"
+                      placeholder="Add a skill or technology you used in this project and press ENTER (e.g., Java)"
                       value={project.skillsInput}
                       required={project.projectSkills.length === 0} // if user types something and does not press enter, they are allowed to the next step; a bug to fix
                       onChange={(e) => {
