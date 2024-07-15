@@ -27,13 +27,13 @@ const exampleExperiences = [
 const exampleProjects = [
   {
     name: "Project 1",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
   },
-  {
-    name: "Project 2",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-  },
+  // {
+  //   name: "Project 2",
+  //   description:
+  //     "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
+  // },
 ];
 
 const extracurriculars = [
@@ -48,18 +48,62 @@ const extracurriculars = [
   },
 ];
 
-
 const skills = [
   {
     name: "Java",
-    proficiency: "beginner",
   },
   {
     name: "Django",
-    proficiency: "intermediate",
+  },
+  {
+    name: "Python",
+  },
+  {
+    name: "React",
+  },
+  {
+    name: "JavaScript",
+  },
+  {
+    name: "Node.js",
+  },
+  {
+    name: "C++",
+  },
+  {
+    name: "Ruby on Rails",
+  },
+  {
+    name: "SQL",
+  },
+  {
+    name: "Angular",
+  },
+  {
+    name: "Swift",
+  },
+  {
+    name: "Spring",
+  },
+  {
+    name: "Kotlin",
+  },
+  {
+    name: "Vue.js",
+  },
+  {
+    name: "PHP",
+  },
+  {
+    name: "ASP.NET",
+  },
+  {
+    name: "Go",
+  },
+  {
+    name: "Flask",
   },
 ];
-
 
 function ProfileViewApp() {
   return (
@@ -68,7 +112,7 @@ function ProfileViewApp() {
         firstName="Roary"
         middleName="Shay"
         lastName="Royce"
-        classification="Alumni"
+        classification="Student"
         gradTerm="Fall"
         gradDate="2020"
         major="Computer Science"
@@ -81,7 +125,7 @@ function ProfileViewApp() {
         projects={exampleProjects}
         skills={skills}
         extracurriculars={extracurriculars}
-      /> 
+      />
     </>
   );
 }

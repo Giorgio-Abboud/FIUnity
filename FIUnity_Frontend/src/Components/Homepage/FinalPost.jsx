@@ -26,7 +26,6 @@ export default function FinalPost({
 
   console.log(imagesData);
   console.log(commentCount);
-  
 
   const [adjustedTimestamp, setAdjustedTimestamp] = useState("");
   const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState(
@@ -51,7 +50,6 @@ export default function FinalPost({
     return adjustedTimestamp;
   }
 
-
   useEffect(() => {
     // Adjust the timestamp for display
     const adjustedTimestamp = adjustTimestampToTimeZone(timestamp);
@@ -70,9 +68,7 @@ export default function FinalPost({
       setAdjustedCommentTimestamps(adjustedCommentTimestamps);
     }
   }, [comments]);
-  
-  
-  
+
   const handleCommentIconClick = () => {
     setShowCommentSection(!showCommentSection);
   };
@@ -91,13 +87,12 @@ export default function FinalPost({
       text: userInput,
       created_at: currentDateTime,
     };
-    
 
     console.log("commentData");
     console.log(commentData);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8008/feed/comments/",
+        "http://127.0.0.1:8000/feed/comments/",
         commentData,
         {
           headers: {
@@ -121,7 +116,7 @@ export default function FinalPost({
   const handleLikeClick = async () => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8008/feed/posts/${postId}/like/`,
+        `http://127.0.0.1:8000/feed/posts/${postId}/like/`,
         null,
         {
           headers: {
@@ -158,7 +153,10 @@ export default function FinalPost({
         </div>
         <p className="homepage-font">{description}</p>
         <div className="post-features icon-cursor">
-          <div className="Post-icon-color homepage-font" onClick={handleLikeClick}>
+          <div
+            className="Post-icon-color homepage-font"
+            onClick={handleLikeClick}
+          >
             {postLikesCount}
             <AiOutlineLike />
             Like
@@ -198,7 +196,10 @@ export default function FinalPost({
               </button>
             </div>
             <div>
-            {console.log("Adjusted Comment Timestamps:", adjustedCommentTimestamps)} 
+              {console.log(
+                "Adjusted Comment Timestamps:",
+                adjustedCommentTimestamps
+              )}
               {comments && comments.length > 0 ? (
                 comments
                   .sort(
