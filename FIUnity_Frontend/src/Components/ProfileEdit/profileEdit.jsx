@@ -5,7 +5,7 @@ import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
 import { Link } from "react-router-dom";
 
-const ProfileEdit = ({ classification = "Student" }) => {
+const ProfileEdit = ({ classification = "Alum" }) => {
   const [profile, setProfile] = useState({
     firstName: "",
     lastName: "",
@@ -375,13 +375,16 @@ const ProfileEdit = ({ classification = "Student" }) => {
               </div>
             </div>
 
-            <label htmlFor="aboutMe">About Me</label>
+            <label htmlFor="aboutMe">
+              About Me <div className="required-fields">*</div>
+            </label>
             <textarea
               id="aboutMe"
               placeholder="You can write about your years of experience, industry, or skills. People also talk about their achievements or previous job experiences."
               name="aboutMe"
               value={profile.aboutMe}
               onChange={handleProfileChange}
+              required
             />
 
             <label htmlFor="graduationYear">
@@ -749,7 +752,6 @@ const ProfileEdit = ({ classification = "Student" }) => {
                   <div key={index} className="extracurr-section">
                     <label htmlFor={`extracurrName-${index}`}>
                       Extracurricular Name{" "}
-                      <div className="required-fields">*</div>
                     </label>
                     <input
                       type="text"
@@ -757,7 +759,6 @@ const ProfileEdit = ({ classification = "Student" }) => {
                       name="extracurrName"
                       value={extracurrs.extracurrName}
                       onChange={(e) => handleExtracurrChange(index, e)}
-                      required
                     />
 
                     <label htmlFor={`description-${index}`}>Description </label>
