@@ -1,4 +1,7 @@
 import "./ProfileView.css";
+import React, { useState, useEffect, useRef } from "react";
+import Carousel from "react-elastic-carousel";
+import { useSpring, animated } from "react-spring";
 
 export default function ProfileViewPage({
   firstName,
@@ -18,6 +21,27 @@ export default function ProfileViewPage({
   skills,
   extracurriculars,
 }) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const carouselRef = useRef(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (carouselRef.current) {
+        setCurrentSlide((prev) => {
+          if (prev < projects.length - 1) {
+            carouselRef.current.slideNext();
+            return prev + 1;
+          } else {
+            clearInterval(interval);
+            return prev;
+          }
+        });
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [projects.length]);
+
   return (
     <>
       <div className="profile-box">
@@ -48,10 +72,10 @@ export default function ProfileViewPage({
                     </p>
                   </div>
                   <div className="three-text-">
-                    {classification == "Alumni" ? (
+                    {classification == "Alum" ? (
                       <div className="three-text-flex">
                         <p className="profile-font profile-font-bold">
-                          Job Position:
+                          Job Title:
                         </p>
                         <p className="three-text-ans profile-font">
                           {currJobPosition}
@@ -101,37 +125,69 @@ export default function ProfileViewPage({
               </div>
             </div>
             <div>
+            {skills.length > 0 && (
               <div className="skills-container">
                 <div className="sticky-heading">
                   <h3 className="title-text profile-font">SKILLS</h3>
                   <div className="title-skills-line"></div>
-                  <div className="skills-item-container">
-                    {skills.map((skill, index) => (
-                      <div key={index}>
-                        <p className="skills-item">{skill.name}</p>
-                      </div>
-                    ))}
-                  </div>
+                </div>
+                <div className="skills-item-container">
+                  {skills.map((skill, index) => (
+                    <div key={index}>
+                      <p className="skills-item">{skill.name}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
+            )}
               {classification == "Student" && (
                 <>
                   <div className="project-container">
                     <h3 className="title-text profile-font">PROJECTS</h3>
                     <div className="title-project-line"></div>
                     <div>
-                      {projects.map((project, index) => (
-                        <div key={index}>
-                          <div className="project-tab-container">
+                      <Carousel
+                        className="project-carousel"
+                        ref={carouselRef}
+                        renderPagination={({ pages, activePage, onClick }) => (
+                          <div className="custom-pagination">
+                            {pages.map((idx) => (
+                              <button
+                                key={idx}
+                                className={`pagination-dot ${
+                                  activePage === idx ? "active" : ""
+                                }`}
+                                onClick={() => onClick(idx)}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      >
+                        {projects.map((project, idx) => (
+                          <div
+                            key={idx}
+                            className={
+                              skills.length > 0
+                                ? "project-tab-skill"
+                                : "project-tab-noskill"
+                            }
+                          >
                             <h4 className="profile-title profile-font-bold profile-font profile-gold">
                               {project.name}
                             </h4>
                             <p className="profile-descript profile-font">
                               {project.description}
                             </p>
+                            <div className="skills-item-container">
+                              {project.skills.map((skill, index) => (
+                                <div key={index}>
+                                  <p className="skills-item">{skill}</p>
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </Carousel>
                     </div>
                   </div>
                 </>

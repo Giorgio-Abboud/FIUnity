@@ -27,13 +27,16 @@ const exampleExperiences = [
 const exampleProjects = [
   {
     name: "Project 1",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
+    skills: ["Java", "Django", "Python"]
   },
-  // {
-  //   name: "Project 2",
-  //   description:
-  //     "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-  // },
+  {
+    name: "Project 2",
+    description:
+      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
+    skills: ["Java", "Django", "Python"]
+
+    },
 ];
 
 const extracurriculars = [

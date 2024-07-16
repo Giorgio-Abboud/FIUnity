@@ -64,10 +64,15 @@
   display: none;
 }
 
+.project-tab-skill::-webkit-scrollbar {
+  display: none;
+}
+
+
 .sticky-heading {
   position: sticky; 
   top: 0; 
-  background-color: #e2e4e8;
+  background-color: #e6ecf1;
   z-index: 1; 
   padding-bottom: 3px;
 }
@@ -113,7 +118,7 @@
 
 .project-container {
   margin-top: 25px;
-  padding-bottom: 12px;
+  padding-bottom: 8px;
   padding-right: 15px;
   width: 350px;
   min-height: 270px;
@@ -233,16 +238,54 @@
   border-radius: 13px;
 }
 
-.project-tab-container {
+
+.project-tab-skill {
   padding-bottom: 15px;
-  margin-right: 10px;
-  margin-left: 20px;
+  margin-left: 10px;
+  margin-top: 18px;
+  background-color: rgba(211, 213, 224, 0.591);
+  border: 1px solid #ccc;
+  max-height: 175px;
+  border-radius: 13px;
+  overflow-y: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */}
+
+.project-tab-noskill {
+  padding-bottom: 15px;
+  margin-left: 10px;
+  max-height: 393px;
   margin-top: 20px;
-  margin-bottom: 15px;
-  min-height: 175px;
   background-color: rgba(211, 213, 224, 0.591);
   border: 1px solid #ccc;
   border-radius: 13px;
+  overflow-y: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */}
+
+.rec-arrow {
+  display: none;
+}
+
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 9px;
+}
+
+.pagination-dot {
+  height: 15px;
+  width: 15px;
+  border-radius: 100%;
+  border: 1px solid #0c3d72; 
+  margin: 0 3px;
+  cursor: pointer;
+  transition: background-color 0.5s ease;
+}
+
+.pagination-dot.active {
+  background-color: #0c3d72; /* Color for active dot */
 }
 
 .profile-skills {
