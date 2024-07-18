@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Experience, Project, Extracurricular
+from .models import Profile, Experience, Project, Extracurricular, Skill
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
@@ -15,12 +15,12 @@ class ExperienceAdmin(admin.ModelAdmin):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('user', 'name', 'description')
+    list_display = ('user', 'description')
     search_fields = ('user__username', 'name')
     list_filter = ('user',)
 
 @admin.register(Extracurricular)
 class ExtracurricularAdmin(admin.ModelAdmin):
-    list_display = ('user', 'name', 'description')
+    list_display = ('user', 'description')
     search_fields = ('user__username', 'name')
     list_filter = ('user',)

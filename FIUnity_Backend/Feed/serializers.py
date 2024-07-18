@@ -14,7 +14,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['id', 'comment', 'date', 'commenter_email', 'commenter_name']
+        fields = "__all__"
 
 class PostSerializer(serializers.ModelSerializer):
     likes = LikeSerializer(read_only=True, many=True)
@@ -23,7 +23,7 @@ class PostSerializer(serializers.ModelSerializer):
     no_of_comment = serializers.SerializerMethodField()
     poster_email = serializers.EmailField(read_only=True, source='user.email')
     poster_id = serializers.IntegerField(read_only=True, source='user.id')
-    poster_full_name = serializers.CharField(read_only=True, source='user.get_full_name')  # Using get_full_name property
+    poster_full_name = serializers.CharField(read_only=True, source='user.get_full_name')
 
     class Meta:
         model = Post

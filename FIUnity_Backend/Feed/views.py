@@ -50,8 +50,8 @@ class PostViewSet(viewsets.ModelViewSet):
     def comment(self, request, pk=None):
         post = self.get_object()
         user = request.user
-        comm = Comment.objects.create(user=user, post=post, comment=request.data['comment'])
-        serializer = CommentSerializer(comm)
+        comment = Comment.objects.create(user=user, post=post, comment=request.data['comment'])
+        serializer = CommentSerializer(comment)
         return Response({'message': 'Commented on the Post', 'result': serializer.data}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['DELETE'])

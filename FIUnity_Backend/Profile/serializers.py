@@ -1,21 +1,19 @@
-from rest_framework import serializers
-from .models import Profile, Experience, Project, Extracurricular, Skill
+from rest_framework import serializers, status
+from .models import *
+from Authentication.utils import CustomValidation
+from django.shortcuts import get_object_or_404
+from django.db.utils import IntegrityError
 
-# This serializer is for displaying all the details of a profile for a particular user
-class ProfileSerializer(serializers.ModelSerializer):
-    is_alumni = serializers.ReadOnlyField(source='user.is_alumni')
-    first_name = serializers.ReadOnlyField(source='user.first_name')
-    last_name = serializers.ReadOnlyField(source='user.last_name')
-
+# This is the helper serializer that keeps the models organized
+class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Profile
-        fields = ['id', 'user', 'first_name', 'middle_name', 'last_name', 'grad_term', 
-                  'graduation_year', 'major', 'career_interest', 'picture', 'resume', 
-                  'about', 'is_alumni']
-        read_only_fields = ['user', 'first_name', 'last_name', 'is_alumni']
+        model = Organization
+        fields = "__all__"
 
 # This serializer is for displaying experience information of the user.
 class ExperienceSerializer(serializers.ModelSerializer):
+    company_data = OrganizationSerializer(source="company", read_only=True)
+
     class Meta:
         model = Experience
         fields = "__all__"
@@ -35,4 +33,10 @@ class ExtracurricularSerializer(serializers.ModelSerializer):
 class SkillsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
+        fields = "__all__"
+
+# This serializer is for displaying all the details of a profile for a particular user
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
         fields = "__all__"

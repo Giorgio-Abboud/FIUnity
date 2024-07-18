@@ -1,6 +1,8 @@
-from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework import viewsets, status
 from .models import Profile, Experience, Project, Extracurricular
-from .serializers import ProfileSerializer, ExperienceSerializer, ProjectSerializer, ExtracurricularSerializer
+from .serializers import *
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -11,14 +13,12 @@ class ProfileViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_authenticated:
-            return Profile.objects.filter(user=user)
-        return Profile.objects.none()
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)  # Save the logged-in user
+        return Response(serializer.data)
 
 # View for the experience
 class ExperienceViewSet(viewsets.ModelViewSet):
@@ -27,6 +27,10 @@ class ExperienceViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    # this method explicitly is for update
+    def put(self, request, pk, *args, **kwargs):
+        return self.update(request, pk, *args, **kwargs)
+
 # View for projects
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
@@ -34,9 +38,29 @@ class ProjectViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    # this method explicitly is for update
+    def put(self, request, pk, *args, **kwargs):
+        return self.update(request, pk, *args, **kwargs)
+
 # View for extracurriculars
 class ExtracurricularViewSet(viewsets.ModelViewSet):
     queryset = Extracurricular.objects.all()
     serializer_class = ExtracurricularSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly]    
+    permission_classes = [IsAuthenticatedOrReadOnly]   
+
+    # this method explicitly is for update
+    def put(self, request, pk, *args, **kwargs):
+        return self.update(request, pk, *args, **kwargs)
+
+# View for skills
+class SkillViewSet(viewsets.ModelViewSet):
+    queryset = Skill.objects.all()
+    serializer_class = SkillsSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    # this method explicitly is for update
+    def put(self, request, pk, *args, **kwargs):
+        return self.update(request, pk, *args, **kwargs)
+    
