@@ -1,4 +1,4 @@
-from Profile.models import Profile
+from Profile.models import *
 from .models import AppUser
 from rest_framework import serializers
 from django.contrib.auth import authenticate
@@ -9,7 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, min_length=8, write_only=True)
     graduation_year = serializers.IntegerField(required=True)
-    grad_term = serializers.ChoiceField(choices=Profile.TERM_CHOICES, required=True)
+    grad_term = serializers.ChoiceField(choices=TERM_CHOICES, required=True)
 
     class Meta:
         model = AppUser
@@ -25,16 +25,40 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             graduation_year=validated_data['graduation_year'],
             grad_term=validated_data['grad_term']
         )
-        Profile.objects.create(
-            user=user,
-            first_name=user.first_name,
-            last_name=user.last_name,
-            graduation_year=validated_data['graduation_year'],
-            grad_term=validated_data['grad_term'],
-            major='',
-            career_interest='',
-            about=''
-        )
+        # Profile.objects.create(
+        #     user=user,
+        #     first_name=user.first_name,
+        #     last_name=user.last_name,
+        #     graduation_year=validated_data['graduation_year'],
+        #     grad_term=validated_data['grad_term'],
+        #     major='',
+        #     career_interest='',
+        #     about=''
+        # )
+        # Experience.objects.create(
+        #     user=user, 
+        #     job_position='', 
+        #     job_type='', 
+        #     start_date=None, 
+        #     end_date=None, 
+        #     company='', 
+        #     description='', 
+        # )
+        # Project.objects.create(
+        #     user=user, 
+        #     name='', 
+        #     description=''
+        # )
+        # Extracurricular.objects.create(
+        #     user=user, 
+        #     name='', 
+        #     description=''
+        # )
+        # Skill.objects.create(
+        #     user=user, 
+        #     name='', 
+        #     proficiency=''
+        # )
         return user
 
 # Logging in the user and refresh the token
@@ -59,7 +83,7 @@ class UserLoginSerializer(serializers.Serializer):
 
         if not user:
             raise AuthenticationFailed("Invalid credentials")
-        
+
         tokens = user.tokens()
 
         return {

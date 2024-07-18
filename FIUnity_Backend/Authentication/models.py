@@ -1,9 +1,14 @@
-from Profile.models import Profile
 from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from rest_framework_simplejwt.tokens import RefreshToken
 from .managers import UserManager
+
+TERM_CHOICES = [
+        ('Spring', 'Spring'),
+        ('Summer', 'Summer'),
+        ('Fall', 'Fall'),
+    ]
 
 class AppUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=50, unique=True)
@@ -14,7 +19,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     graduation_year = models.IntegerField(default=2024)
-    grad_term = models.CharField(max_length=10, choices=Profile.TERM_CHOICES)
+    grad_term = models.CharField(max_length=10, choices=TERM_CHOICES)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['PID', 'first_name', 'last_name', 'graduation_year', 'grad_term']
