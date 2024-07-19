@@ -17,6 +17,7 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
   };
 
   const handleSubmit = async () => {
+    
     const currentDateTime = new Date()
       .toISOString()
       .slice(0, 19)
@@ -30,6 +31,7 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
     if (selectedFile) {
       formData.append("images", selectedFile); // Add the file to form data
     }
+    
 
     try {
       const response = await axios.post(
@@ -52,6 +54,7 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
       console.error("Failed to submit post:", error);
     }
   };
+
 
   return (
     <>

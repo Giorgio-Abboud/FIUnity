@@ -16,7 +16,7 @@ function Homepage() {
       setFirstName(first_name);
       setLastName(last_name);
       try {
-        const response = await axios.get("http://127.0.0.1:8000/feed/feed/", {
+        const response = await axios.get("http://127.0.0.1:8000/feed/posts/", {
           headers: {
             "Content-Type": "application/json",
             mode: "cors",

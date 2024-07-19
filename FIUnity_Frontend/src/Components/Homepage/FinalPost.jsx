@@ -102,6 +102,7 @@ export default function FinalPost({
         {
           headers: {
             "Content-Type": "application/json",
+            
             mode: "cors",
           },
         }
