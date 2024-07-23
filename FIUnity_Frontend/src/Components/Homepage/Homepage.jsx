@@ -64,6 +64,7 @@ function Homepage() {
       <CreatePost
         firstName={firstName}
         lastName={lastName}
+        classification={"Student"}
         onPostSubmit={handlePostSubmit}
       />
       {allPosts
@@ -87,7 +88,7 @@ function Homepage() {
               imagesData={"http://127.0.0.1:8000/feed/image/" + id}
               likesCount={likes_count}
               timestamp={created_at}
-              commentCount={comments_count}
+              commentCount={0}
               comments={comments}
               onCommentSubmit={handleCommentSubmit}
             />

@@ -1,6 +1,6 @@
 import axios from "./axiosInstance";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Log-in.css";
 
 export default function RegistrationLogIn() {
@@ -8,7 +8,7 @@ export default function RegistrationLogIn() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const history = useHistory(); //NEW CODE
+  const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -44,10 +44,8 @@ export default function RegistrationLogIn() {
           localStorage.setItem("user_id", response.data.user_id);
           localStorage.setItem("first_name", response.data.first_name);
           localStorage.setItem("last_name", response.data.last_name);
-          history.push("/newsfeed");
-          // window.location.href = "http://localhost:5173/newsfeed";
-          history.push("/newsfeed");
-
+          navigate("/newsfeed");         
+          navigate("/newsfeed");
           // Check if data is stored
           const storedData = localStorage.getItem("csrfToken");
 
