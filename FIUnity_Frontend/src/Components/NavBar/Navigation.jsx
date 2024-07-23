@@ -37,7 +37,6 @@ const Navigation = () => {
           <Route path="/authentication/register" element={<Registration />} />
           <Route path="/register-submit" element={<RegistrationLogIn />} />
           <Route path="/login-submit" element={<Homepage />} />
-          <Route path="/test" element={<RegistrationLogIn />} />
           <Route path="/profile-edit" element={<ProfileEdit />} />
           <Route path="/profile-edit-alumni" element={<ProfileEditAlumni />} />
           <Route path="/view-profile" element={<ProfileViewApp />} />

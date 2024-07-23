@@ -60,7 +60,6 @@
   align-items: center;
   margin: 0; /* Adjusted margin for spacing */
   justify-content: space-between; 
-  margin-right: 100px;
 }
 
 .icon {
@@ -170,7 +169,6 @@
   cursor: pointer;
   color: white;
   text-decoration: none;
-  margin: 0px 80px; /* Adjusted margin for spacing */
 }
 
 .profile-btn:hover {
@@ -254,4 +252,11 @@
     font-size: 12px;  
     padding: 5px 10px;  
   }
+}
+
+.navBarSubmit{
+  background-color: aliceblue;
+  border-color: aliceblue;
+  margin-left: 170px;
+  border-radius: 30%;
 }

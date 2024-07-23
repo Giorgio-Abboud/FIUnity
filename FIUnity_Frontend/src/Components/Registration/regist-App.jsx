@@ -58,7 +58,7 @@ export default function Registration() {
         // Store CSRF token and user_id in local storage
         localStorage.setItem("csrfToken", response.data.token);
         localStorage.setItem("user_id", response.data.user_id);
-        window.location.href = "http://localhost:5173/test";
+        window.location.href = "http://localhost:5173/register-submit";
       } else {
         console.error("Register failed");
         setErrorMessage("Register failed. Please check your credentials.");
@@ -132,7 +132,7 @@ export default function Registration() {
         </div>
         
 
-        <Link to="/test">
+        <Link to="/register-submit">
         <button className="submit-button" onClick={handleSubmit}>
           Submit</button>        
           </Link>
