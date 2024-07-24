@@ -38,9 +38,10 @@ class Organization(models.Model):
     name = models.CharField(max_length=100)
     username = models.CharField(max_length=100, blank = True, null = True)
     type = models.CharField(max_length=50, choices=ORGANIZATION_CHOICES, default='None')
+    registered = models.BooleanField(default=False)
         
     def __str__(self):
-        return f"{self.name} --> {self.type} "
+        return f"{self.name} --> {self.type}"
 
 # Creates a random and easily identifiable name for the created experience, project, and extracurricular
 @receiver(post_save, sender=Organization)
@@ -56,17 +57,24 @@ class Profile(models.Model):
     first_name = models.CharField(max_length=50)
     middle_name = models.CharField(max_length=50, default="")
     last_name = models.CharField(max_length=50)
+    email = models.EmailField(max_length=50, unique=True, null=True)
     grad_term = models.CharField(max_length=10, choices=TERM_CHOICES, default='Spring')
     graduation_year = models.IntegerField(null=True)
     major = models.CharField(max_length=50, default='')
     career_interest = models.CharField(max_length=50, default='')
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
-    def full_name(self):
-        return f"{self.first_name} {self.last_name}"
+    def save(self, *args, **kwargs):
+        if not self.pk:  # If the profile is being created
+            self.first_name = self.user.first_name
+            self.last_name = self.user.last_name
+            self.email = self.user.email
+            self.grad_term = self.user.grad_term
+            self.graduation_year = self.user.graduation_year
+        super(Profile, self).save(*args, **kwargs)
 
-    def __str__(self):
-        return f"{self.user} --> {self.full_name}"
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
 
 # Creating the section containing the user's past experiences like jobs
 class Experience(models.Model):
@@ -92,18 +100,17 @@ class Experience(models.Model):
     def save(self, *args, **kwargs):
         self.tagline = f"{self.job_position} at {self.company} "
         super().save(*args, **kwargs)
-        
     
     def __str__(self):
-        return f"{self.user.profile.full_name} --> {self.company} - ({self.job_position})"
+        return f"{self.user.full_name()} --> {self.company} - ({self.job_position})"
 
 # Creating the section containing the user's tech skills
 class Skill(models.Model):
     user = models.ForeignKey(AppUser, related_name="skills", on_delete=models.CASCADE)
-    skill_name = models.CharField(max_length=50, blank = True, null = True)
+    skill_name = models.CharField(max_length=100, null=True)
 
     def __str__(self):
-        return f"{self.user.profile.full_name} --> {self.id}"
+        return f"{self.skill_name} --> {self.user.profile.full_name()} : {self.user.id}"
 
 # Creating the section containing the user's projects
 class Project(models.Model):
@@ -111,10 +118,15 @@ class Project(models.Model):
     project = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True,
                                      related_name = "project")
     description = models.TextField(max_length=200, blank=True)
-    skills = models.ManyToManyField(Skill, related_name="experience", blank = True)
+    skills = models.ManyToManyField(Skill, related_name="project_skill", blank = True)
+    tagline = models.CharField(max_length=200, blank = True, null = True)
+
+    def save(self, *args, **kwargs):
+        self.tagline = f"Project: {self.project.name} "
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user.profile.full_name} --> {self.name}"
+        return f"{self.user.full_name()} --> {self.user.id}"
 
 # Creating the section containing the user's extracurricular activities
 class Extracurricular(models.Model):
@@ -122,21 +134,25 @@ class Extracurricular(models.Model):
     extracurricular = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True,
                                      related_name = "extra")
     description = models.TextField(max_length=200, blank=True)
+    tagline = models.CharField(max_length=200, blank = True, null = True)
+
+    def save(self, *args, **kwargs):
+        self.tagline = f"Extracurricular: {self.extracurricular.name} "
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user.profile.full_name} --> {self.name}"
+        return f"{self.user.full_name()} --> {self.id}"
 
 # Model that bring together the components of the profile page together
 class MainProfile(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name="Main_Profile")
     current_company =  models.OneToOneField(Experience, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    current_extra =  models.OneToOneField(Extracurricular, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    current_extracurricular =  models.OneToOneField(Extracurricular, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     current_project =  models.OneToOneField(Project, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    current_skill =  models.OneToOneField(Skill, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     about = models.TextField(blank = True, null = True, default=None)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     about = models.TextField(max_length=200, default='')
     
     def __str__(self):
-        return f'{self.profile.full_name} --> {self.id}'
+        return f'{self.profile.full_name()} --> {self.id}'
     

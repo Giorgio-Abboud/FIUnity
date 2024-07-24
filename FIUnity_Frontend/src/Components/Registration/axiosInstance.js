@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Set the base URL for your API requests
-axios.defaults.baseURL = "http://localhost:8000/";
+axios.defaults.baseURL = "http://localhost:8008/";
 
 // Intercept every request and include CSRF token
 axios.interceptors.request.use(
