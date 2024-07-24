@@ -135,51 +135,66 @@ class SingleProjectSerializer(serializers.ModelSerializer):
             'description': {'required': True},
         }
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data.pop('user', None)
+        data['user'] = instance.user.id
+
+        # Convert skill IDs to skill names
+        skills = instance.skills.all()
+        skill_names = [skill.skill_name for skill in skills]
+        data['skills'] = skill_names
+
+        return data
+
     def to_internal_value(self, data):
-        # Convert skill names to skill objects
+        # Convert skill names to Skill instances
         skills_data = data.get('skills', [])
-        skill_objects = []
+        skill_ids = []
         user = self.context['request'].user
 
         for skill in skills_data:
-            if isinstance(skill, str):  # It's a name
+            if isinstance(skill, str):  # If it's a skill name
                 skill_instance, created = Skill.objects.get_or_create(skill_name=skill, user=user)
-                skill_objects.append(skill_instance)
-            elif isinstance(skill, dict):  # Assuming dicts contain IDs
-                skill_instance = Skill.objects.get(id=skill.get('id'))
-                skill_objects.append(skill_instance)
+                skill_ids.append(skill_instance.pk)
+            elif isinstance(skill, int):  # If it's an ID
+                skill_ids.append(skill)
             else:
-                raise serializers.ValidationError("Invalid skill format")
+                raise serializers.ValidationError({"skills": "Invalid skill format"})
 
-        data['skills'] = skill_objects
+        data['skills'] = skill_ids
 
-        # Convert project names to project objects
+        # Convert project names to Organization instances
         project = data.get('project')
-        if isinstance(project, str):  # It's a name
-            project_instance, created = Organization.objects.get_or_create(name=project)
-            data['project'] = project_instance
-        elif isinstance(project, dict):  # Assuming dicts contain IDs
-            project_instance = Organization.objects.get(id=project.get('id'))
-            data['project'] = project_instance
+        if isinstance(project, str):  # If it's a project name
+            organizations = Organization.objects.filter(name=project, type='Project')
+            if organizations.exists():
+                data['project'] = organizations.first().pk
+            else:
+                raise serializers.ValidationError({"project": "Project not found"})
+        elif isinstance(project, int):  # If it's an ID
+            data['project'] = project
         else:
-            raise serializers.ValidationError("Invalid project format")
+            raise serializers.ValidationError({"project": "Invalid project format"})
 
         return super().to_internal_value(data)
 
     def update(self, instance, validated_data):
-        skills_data = validated_data.pop('skills', [])
+        skill_ids = validated_data.pop('skills', [])
         instance = super().update(instance, validated_data)
 
-        instance.skills.clear()
-        for skill in skills_data:
-            instance.skills.add(skill)  # skill is already a Skill object
+        # Update the skills
+        instance.skills.set(skill_ids)
 
+        # Update or create the main profile
         main_profile, created = MainProfile.objects.update_or_create(
             profile=instance.user.profile,
             defaults={'current_project': instance}
         )
         
         return instance
+
+
 
 # Serializer used to list project instances
 class ShortProjectSerializer(serializers.ModelSerializer):

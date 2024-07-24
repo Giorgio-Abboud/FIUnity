@@ -110,7 +110,7 @@ class Skill(models.Model):
     skill_name = models.CharField(max_length=100, null=True)
 
     def __str__(self):
-        return f"{self.skill_name} --> {self.user.profile.full_name()} : {self.user.id}"
+        return f"{self.skill_name}"
 
 # Creating the section containing the user's projects
 class Project(models.Model):
