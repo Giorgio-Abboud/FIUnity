@@ -201,7 +201,7 @@ class UserProfileView(CreateAPIView,RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     
     def get_object(self):
-        return get_object_or_404(Profile,user = self.request.user)
+        return get_object_or_404(Profile, user = self.request.user)
             
     def post(self, request, *args, **kwargs):
         request.data._mutable = True
@@ -244,32 +244,22 @@ class MyOrganizationView(APIView):
         return Response({"my_organizations" : extra_data + experience_data + project_data})
 
 class MainPageView(RetrieveUpdateAPIView):
-    
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = MainPageSerializer
-    
-    def get_object(self):
-        
-        try:
-            profile = Profile.objects.get_or_create(user = self.request.user)[0]
-            email = self.request.GET.get('email')
-            if profile.email == email:
-                self.request.data.update({"owner": True})
-                return MainProfile.objects.get_or_create(profile = profile)[0]
-            
-            else:
-                profile = get_object_or_404(Profile, email=email)
-                main_profile = MainProfile.objects.get_or_create(profile = profile)[0]
 
-                self.request.data.update({"owner": False})
-                return main_profile
-                
-        except TypeError:
-            email = self.request.GET.get('email')
-            profile = get_object_or_404(Profile, email = email)
-            self.request.data.update({"owner": False})
-            return MainProfile.objects.get_or_create(profile = profile)[0]
+    def get_object(self):
+        user = self.request.user
+        email = self.request.GET.get('email')
+
+        if email:
+            profile = get_object_or_404(Profile, email=email)
+        else:
+            profile, created = Profile.objects.get_or_create(user=user)
+
+        main_profile, created = MainProfile.objects.get_or_create(profile=profile)
+        return main_profile
+
         
 class MainProfileSearchView(ListAPIView):
     

@@ -154,9 +154,9 @@ class StandaloneSkill(models.Model):
 # Model that bring together the components of the profile page together
 class MainProfile(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name="Main_Profile")
-    current_company =  models.OneToOneField(Experience, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    current_extracurricular =  models.OneToOneField(Extracurricular, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    current_project =  models.OneToOneField(Project, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    # current_company =  models.OneToOneField(Experience, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    # current_extracurricular =  models.OneToOneField(Extracurricular, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    # current_project =  models.OneToOneField(Project, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     about = models.TextField(blank = True, null = True, default=None)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     about = models.TextField(max_length=200, default='')
