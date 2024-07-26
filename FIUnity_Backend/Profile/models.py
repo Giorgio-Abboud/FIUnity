@@ -64,6 +64,7 @@ class Profile(models.Model):
     minor = models.CharField(max_length=50, default='')
     career_interest = models.CharField(max_length=50, default='')
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+    pre_grad = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
         if not self.pk:  # If the profile is being created
