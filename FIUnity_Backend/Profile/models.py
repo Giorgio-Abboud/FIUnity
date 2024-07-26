@@ -102,7 +102,7 @@ class Experience(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f"{self.user.full_name()} --> {self.company} - ({self.job_position})"
+        return f"{self.user.get_full_name} --> {self.company} - ({self.job_position})"
 
 # Creating the section containing the user's tech skills
 class Skill(models.Model):
@@ -115,8 +115,7 @@ class Skill(models.Model):
 # Creating the section containing the user's projects
 class Project(models.Model):
     user = models.ForeignKey(AppUser, related_name="projects", on_delete=models.CASCADE)
-    project = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True,
-                                     related_name = "project")
+    project = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True, related_name = "project")
     description = models.TextField(max_length=200, blank=True)
     skills = models.ManyToManyField(Skill, related_name="project_skill", blank = True)
     tagline = models.CharField(max_length=200, blank = True, null = True)
@@ -142,6 +141,15 @@ class Extracurricular(models.Model):
 
     def __str__(self):
         return f"{self.user.full_name()} --> {self.id}"
+
+# Standalone skills
+class StandaloneSkill(models.Model):
+    user = models.ForeignKey(AppUser, related_name="standalone_skills", on_delete=models.CASCADE)
+    skill_name = models.CharField(max_length=100, null=True)
+    is_standalone = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.skill_name}"
 
 # Model that bring together the components of the profile page together
 class MainProfile(models.Model):
