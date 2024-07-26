@@ -61,6 +61,7 @@ class Profile(models.Model):
     grad_term = models.CharField(max_length=10, choices=TERM_CHOICES, default='Spring')
     graduation_year = models.IntegerField(null=True)
     major = models.CharField(max_length=50, default='')
+    minor = models.CharField(max_length=50, default='')
     career_interest = models.CharField(max_length=50, default='')
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
