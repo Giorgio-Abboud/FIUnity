@@ -282,25 +282,39 @@ class ShortExtracurricularSerializer(serializers.ModelSerializer):
 
 # Serializer used to create the search user functionality by formatting profile data
 class ProfileSearchSerializer(serializers.ModelSerializer):
-    
+    full_name = serializers.SerializerMethodField()
+    check_graduation_status = serializers.SerializerMethodField()
+
     class Meta:
         model = Profile
         exclude = ['id']
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        return data
+    def get_full_name(self, obj):
+        return f"{obj.user.first_name} {obj.user.last_name}"
+    
+    def get_check_graduation_status(self, obj):
+        # Retrieve user from context if needed
+        user = self.context.get('user')
+        # Perform any additional logic if needed
+        obj.check_graduation_status()
+        return obj.status
 
 # Serializer used to create the profile
 class ProfileSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
-    
+    check_graduation_status = serializers.SerializerMethodField()
+
     class Meta:
         model = Profile
         fields = '__all__'
 
     def get_full_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}"
+    
+    def get_check_graduation_status(self, obj):
+        # Ensure status is updated
+        obj.check_graduation_status()
+        return obj.status
 
 # Serializer used to make the main page for the profile
 class MainPageSerializer(serializers.ModelSerializer):
