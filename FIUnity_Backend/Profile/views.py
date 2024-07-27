@@ -204,7 +204,6 @@ class UserProfileView(CreateAPIView,RetrieveUpdateAPIView):
         return get_object_or_404(Profile, user = self.request.user)
             
     def post(self, request, *args, **kwargs):
-        request.data._mutable = True
         request.data.update({"user" : request.user.id})
         try:
             return super().post(request, *args, **kwargs)
@@ -212,7 +211,6 @@ class UserProfileView(CreateAPIView,RetrieveUpdateAPIView):
             return Response({"detail": f"{e}"}, status= status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, *args, **kwargs):
-        request.data._mutable = True
         request.data.update({"user" : request.user.id})
         try:
             return super().patch(request, *args, **kwargs)
@@ -275,8 +273,7 @@ class MainProfileSearchView(ListAPIView):
     
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        self.request.data.update({"owner": False, "user": self.request.user})
-        context['request'] = self.request
+        context['user'] = self.request.user  # Pass user in context
         return context
 
 # # View for the profile

@@ -4,6 +4,8 @@ from Authentication.models import AppUser
 from django.db.models import F, Q
 import string, random
 from django.dispatch import receiver
+from datetime import date
+from django.utils.timezone import now
 
 # Creating the options for the terms and employment types
 TERM_CHOICES = [
@@ -64,7 +66,26 @@ class Profile(models.Model):
     minor = models.CharField(max_length=50, default='')
     career_interest = models.CharField(max_length=50, default='')
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
-    pre_grad = models.BooleanField(default=True)
+    status = models.CharField(max_length=50, default='')
+
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+    
+    def get_graduation_date(self):
+        term_dates = {
+            'Spring': (4, 26),  # April 26 for Spring term
+            'Summer': (7, 26),  # July 26 for Summer term
+            'Fall': (12, 9)     # December 9 for Fall term
+        }
+        month, day = term_dates.get(self.grad_term, (4, 26))  # Default to April 26 if term is unknown
+        return date(self.graduation_year, month, day)
+
+    def check_graduation_status(self):
+        graduation_date = self.get_graduation_date()
+        if graduation_date <= now().date():
+            self.status = 'Alumni'
+        else:
+            self.status = 'Student'
 
     def save(self, *args, **kwargs):
         if not self.pk:  # If the profile is being created
@@ -73,10 +94,8 @@ class Profile(models.Model):
             self.email = self.user.email
             self.grad_term = self.user.grad_term
             self.graduation_year = self.user.graduation_year
+        self.check_graduation_status()
         super(Profile, self).save(*args, **kwargs)
-
-    def full_name(self):
-        return f"{self.user.first_name} {self.user.last_name}"
 
 # Creating the section containing the user's past experiences like jobs
 class Experience(models.Model):
