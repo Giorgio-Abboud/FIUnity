@@ -24,5 +24,4 @@ urlpatterns = [
     # Other URLs
     path('userprofile/', UserProfileView.as_view()),  # For retrieving and updating user profile
     path('mainpage/', MainPageView.as_view()),  # For retrieving main page data
-    path('search/', MainProfileSearchView.as_view()),  # For search functionality
 ]
