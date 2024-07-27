@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import {
+  fetchExtracurriculars,
+  createExtracurricular,
+  updateExtracurricular,
+  deleteExtracurricular,
+  fetchProjects,
+  createProject,
+  updateProject,
+  deleteProject,
+} from "../api/profileApi.js";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
-import { Link } from "react-router-dom";
 
-const ProfileEdit = ({ classification = "Alum" }) => {
+const ProfileEdit = ({ classification = "Student" }) => {
   const [profile, setProfile] = useState({
     firstName: "",
     lastName: "",
@@ -54,6 +63,19 @@ const ProfileEdit = ({ classification = "Alum" }) => {
 
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    const loadExtracurriculars = async () => {
+      try {
+        const data = await fetchExtracurriculars();
+        setExtracurriculars(data);
+      } catch (error) {
+        console.error("Error fetching extracurriculars:", error);
+      }
+    };
+
+    loadExtracurriculars();
+  }, []);
+
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile({ ...profile, [name]: value });
@@ -101,9 +123,22 @@ const ProfileEdit = ({ classification = "Alum" }) => {
 
   const handleExtracurrChange = (index, e) => {
     const { name, value } = e.target;
-    const newExtracurr = extracurr.slice();
-    newExtracurr[index][name] = value;
-    setExtracurr(newExtracurr);
+    // Update the specific extracurricular entry in the state
+    const updatedExtracurr = extracurr.map((item, idx) =>
+      idx === index ? { ...item, [name]: value } : item
+    );
+    setExtracurr(updatedExtracurr);
+  };
+
+  const deleteExtracurr = async (index, id) => {
+    try {
+      await deleteExtracurricular(id);
+      const newExtracurr = extracurr.slice();
+      newExtracurr.splice(index, 1);
+      setExtracurr(newExtracurr);
+    } catch (error) {
+      console.error("Error deleting extracurricular:", error);
+    }
   };
 
   const handleSkillChange = (e) => {
@@ -198,7 +233,8 @@ const ProfileEdit = ({ classification = "Alum" }) => {
   };
 
   const addExtracurr = () => {
-    setExtracurr([...extracurr, { extracurrName: "", description: "" }]);
+    const newExtracurricular = { extracurrName: "", description: "" };
+    setExtracurr([...extracurr, newExtracurricular]);
   };
 
   const addSkill = () => {
@@ -235,23 +271,32 @@ const ProfileEdit = ({ classification = "Alum" }) => {
         endDate: exp.current ? null : exp.endDate,
       })),
       projects,
+      extracurriculars: extracurr,
       skills,
     };
 
-    console.log("It got here too");
     try {
-      const response = await axios.post(
-        "http://localhost:8000/profile/profile-edit/",
-        profileData
-      );
-      if (response.status === 201) {
-        console.log("Profile edit successful");
-        navigate("/view-profile");
-      } else {
-        console.error("Profile edit failed");
+      for (const extracurrData of extracurr) {
+        if (
+          extracurrData.extracurrName.trim() &&
+          extracurrData.description.trim()
+        ) {
+          try {
+            const extracurricularResponse = await createExtracurricular({
+              name: extracurrData.extracurrName,
+              description: extracurrData.description,
+            });
+            console.log("Extracurricular created:", extracurricularResponse);
+          } catch (error) {
+            console.error("Failed to create extracurricular:", error);
+          }
+        }
       }
+
+      // Optionally, navigate to a different page after successful submission
+      // navigate("/view-profile");
     } catch (error) {
-      console.error("Error sending profile edit request:", error);
+      console.error("Error processing extracurriculars:", error);
     }
   };
 
@@ -855,7 +900,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
         {currentStep == 3 && (
           <>
             <div className="Edit-Profile-Button">
-              <button onSubmit={handleSubmit} className="edit-profile-submit">
+              <button onClick={handleSubmit} className="edit-profile-submit">
                 Save{" "}
               </button>
               {/* <Link to="/view-profile" className="edit-profile-button">
