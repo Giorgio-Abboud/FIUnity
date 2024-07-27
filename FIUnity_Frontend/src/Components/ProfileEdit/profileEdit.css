@@ -1,188 +1,298 @@
-
 .profile-form {
-    font-family: Helvetica;
-    color: #081e3f;
-    display: flex;
-    justify-content:left;
-    align-items: center;
-    text-align: left;
-    flex-direction: column;
-    padding: 20px;
+  font-family: Helvetica;
+  color: #081e3f;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  text-align: left;
+  flex-direction: column;
+  padding: 20px;
 }
-
 
 .required-fields {
-    display: inline;
-    color: red;
+  display: inline;
+  color: red;
 }
 
-.display-personal-info{
-    display: flex;
+.display-personal-info {
+  display: flex;
 }
 
 .profile-form .choose-image-button {
-    color: #fff; 
+  color: #fff;
 }
 
+
 .choose-image-button {
+  display: inline-block;
+  background-color: #ffcc00b0;
+  color: white;
+  margin-left: 45px;
+  font-size: 12px;
+  width: 80px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.profile-form  .choose-resume-button {
     display: inline-block;
-    background-color: #ffcc00b0;;
-    margin-left: 45px;
+    background-color: #ffcc00b0;
+    color: white;
+    margin-left: 40px;
+    margin-top: 0px;
     font-size: 12px;
-    width: 80px;
+    width: 90px;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+  }
+
+.choose-image-button:hover, .choose-resume-button:hover {
+  background-color: #b6862c;
 }
 
-.choose-image-button:hover {
-    background-color: #b6862c;
-}
+.resume {
+    margin-top: 20px;
+ 
+  }
 
+  .upload-success-message {
+    margin-left: 55px;
+    margin-top: 15px;
+    font-size: 14px;
+  }
 
 .profile-picture-container {
-    align-items: center;
-    margin-right: 80px;
-    margin-bottom: 20px;
+  align-items: center;
+  margin-right: 50px;
+  margin-bottom: 20px;
+  position: relative;
 }
 
-.profile-picture-container label{
-    margin-left: 45px;
+.profile-picture-container label {
+  margin-left: 45px;
 }
 
 .profile-picture {
-    display: flex;
-    margin-left: 50px;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin-right: 20px;
+  display: flex;
+  margin-left: 50px;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 20px;
 }
 
 .name-container {
-    margin-top: 20px;
-    display: inline-block;
-    margin-bottom: 20px;
+  margin-top: 20px;
+  display: inline-block;
 }
-
 
 .name-container input {
-    flex: 1; 
-    margin-right: 200px; 
-    margin-bottom: 10px;
+  flex: 1;
+  margin-right: 200px;
+  margin-bottom: 10px;
 }
- .experience-checkbox{
-    display: flex;
- }
+.experience-checkbox {
+  display: flex;
+}
 
- .checkbox-label{
-    margin-left: 10px;
- }
+.checkbox-label {
+  margin-left: 10px;
+}
 
 .profile-editing {
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-    width: 100%;
-    max-width: 600px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
 }
 
-.profile-editing h2{
-    text-align: center;
-    color: #081e3f;
-    margin-bottom: 20px;
+.profile-editing h2 {
+  text-align: center;
+  color: #081e3f;
+  margin-bottom: 20px;
 }
 
 .profile-editing h3 {
-    margin-top: 30px;
-    margin-bottom: 10px;;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 .profile-editing label {
-    display: block;
-    margin-bottom: 5px;
-    margin-top: 10px;
-    color: #081e3f;
-
+  display: block;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  color: #081e3f;
 }
 
 .profile-editing input[type="text"],
 .profile-editing input[type="date"],
 .profile-editing textarea,
 .profile-editing select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  position: relative; 
 }
 
 .profile-editing textarea {
-    resize: vertical;
+  resize: vertical;
 }
 
 .profile-editing .experience-section,
-.profile-editing .project-section, 
-.profile-editing .skills-section {
-    background-color: #f9f9f9;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
+.profile-editing .project-section,
+.profile-editing .extracurr-section,
+.profile-editing .skills-section,
+.profile-editing .networking-section {
+  background-color: #f9f9f9;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
 }
 
-.profile-editing button[type="button"] {
-    display: inline-block;
-    background-color: #081e3f;
-    color: #fff;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+.profile-editing-button {
+  display: inline-block;
+  background-color: #081e3f;
+  color: #fff;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.profile-editing button[type="button"]:hover {
-    background-color: #0f346b;
+.button-container {
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  justify-content: space-between;
+}
+
+.profile-editing-next {
+  background-color: #ffcc00b0;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.profile-editing-back {
+  background-color: #ffcc00b0;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.profile-editing-button:hover {
+  background-color: #0f346b;
 }
 
 .edit-profile-submit {
-    display: block;
-    width: 100%;
-    background-color: #ffcc00b0;
-    color: #fff;
-    font-size: 16px;
-    padding: 10px 0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-decoration: none;
+  display: block;
+  width: 100%;
+  background-color: #ffcc00b0;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
 }
 
-.edit-profile-submit:hover {
-    background-color: #b6862c;
+.edit-profile-submit:hover, .profile-editing-next:hover, .profile-editing-back:hover {
+  background-color: #b6862c;
 }
 
 .edit-profile-button {
-    text-decoration: none;
+  text-decoration: none;
 }
 
-
 .profile-editing .required-jobs {
-    color: red;
-    display: inline-block;
-    margin-left: 5px;
+  color: red;
+  display: inline-block;
+  margin-left: 5px;
 }
 
 .profile-editing .date-picker {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.url-box {
+  display: inline-block;
+  padding: 10px 23px;
+  border: none;
+  border-radius: 5px;
+  max-width: 150px;
+}
+
+.url-box input[type="url"]::placeholder {
+  font-size: 12px; 
+}
+
+.url-message {
+  margin-top: 10px;
+  color:red;
+  font-size:12px;
+  position: absolute;
+}
+
+.grad-error {
+  color:red;
+  font-size:12px;
+  padding-bottom: 15px;
+}
+
+.skills-list {
+  padding: 0;
+}
+
+.skills-item {
+  background-color: #081e3f;
+  color: #fff;
+  padding-right: 22px;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border: none;
+  border-radius: 3px;
+  font-size: 13px;
+  display: inline-block;
+  max-width: 150px;
+  margin-right: 12px;
+  margin-top: 12px;
+  position: relative;
+  word-wrap: break-word; 
+}
+
+.remove-skill-button{
+  border: none;
+  top: 0;
+  right: 0;
+  color: white;
+  background: none;
+  position:absolute;
+  cursor: pointer;
+
 }

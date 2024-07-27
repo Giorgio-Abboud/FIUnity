@@ -1,71 +1,47 @@
+from datetime import timezone
 from django.db import models
-from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from rest_framework_simplejwt.tokens import RefreshToken
+from .managers import UserManager
 
-class AppUserManager(BaseUserManager):
-
-    def create_user(self, first_name : str, last_name: str, email: str, PID: str, password: str = None, is_staff=False, is_superuser=False) -> "AppUser":
-        
-        if not email:
-            raise ValueError('Users must have an email address')
-        
-        if not password:
-            raise ValueError('Users must have a Password')
-        
-        if not first_name:
-            raise ValueError('Users must have a first name')
-
-        if not last_name:
-            raise ValueError('Users must have a last name')
-
-        user = self.model(email=self.normalize_email(email))
-        user.first_name = first_name
-        user.last_name = last_name
-        user.PID = PID
-        user.set_password(password)
-        user.is_active = True
-        user.is_staff = is_staff
-        user.is_superuser = is_superuser
-        user.save()
-
-        return user
-
-    def create_superuser(self, first_name : str, last_name: str, email: str, PID: str, password: str) -> "AppUser":
-
-        user = self.create_user(
-            first_name=first_name,
-            last_name=last_name,
-            PID = PID,
-            email=email,
-            password=password,
-            is_staff=True,
-            is_superuser=True
-        )
-        user.save()
-        return user
-    
+TERM_CHOICES = [
+        ('Spring', 'Spring'),
+        ('Summer', 'Summer'),
+        ('Fall', 'Fall'),
+    ]
 
 class AppUser(AbstractBaseUser, PermissionsMixin):
-    
-    user_id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=50, unique=True)
     PID = models.CharField(max_length=7, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    graduation_year = models.IntegerField(default=2024)
+    grad_term = models.CharField(max_length=10, choices=TERM_CHOICES)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['PID', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['PID', 'first_name', 'last_name', 'graduation_year', 'grad_term']
 
-    objects = AppUserManager()
+    objects = UserManager()
+
+    def tokens(self):    
+        refresh = RefreshToken.for_user(self)
+        return {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token)
+        }
 
     def __str__(self):
-        return self.PID
-    
-    def get_user_id(self):
-        return self.pk
+        return self.email
 
-    class Meta:
-        verbose_name = 'App User'
-        verbose_name_plural = 'App Users'
+    @property
+    def get_full_name(self):
+        return f"{self.first_name.title()} {self.last_name.title()}"
+
+    @property
+    def is_alumni(self):
+        current_year = timezone.now().year
+        profile = self.profile  # assuming there is a related_name="profile" in the Profile model
+        return profile.graduation_year < current_year if profile else False

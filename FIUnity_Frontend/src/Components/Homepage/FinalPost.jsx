@@ -17,43 +17,61 @@ export default function FinalPost({
   timestamp,
   comments,
   onCommentSubmit,
+  commentCount,
 }) {
   const [userInput, setUserInput] = useState("");
-  const [likesCount, setLikesCount] = useState(0);
+  const [postLikesCount, setPostLikesCount] = useState(0);
+  const [commentLikesCount, setCommentLikesCount] = useState(0);
+  const [showCommentSection, setShowCommentSection] = useState(false);
+
   console.log(imagesData);
+  console.log(commentCount);
 
-  // const handleLike = async () => {
-  //   try {
-  //     await axios.put(`http://127.0.0.1:8000/feed/posts/${postId}/like/`);
-  //     // Fetch updated likes count separately
-  //     const response = await axios.get(`http://127.0.0.1:8000/feed/posts/`);
-  //     setLikesCount(response.data.likes); // Update likes count based on the fetched data
-  //   } catch (error) {
-  //     console.error("Failed to like post:", error);
-  //     console.log('response', response)
-  //   }
-  // };
+  const [adjustedTimestamp, setAdjustedTimestamp] = useState("");
+  const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState(
+    {}
+  );
 
-  // const handleLike = async () => {
-  //   try {
-  //     const token = localStorage.getItem('token'); // Assume you store the token in localStorage
-  //     await axios.put(`http://127.0.0.1:8000/feed/posts/${postId}/like/`, {}, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}` // Include the token in the Authorization header
-  //       }
-  //     });
-  //     // Fetch updated likes count separately
-  //     const response = await axios.get(`http://127.0.0.1:8000/feed/feed/${postId}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}` // Include the token in the Authorization header
-  //       }
-  //     });
-  //     setLikesCount(response.data.likes); // Update likes count based on the fetched data
-  //   } catch (error) {
-  //     console.log('response',resopnse)
-  //     console.error("Failed to like post:", error);
-  //   }
-  // };
+  function adjustTimestampToTimeZone(timestamp) {
+    const date = new Date(timestamp);
+    const offsetInMinutes = date.getTimezoneOffset();
+    date.setMinutes(date.getMinutes() - offsetInMinutes);
+
+    const options = {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    };
+
+    const adjustedTimestamp = date.toLocaleString(undefined, options);
+    return adjustedTimestamp;
+  }
+
+  useEffect(() => {
+    // Adjust the timestamp for display
+    const adjustedTimestamp = adjustTimestampToTimeZone(timestamp);
+    setAdjustedTimestamp(adjustedTimestamp); // Set the adjusted timestamp in state
+  }, [timestamp]);
+
+  useEffect(() => {
+    if (comments && comments.length > 0) {
+      const adjustedCommentTimestamps = {};
+      comments.forEach((comment, index) => {
+        const adjustedCommentTimestamp = adjustTimestampToTimeZone(
+          comment.created_at
+        );
+        adjustedCommentTimestamps[index] = adjustedCommentTimestamp;
+      });
+      setAdjustedCommentTimestamps(adjustedCommentTimestamps);
+    }
+  }, [comments]);
+
+  const handleCommentIconClick = () => {
+    setShowCommentSection(!showCommentSection);
+  };
 
   const handleCommentSubmit = async () => {
     const currentDateTime = new Date()
@@ -69,6 +87,7 @@ export default function FinalPost({
       text: userInput,
       created_at: currentDateTime,
     };
+
     console.log("commentData");
     console.log(commentData);
     try {
@@ -84,6 +103,7 @@ export default function FinalPost({
       );
       console.log("Comment submitted:", response.data);
       setUserInput("");
+
       if (onCommentSubmit) {
         console.log(response.data);
         onCommentSubmit(postId, commentData);
@@ -92,6 +112,28 @@ export default function FinalPost({
       console.error("Failed to submit comment:", error);
     }
   };
+
+  const handleLikeClick = async () => {
+    try {
+      const response = await axios.post(
+        `http://127.0.0.1:8000/feed/posts/${postId}/like/`,
+        null,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            mode: "cors",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setPostLikesCount((prevCount) => response.data.likes_count); // Update like count
+      }
+    } catch (error) {
+      console.error("Failed to like the post:", error);
+    }
+  };
+
   return (
     <>
       {console.log("Image Data:", imagesData)}
@@ -102,8 +144,8 @@ export default function FinalPost({
               <div className="name">
                 {firstName} {lastName}
               </div>
-              <div className="time-stamp homepage-time-font final-post-time-stamp">
-                Posted on: {timestamp}
+              <div className="time-stamp-post homepage-time-font final-post-time-stamp">
+                Posted on: {adjustedTimestamp}
               </div>
             </div>
             <div className="classification">{classification}</div>
@@ -111,12 +153,21 @@ export default function FinalPost({
         </div>
         <p className="homepage-font">{description}</p>
         <div className="post-features icon-cursor">
-          <div className="Post-icon-color homepage-font">
-            {likesCount} <AiOutlineLike />
+          <div
+            className="Post-icon-color homepage-font"
+            onClick={handleLikeClick}
+          >
+            {postLikesCount}
+            <AiOutlineLike />
             Like
           </div>
-          <div className="Post-icon-color homepage-font">
-            <FaRegCommentAlt /> Comment
+          <div
+            className="Post-icon-color homepage-font"
+            onClick={() => setShowCommentSection(!showCommentSection)}
+          >
+            {commentCount}
+            <FaRegCommentAlt />
+            Comment
           </div>
           <div className="Post-icon-color homepage-font">
             <IoShareOutline /> Share
@@ -125,48 +176,59 @@ export default function FinalPost({
             <BiRepost /> Repost
           </div>
         </div>
-        <div className="comment-flex">
-          <div className="name">
-            {firstName} {lastName}
-          </div>
-          <textarea
-            className="comment scrollbar"
-            value={userInput}
-            onChange={(event) => {
-              setUserInput(event.target.value);
-            }}
-            placeholder="Add a comment..."
-          />
-          <button className="post-button" onClick={handleCommentSubmit}>
-            Post
-          </button>
-        </div>
-        <div>
-          {comments && comments.length > 0 ? (
-            comments
-              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-              .map((comment) => (
-                <div key={comment.id} className="comment-post-box font">
-                  <div className="time-container">
-                    <p className="name">
-                      {comment.first_name} {comment.last_name}
-                    </p>
-                    <div className="time-stamp homepage-time-font">
-                      Posted on: {comment.created_at}
+
+        {showCommentSection && (
+          <>
+            <div className="comment-flex">
+              <div className="name">
+                {firstName} {lastName}
+              </div>
+              <textarea
+                className="comment scrollbar"
+                value={userInput}
+                onChange={(event) => {
+                  setUserInput(event.target.value);
+                }}
+                placeholder="Add a comment..."
+              />
+              <button className="post-button" onClick={handleCommentSubmit}>
+                Post
+              </button>
+            </div>
+            <div>
+              {console.log(
+                "Adjusted Comment Timestamps:",
+                adjustedCommentTimestamps
+              )}
+              {comments && comments.length > 0 ? (
+                comments
+                  .sort(
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                  )
+                  .map((comment, index) => (
+                    <div key={index} className="comment-post-box font">
+                      <div className="time-container">
+                        <p className="name">
+                          {comment.first_name} {comment.last_name}
+                        </p>
+                        <div className="time-stamp-comment homepage-time-font">
+                          Posted on: {adjustedCommentTimestamps[index]}
+                        </div>
+                      </div>
+                      <p className="comment-descript">{comment.text}</p>
+                      <div className="Post-icon-color homepage-font">
+                        {commentLikesCount} <AiOutlineLike />
+                      </div>
                     </div>
-                  </div>
-                  <p className="comment-descript">{comment.text}</p>
-                  <div className="Post-icon-color homepage-font">
-                    0 <AiOutlineLike />
-                  </div>
-                </div>
-              ))
-          ) : (
-            <p className="no-comment homepage-font">
-              Be the first to comment...
-            </p>
-          )}
-        </div>
+                  ))
+              ) : (
+                <p className="no-comment homepage-font">
+                  Be the first to comment...
+                </p>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </>
   );

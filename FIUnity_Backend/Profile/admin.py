@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import Profile, Experience, Project, Extracurricular
+from .models import Profile, Experience, Project, Extracurricular, Skill
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'first_name', 'last_name', 'graduation_year', 'class_standing', 'career_interest')
+    list_display = ('user', 'first_name', 'last_name', 'graduation_year', 'career_interest')
     search_fields = ('user__username', 'first_name', 'last_name', 'career_interest')
-    list_filter = ('class_standing', 'graduation_year')
+    list_filter = ('graduation_year',)
 
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):
@@ -15,12 +15,12 @@ class ExperienceAdmin(admin.ModelAdmin):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('user', 'name', 'description')
+    list_display = ('user', 'description')
     search_fields = ('user__username', 'name')
     list_filter = ('user',)
 
 @admin.register(Extracurricular)
 class ExtracurricularAdmin(admin.ModelAdmin):
-    list_display = ('user', 'name', 'description')
+    list_display = ('user', 'description')
     search_fields = ('user__username', 'name')
     list_filter = ('user',)
