@@ -1,7 +1,6 @@
 from rest_framework import serializers, status
 from .models import *
 from Authentication.utils import CustomValidation
-from django.shortcuts import get_object_or_404
 from django.db.utils import IntegrityError
 
 # This is the helper serializer that keeps the models organized
@@ -46,7 +45,7 @@ class ExperienceSerializer(serializers.ModelSerializer):
         main_profile[0].current_company = Experience.objects.filter(user = validated_data['user']).order_by('-start_date')[0]
         main_profile[0].save()
         return experience
-    
+
 # Serializer used to update a single instance of an experience model
 class SingleExperienceSerializer(serializers.ModelSerializer):
     company_data = OrganizationSerializer(source = "company",read_only = True)
@@ -81,7 +80,6 @@ class ShortExperienceSerializer(serializers.ModelSerializer):
 # This serializer is for the creation and validation of the project model
 class ProjectSerializer(serializers.ModelSerializer):
     project_data = OrganizationSerializer(source="project", read_only=True)
-    # user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Project
@@ -122,7 +120,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         )
         
         return project
-    
+
 # Serializer used to update a single instance of an project model
 class SingleProjectSerializer(serializers.ModelSerializer):
     project_data = OrganizationSerializer(source="project", read_only=True)
@@ -194,14 +192,12 @@ class SingleProjectSerializer(serializers.ModelSerializer):
         
         return instance
 
-
-
 # Serializer used to list project instances
 class ShortProjectSerializer(serializers.ModelSerializer):
     project_data = OrganizationSerializer(source = "project", read_only = True)
     
     class Meta:
-        model = Experience
+        model = Project
         fields = ['tagline', 'project', 'project_data']
         
     def to_representation(self, instance):
@@ -211,22 +207,22 @@ class ShortProjectSerializer(serializers.ModelSerializer):
 
 # This serializer is to handle the skill model 
 class SkillSerializer(serializers.ModelSerializer):
-    # Add fields explicitly if needed
-    user_full_name = serializers.SerializerMethodField()
-
+    
     class Meta:
         model = Skill
-        fields = ['id', 'skill_name', 'user_full_name']
-
-    def get_user_full_name(self, obj):
-        return obj.user.profile.full_name
+        fields = ['id', 'skill_name']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        
-        # Add any additional fields or custom representation here
-        
+                
         return data
+
+# This serializer is to handle the standalone skill model  
+class StandaloneSkillSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = StandaloneSkill
+        fields = ['id', 'skill_name', 'is_standalone']
 
 # This serializer is for the creation and validation of the extracurricular model
 class ExtracurricularSerializer(serializers.ModelSerializer):
@@ -276,7 +272,7 @@ class ShortExtracurricularSerializer(serializers.ModelSerializer):
     extra_data = OrganizationSerializer(source = "extra", read_only = True)
     
     class Meta:
-        model = Experience
+        model = Extracurricular
         fields = ['tagline', 'extracurricular', 'extra_data']
         
     def to_representation(self, instance):
@@ -286,53 +282,67 @@ class ShortExtracurricularSerializer(serializers.ModelSerializer):
 
 # Serializer used to create the search user functionality by formatting profile data
 class ProfileSearchSerializer(serializers.ModelSerializer):
-    
+    full_name = serializers.SerializerMethodField()
+    check_graduation_status = serializers.SerializerMethodField()
+
     class Meta:
         model = Profile
         exclude = ['id']
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        return data
+    def get_full_name(self, obj):
+        return f"{obj.user.first_name} {obj.user.last_name}"
+    
+    def get_check_graduation_status(self, obj):
+        # Retrieve user from context if needed
+        user = self.context.get('user')
+        # Perform any additional logic if needed
+        obj.check_graduation_status()
+        return obj.status
 
 # Serializer used to create the profile
 class ProfileSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
-    
+    check_graduation_status = serializers.SerializerMethodField()
+
     class Meta:
         model = Profile
-        fields = ['picture', 'full_name',]
+        fields = '__all__'
 
     def get_full_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}"
+    
+    def get_check_graduation_status(self, obj):
+        # Ensure status is updated
+        obj.check_graduation_status()
+        return obj.status
 
 # Serializer used to make the main page for the profile
 class MainPageSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only = True)
-    current_company = ShortExperienceSerializer(read_only = True)
-    current_extra = ShortExtracurricularSerializer(read_only = True)
-    current_project = ShortProjectSerializer(read_only = True)
-    owner = serializers.SerializerMethodField()
+    # current_company = ShortExperienceSerializer(read_only = True)
+    # current_extra = ShortExtracurricularSerializer(read_only = True)
+    # current_project = ShortProjectSerializer(read_only = True)
+    # full_name = serializers.SerializerMethodField()
     
     class Meta:
         model = MainProfile
         exclude = ['id']
-        
-    def get_owner(self, instance):
-        return self.context['request'].data['owner']
 
+    def get_full_name(self, obj):
+        return obj.profile.full_name()
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         
+        user = instance.profile.user
         experience_data = Experience.objects.filter(user=instance.profile.user)[:2]
         extra_data = Extracurricular.objects.filter(user=instance.profile.user)[:2]
-        project_data = Project.objects.filter(user=instance.profile.user)[:2]
-        skill_data = Skill.objects.filter(user=instance.profile.user)[:3]
+        project_data = Project.objects.filter(user=instance.profile.user).order_by('-id')[:1]
+        skill_data = StandaloneSkill.objects.filter(user=instance.profile.user)[:3]
         
         data['experience_data'] = SingleExperienceSerializer(instance=experience_data, many=True).data
         data['extra_data'] = SingleExtracurricularSerializer(instance=extra_data, many=True).data
         data['project_data'] = SingleProjectSerializer(instance=project_data, many=True).data
-        data['skill_data'] = SkillSerializer(instance=skill_data, many=True).data
+        data['skill_data'] = StandaloneSkillSerializer(instance=skill_data, many=True).data
 
         return data

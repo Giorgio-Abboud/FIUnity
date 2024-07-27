@@ -2,26 +2,27 @@ from django.urls import path
 from Profile.views import *
 
 urlpatterns = [
-    path('organization/', OrganizationView.as_view()),
-    path('myorganization/', MyOrganizationView.as_view()),
+    path('organization/', OrganizationView.as_view()), # No need
+    path('myorganization/', MyOrganizationView.as_view()), # No need
     
     # Extracurricular URLs
-    path('extracurricular/', ExtracurricularView.as_view()), # For listing and creating extracurriculars (POST, GET)
-    path('extracurricular/<int:pk>/', SingleExtracurricularView.as_view()), # For retrieving, updating, and deleting a specific extracurricular (pk = post id) (PATCH, DELETE, GET)
+    path('extracurriculars/', ExtracurricularView.as_view()), # For listing and creating extracurriculars (POST, GET)
+    path('extracurriculars/<int:pk>/', SingleExtracurricularView.as_view()), # For retrieving, updating, and deleting a specific extracurricular (pk = post id) (PATCH, DELETE, GET)
     
     # Experience URLs
-    path('experience/', ExperienceView.as_view()),  # For listing and creating experiences
-    path('experience/<int:pk>/', SingleExperienceView.as_view()),  # For retrieving, updating, and deleting a specific experience
+    path('experiences/', ExperienceView.as_view()),  # For listing and creating experiences (POST, GET)
+    path('experiences/<int:pk>/', SingleExperienceView.as_view()),  # For retrieving, updating, and deleting a specific experience (PATCH, DELETE, GET)
     
     # Project URLs
-    path('project/', ProjectView.as_view()),  # For listing and creating projects (POST, GET)
-    path('project/<int:pk>/', SingleProjectView.as_view()),  # For retrieving, updating, and deleting a specific project
+    path('projects/', ProjectView.as_view()), # For listing and creating projects (POST, GET)
+    path('projects/<int:pk>/', SingleProjectView.as_view()), # For retrieving, updating, and deleting a specific project (PATCH, DELETE, GET)
     
     # Skill URLs
-    path('user_skill/<int:pk>/', UserSkillsView.as_view()),  # For retrieving, updating, and deleting user skills
-    path('project_skill/<int:pk>/', ProjectSkillsView.as_view()),  # For retrieving, updating, and deleting project skills
+    path('skills/', UserSkillsView.as_view()), # For retrieving, updating, and deleting user skills (POST, GET)
+    path('skills/<int:pk>/', SingleUserSkillsView.as_view()), # For retrieving, and deleting project skills (DELETE, GET)
     
     # Other URLs
-    path('userprofile/', UserProfileView.as_view()),  # For retrieving and updating user profile
-    path('mainpage/', MainPageView.as_view()),  # For retrieving main page data
+    path('userprofile/', UserProfileView.as_view()), # For retrieving and updating user profile
+    path('mainpage/', MainPageView.as_view()), # For retrieving main page data
+    path('search/', MainProfileSearchView.as_view()), # For search functionality
 ]

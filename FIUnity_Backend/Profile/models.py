@@ -4,6 +4,8 @@ from Authentication.models import AppUser
 from django.db.models import F, Q
 import string, random
 from django.dispatch import receiver
+from datetime import date
+from django.utils.timezone import now
 
 # Creating the options for the terms and employment types
 TERM_CHOICES = [
@@ -61,8 +63,29 @@ class Profile(models.Model):
     grad_term = models.CharField(max_length=10, choices=TERM_CHOICES, default='Spring')
     graduation_year = models.IntegerField(null=True)
     major = models.CharField(max_length=50, default='')
+    minor = models.CharField(max_length=50, default='')
     career_interest = models.CharField(max_length=50, default='')
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+    status = models.CharField(max_length=50, default='')
+
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+    
+    def get_graduation_date(self):
+        term_dates = {
+            'Spring': (4, 26),  # April 26 for Spring term
+            'Summer': (7, 26),  # July 26 for Summer term
+            'Fall': (12, 9)     # December 9 for Fall term
+        }
+        month, day = term_dates.get(self.grad_term, (4, 26))  # Default to April 26 if term is unknown
+        return date(self.graduation_year, month, day)
+
+    def check_graduation_status(self):
+        graduation_date = self.get_graduation_date()
+        if graduation_date <= now().date():
+            self.status = 'Alumni'
+        else:
+            self.status = 'Student'
 
     def save(self, *args, **kwargs):
         if not self.pk:  # If the profile is being created
@@ -71,10 +94,8 @@ class Profile(models.Model):
             self.email = self.user.email
             self.grad_term = self.user.grad_term
             self.graduation_year = self.user.graduation_year
+        self.check_graduation_status()
         super(Profile, self).save(*args, **kwargs)
-
-    def full_name(self):
-        return f"{self.user.first_name} {self.user.last_name}"
 
 # Creating the section containing the user's past experiences like jobs
 class Experience(models.Model):
@@ -102,7 +123,7 @@ class Experience(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f"{self.user.full_name()} --> {self.company} - ({self.job_position})"
+        return f"{self.user.get_full_name} --> {self.company} - ({self.job_position})"
 
 # Creating the section containing the user's tech skills
 class Skill(models.Model):
@@ -115,8 +136,7 @@ class Skill(models.Model):
 # Creating the section containing the user's projects
 class Project(models.Model):
     user = models.ForeignKey(AppUser, related_name="projects", on_delete=models.CASCADE)
-    project = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True,
-                                     related_name = "project")
+    project = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True, related_name = "project")
     description = models.TextField(max_length=200, blank=True)
     skills = models.ManyToManyField(Skill, related_name="project_skill", blank = True)
     tagline = models.CharField(max_length=200, blank = True, null = True)
@@ -143,12 +163,21 @@ class Extracurricular(models.Model):
     def __str__(self):
         return f"{self.user.full_name()} --> {self.id}"
 
+# Standalone skills
+class StandaloneSkill(models.Model):
+    user = models.ForeignKey(AppUser, related_name="standalone_skills", on_delete=models.CASCADE)
+    skill_name = models.CharField(max_length=100, null=True)
+    is_standalone = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.skill_name}"
+
 # Model that bring together the components of the profile page together
 class MainProfile(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name="Main_Profile")
-    current_company =  models.OneToOneField(Experience, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    current_extracurricular =  models.OneToOneField(Extracurricular, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    current_project =  models.OneToOneField(Project, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    # current_company =  models.OneToOneField(Experience, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    # current_extracurricular =  models.OneToOneField(Extracurricular, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    # current_project =  models.OneToOneField(Project, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     about = models.TextField(blank = True, null = True, default=None)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     about = models.TextField(max_length=200, default='')

@@ -45,63 +45,54 @@ class SingleExtracurricularView(RetrieveUpdateDestroyAPIView):
             return Response({"detail": f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
     
 class ExperienceView(ListCreateAPIView):
-    
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ExperienceSerializer
-    
-    def get_queryset(self):
-        try:
-            profile = Profile.objects.get_or_create(user = self.request.user)[0]
-            email = self.request.GET.get('email')
-            if profile.email == email:
-                return Experience.objects.filter(user = profile.user)
-            
-            else:
-                profile = get_object_or_404(Profile, email=email)
-                return Experience.objects.filter(user = profile.user)
 
-        except TypeError:
-            email = self.request.GET.get('email')
-            profile = get_object_or_404(Profile, email=email)
-            return Experience.objects.filter(user = profile.user)
-    
-    
+    def get_queryset(self):
+        return Experience.objects.filter(user=self.request.user)
+
     def post(self, request, *args, **kwargs):
+        request.data.update({"user": request.user.id})
         try:
-            company = request.data['company']
+            company = request.data.get('company')
             if not isinstance(company, int):
-                new_company =  Organization.objects.create(name = company, type = 'Company')
+                new_company = Organization.objects.create(name=company, type='Company')
                 request.data['company'] = new_company.id
         except KeyError:
             pass
-            
-        try:
-            return super().post(request, *args, **kwargs)
-        except Exception as e:
-            return Response({"detail": f"{e}"}, status= status.HTTP_400_BAD_REQUEST)
+
+        return super().post(request, *args, **kwargs)
     
 class SingleExperienceView(RetrieveUpdateDestroyAPIView):
-    
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = SingleExperienceSerializer
-    
+
     def get_queryset(self):
-        return Experience.objects.filter(user = self.request.user)
-    
+        return Experience.objects.filter(user=self.request.user)
+
     def put(self, request, *args, **kwargs):
+        request.data.update({"user": request.user.id})
         try:
-            company = request.data['company']
+            company = request.data.get('company')
             if not isinstance(company, int):
-                new_company =  Organization.objects.create(name = company, type = 'Company')
+                new_company = Organization.objects.create(name=company, type='Company')
                 request.data['company'] = new_company.id
         except KeyError:
             pass
+        return super().put(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        request.data.update({"user": request.user.id})
         try:
-            return super().put(request, *args, **kwargs)
-        except Exception as e:
-            return Response({"detail": f"{e}"}, status= status.HTTP_400_BAD_REQUEST)
+            company = request.data.get('company')
+            if not isinstance(company, int):
+                new_company = Organization.objects.create(name=company, type='Company')
+                request.data['company'] = new_company.id
+        except KeyError:
+            pass
+        return super().patch(request, *args, **kwargs)
 
 class ProjectView(ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -175,31 +166,33 @@ class SingleProjectView(RetrieveUpdateDestroyAPIView):
             return super().patch(request, *args, **kwargs)
         except Exception as e:
             return Response({"detail": f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
-
-class ProjectSkillsView(ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = ProjectSerializer
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        return context
-
-    def get_queryset(self):
-        user = self.request.user
-        return Project.objects.filter(user=user)
     
 class UserSkillsView(ListCreateAPIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = SkillSerializer
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['owner'] = self.request.user.id
-        return context
+    serializer_class = StandaloneSkillSerializer
 
     def get_queryset(self):
         user = self.request.user
-        return Skill.objects.filter(user=user, project__isnull=True)
+        return StandaloneSkill.objects.filter(user=user, is_standalone=True)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user, is_standalone=True)
+
+class SingleUserSkillsView(RetrieveDestroyAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = StandaloneSkillSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return StandaloneSkill.objects.filter(user=user)
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
 
 class UserProfileView(CreateAPIView,RetrieveUpdateAPIView):
     
@@ -208,10 +201,9 @@ class UserProfileView(CreateAPIView,RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     
     def get_object(self):
-        return get_object_or_404(Profile,user = self.request.user)
+        return get_object_or_404(Profile, user = self.request.user)
             
     def post(self, request, *args, **kwargs):
-        request.data._mutable = True
         request.data.update({"user" : request.user.id})
         try:
             return super().post(request, *args, **kwargs)
@@ -219,7 +211,6 @@ class UserProfileView(CreateAPIView,RetrieveUpdateAPIView):
             return Response({"detail": f"{e}"}, status= status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, *args, **kwargs):
-        request.data._mutable = True
         request.data.update({"user" : request.user.id})
         try:
             return super().patch(request, *args, **kwargs)
@@ -251,32 +242,22 @@ class MyOrganizationView(APIView):
         return Response({"my_organizations" : extra_data + experience_data + project_data})
 
 class MainPageView(RetrieveUpdateAPIView):
-    
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = MainPageSerializer
-    
-    def get_object(self):
-        
-        try:
-            profile = Profile.objects.get_or_create(user = self.request.user)[0]
-            email = self.request.GET.get('email')
-            if profile.email == email:
-                self.request.data.update({"owner": True})
-                return MainProfile.objects.get_or_create(profile = profile)[0]
-            
-            else:
-                profile = get_object_or_404(Profile, email=email)
-                main_profile = MainProfile.objects.get_or_create(profile = profile)[0]
 
-                self.request.data.update({"owner": False})
-                return main_profile
-                
-        except TypeError:
-            email = self.request.GET.get('email')
-            profile = get_object_or_404(Profile, email = email)
-            self.request.data.update({"owner": False})
-            return MainProfile.objects.get_or_create(profile = profile)[0]
+    def get_object(self):
+        user = self.request.user
+        email = self.request.GET.get('email')
+
+        if email:
+            profile = get_object_or_404(Profile, email=email)
+        else:
+            profile, created = Profile.objects.get_or_create(user=user)
+
+        main_profile, created = MainProfile.objects.get_or_create(profile=profile)
+        return main_profile
+
         
 class MainProfileSearchView(ListAPIView):
     
@@ -292,8 +273,7 @@ class MainProfileSearchView(ListAPIView):
     
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        self.request.data.update({"owner": False, "user": self.request.user})
-        context['request'] = self.request
+        context['user'] = self.request.user  # Pass user in context
         return context
 
 # # View for the profile
