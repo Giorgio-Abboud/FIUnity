@@ -56,23 +56,32 @@ export default function CreatePost({
       .toISOString()
       .slice(0, 19)
       .replace("T", " ");
-    const formData = new FormData();
 
-    formData.append("user", 1);
-    formData.append("description", userInput);
+    const formData = new FormData();
+    const userId = localStorage.getItem("user_id");
+    formData.append("user", userId);
+    formData.append("body", userInput);
     formData.append("created_at", currentDateTime);
 
     if (selectedFile) {
       formData.append("images", selectedFile); // Add the file to form data
     }
 
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    const accessToken = localStorage.getItem("access_token");
+    console.log("accesstoken", accessToken)
+   
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/feed/posts/",
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // Set content type to multipart/form-data
+            "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${accessToken}`,
             mode: "cors",
           },
         }

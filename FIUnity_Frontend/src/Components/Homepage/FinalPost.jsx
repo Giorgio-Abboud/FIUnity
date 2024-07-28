@@ -25,9 +25,7 @@ export default function FinalPost({
   const [postLikesCount, setPostLikesCount] = useState(0);
   const [commentLikesCount, setCommentLikesCount] = useState(0);
   const [showCommentSection, setShowCommentSection] = useState(false);
-
-  console.log(imagesData);
-  console.log(commentCount);
+  const [posts, setPosts] = useState([]);
 
   const [adjustedTimestamp, setAdjustedTimestamp] = useState("");
   const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState(
@@ -70,6 +68,7 @@ export default function FinalPost({
       setAdjustedCommentTimestamps(adjustedCommentTimestamps);
     }
   }, [comments]);
+
 
   const handleCommentIconClick = () => {
     setShowCommentSection(!showCommentSection);
@@ -138,7 +137,6 @@ export default function FinalPost({
 
   return (
     <>
-      {console.log("Image Data:", imagesData)}
       <div className=" final-post-box font">
         <button className="icon-button">
           <div className="report-final">
