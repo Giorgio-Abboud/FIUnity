@@ -4,6 +4,7 @@ import axios from "axios";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
 import { Link } from "react-router-dom";
+import Search from './search'
 
 const ProfileEdit = ({ classification = "Alum" }) => {
   const [profile, setProfile] = useState({
@@ -28,7 +29,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
       jobTitle: "",
       companyName: "",
       type: "",
-      location: "",
+      location:"",
       startDate: "",
       endDate: "",
       current: false,
@@ -204,6 +205,11 @@ const ProfileEdit = ({ classification = "Alum" }) => {
   const addSkill = () => {
     setSkills([...skills, { skillName: "" }]);
   };
+
+  const handleOnSearchChange = (searchData) => {
+    console.log('searchData:', searchData);
+    
+  }
 
   const nextStep = () => {
     const form = document.getElementById("profileForm");
@@ -608,13 +614,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
                 )}
 
                 <label htmlFor={`location-${index}`}>Location</label>
-                <input
-                  type="text"
-                  id={`location-${index}`}
-                  name="location"
-                  value={experience.location}
-                  onChange={(e) => handleExperienceChange(index, e)}
-                />
+                <Search onSearchChange={handleOnSearchChange}/>
 
                 <label htmlFor={`startDate-${index}`}>
                   Start Date <div className="required-fields">*</div>
