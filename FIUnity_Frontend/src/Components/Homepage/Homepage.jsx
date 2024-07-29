@@ -3,9 +3,8 @@ import React, { useEffect, useState } from "react";
 import CreatePost from "./CreatePost";
 import axios from "axios";
 
-
 function Homepage() {
-  const [allPosts, setAllPosts] = useState([{ comments: [] }]);
+  const [allPosts, setAllPosts] = useState([]);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
@@ -18,12 +17,10 @@ function Homepage() {
             mode: "cors",
           },
         });
-        
+
         const first_name = localStorage.getItem("first_name");
         const last_name = localStorage.getItem("last_name");
-        console.log("response", response)
-
-        console.log("localStorage names:", first_name, last_name);
+        console.log("response", response);
 
         setFirstName(first_name);
         setLastName(last_name);
@@ -40,7 +37,7 @@ function Homepage() {
 
   const handleCommentSubmit = (postId, newComment) => {
     newComment = {
-      created_at: newComment["created_at"],
+      created_at: new Date().toISOString(),
       first_name: firstName,
       last_name: lastName,
       text: newComment.text,
@@ -59,7 +56,6 @@ function Homepage() {
     );
   };
 
-  
   return (
     <>
       <CreatePost
@@ -71,14 +67,7 @@ function Homepage() {
       {allPosts
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .map(
-          ({
-            id,
-            body,
-            date,
-            comments,
-            likes_count,
-            comments_count,
-          }) => (
+          ({ id, body, date, comments, likes_count, no_of_comment, image }) => (
             <FinalPost
               key={id}
               postId={id}
@@ -86,10 +75,10 @@ function Homepage() {
               lastName={lastName}
               description={body}
               classification={"Student"}
-              imagesData={"http://127.0.0.1:8000/feed/image/" + id}
+              image={image || ""}
               likesCount={likes_count}
               timestamp={date}
-              commentCount={comments_count}
+              no_of_comment={no_of_comment}
               comments={comments}
               onCommentSubmit={handleCommentSubmit}
             />

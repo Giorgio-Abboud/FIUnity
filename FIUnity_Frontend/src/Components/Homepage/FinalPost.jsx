@@ -1,4 +1,3 @@
-import { FaRegHeart } from "react-icons/fa";
 import "./Post.css";
 import { useEffect, useState } from "react";
 import { AiOutlineLike } from "react-icons/ai";
@@ -7,6 +6,7 @@ import { IoShareOutline } from "react-icons/io5";
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { BiRepost } from "react-icons/bi";
+
 import axios from "axios";
 
 export default function FinalPost({
@@ -15,11 +15,11 @@ export default function FinalPost({
   lastName,
   classification,
   description,
-  imagesData,
+  image,
   timestamp,
   comments,
   onCommentSubmit,
-  commentCount,
+  no_of_comment,
 }) {
   const [userInput, setUserInput] = useState("");
   const [postLikesCount, setPostLikesCount] = useState(0);
@@ -69,36 +69,41 @@ export default function FinalPost({
     }
   }, [comments]);
 
-
   const handleCommentIconClick = () => {
     setShowCommentSection(!showCommentSection);
   };
 
   const handleCommentSubmit = async () => {
+    if (!userInput.trim()) {
+      alert("Comment cannot be empty");
+      return;
+    }
+
     const currentDateTime = new Date()
       .toISOString()
       .slice(0, 19)
       .replace("T", " ");
 
+    const user_id = localStorage.getItem("user_id");
+
     const commentData = {
-      post: postId,
-      user: 1,
-      first_name: firstName,
-      last_name: lastName,
-      text: userInput,
-      created_at: currentDateTime,
+      post_id: postId,
+      user_id: user_id,
+      comment: userInput,
+      date: currentDateTime,
     };
 
     console.log("commentData");
     console.log(commentData);
+
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/feed/comments/",
+        `http://127.0.0.1:8000/feed/posts/${postId}/comment/`,
         commentData,
         {
           headers: {
             "Content-Type": "application/json",
-            mode: "cors",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
       );
@@ -117,12 +122,12 @@ export default function FinalPost({
   const handleLikeClick = async () => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/feed/posts/${postId}/like/`,
+        `http://127.0.0.1:8000/posts/${postId}/likePost/`, 
         null,
         {
           headers: {
-            "Content-Type": "application/json",
-            mode: "cors",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
       );
@@ -157,29 +162,27 @@ export default function FinalPost({
             Posted on: {adjustedTimestamp}
           </div>
         </div>
-        <p className="homepage-font">{description}</p>
+        {image && <img src={image} className="post-pic" />}
+        <p className="post-text">{description}</p>
         <div className="delete-comment-container">
           <div className="post-features icon-cursor">
-            <div
-              className="Post-icon-color homepage-font"
-              onClick={handleLikeClick}
-            >
+            <div className="Post-icon-color" onClick={handleLikeClick}>
               {postLikesCount}
               <AiOutlineLike />
               Like
             </div>
             <div
-              className="Post-icon-color homepage-font"
+              className="Post-icon-color"
               onClick={() => setShowCommentSection(!showCommentSection)}
             >
-              {commentCount}
+              {no_of_comment              }
               <FaRegCommentAlt />
               Comment
             </div>
-            <div className="Post-icon-color homepage-font">
+            <div className="Post-icon-color">
               <IoShareOutline /> Share
             </div>
-            <div className="Post-icon-color homepage-font">
+            <div className="Post-icon-color">
               <BiRepost /> Repost
             </div>
           </div>
@@ -229,41 +232,38 @@ export default function FinalPost({
                         <div className="comment-profile-pic"></div>
                         <div>
                           <p className="comment-name">
-                            {comment.first_name} {comment.last_name}
+                            {comment.commenter_name}
                           </p>
                           <div className="classification-comment">
                             {classification}
                           </div>
                         </div>
-                                        <button className="icon-button">
-                  <div className="report-comment">
-                    <MdOutlineReportGmailerrorred />
-                  </div>
-                </button>
-
+                        <button className="icon-button">
+                          <div className="report-comment">
+                            <MdOutlineReportGmailerrorred />
+                          </div>
+                        </button>
                         <div className="time-stamp-comment homepage-time-font">
                           Posted on: {adjustedCommentTimestamps[index]}
                         </div>
                       </div>
                       <div className="comment-text-container scrollbar">
-                        <p className="comment-descript">{comment.text}</p>
+                        <p className="comment-descript">{comment.comment}</p>
                       </div>
-              <div className="delete-comment-container">
-                <div className="Post-icon-color homepage-font ">
-                  {commentLikesCount} <AiOutlineLike />
-                </div>
-                <button className="icon-button">
-                  <div>
-                    <MdDelete />
-                  </div>
-                </button>
-              </div>
+                      <div className="delete-comment-container">
+                        <div className="Post-icon-color ">
+                          {commentLikesCount} <AiOutlineLike />
+                        </div>
+                        <button className="icon-button">
+                          <div>
+                            <MdDelete />
+                          </div>
+                        </button>
+                      </div>
                     </div>
                   ))
               ) : (
-                <p className="no-comment homepage-font">
-                  Be the first to comment...
-                </p>
+                <p className="no-comment">Be the first to comment...</p>
               )}
             </div>
           </>

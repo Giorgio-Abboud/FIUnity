@@ -64,7 +64,7 @@ export default function CreatePost({
     formData.append("created_at", currentDateTime);
 
     if (selectedFile) {
-      formData.append("images", selectedFile); // Add the file to form data
+      formData.append("image", selectedFile); // Add the file to form data
     }
 
     for (let [key, value] of formData.entries()) {

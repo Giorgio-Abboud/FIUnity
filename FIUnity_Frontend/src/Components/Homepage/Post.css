@@ -94,6 +94,11 @@
   font-size: 13px;
 }
 
+.post-text {
+  color: #0c3d72;
+  font-size: 13px;
+}
+
 .time-container {
   color: #0c3d72ab;
   display: flex;
@@ -187,6 +192,9 @@
 }
 
 .post-pic {
+  margin-bottom: 10px;
+  min-height: 500px;
+  max-height: 500px;
   width: 100%;
   margin-top: 10px;
 }
@@ -278,7 +286,8 @@
 }
 
 .comment-text-container {
-  padding: 10px;
+  padding-left: 7px;
+  padding-top: 7px;
   max-height: 300px;
   overflow-y: auto;
   margin-bottom: 15px;
@@ -286,9 +295,8 @@
 
 .no-comment {
   color: #0c3d72ab;
-  font-size: 15px;
-  margin-left: auto;
-  margin-right: auto;
+  font-size: 14px;
+  margin-left: 13%;
   width: 50%;
 }
 
@@ -310,7 +318,7 @@
   left: 540px;
 }
 
-.icon-button {
+.icon-button, .delete-icon {
   cursor: pointer;
   border: none;
   background: none;
@@ -318,6 +326,7 @@
 }
 
 .delete-comment-container {
+  margin-top: 7px;
   display: flex;
   justify-content: space-between;
 }
