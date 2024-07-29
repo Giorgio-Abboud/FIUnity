@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
-import { Link } from "react-router-dom";
 import Search from './search'
 
 const ProfileEdit = ({ classification = "Alum" }) => {
