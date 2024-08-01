@@ -331,6 +331,8 @@
   margin-left: 10px;
   max-height: 393px;
   min-height: 393px;
+  min-width: 317px;
+  max-width: 317px;
   margin-top: 20px;
   background-color: rgba(211, 213, 224, 0.591);
   border: 1px solid #ccc;

@@ -31,7 +31,7 @@ function ProfileEditing() {
   return (
     <>
       <div>
-        <ProfileEdit classification={classification} />
+        <ProfileEdit classification={"Student"} />
       </div>
     </>
   );

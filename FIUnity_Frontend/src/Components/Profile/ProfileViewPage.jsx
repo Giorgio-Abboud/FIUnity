@@ -75,8 +75,6 @@ export default function ProfileViewPage({
       }
     }, 5000);
 
-    
-
     return () => {
       clearInterval(projectInterval);
       clearInterval(experiencesInterval);
@@ -84,8 +82,31 @@ export default function ProfileViewPage({
     };
   }, [projects.length, extracurriculars.length, experiences.length]);
 
-  if (!firstName && !lastName && !classification && !gradDate && !gradTerm && !currJobPosition && !careerInterest && !major && !minor && !resumeURL && !aboutMe && projects.length === 0 && experiences.length === 0 && !profilePic && skills.length === 0 && extracurriculars.length === 0 && !network) {
-    return <div className="empty-white-block empty-profile-message">It's really quiet over here...</div>;  }
+  if (
+    !firstName &&
+    !lastName &&
+    !classification &&
+    !gradDate &&
+    !gradTerm &&
+    !currJobPosition &&
+    !careerInterest &&
+    !major &&
+    !minor &&
+    !resumeURL &&
+    !aboutMe &&
+    projects.length === 0 &&
+    experiences.length === 0 &&
+    !profilePic &&
+    skills.length === 0 &&
+    extracurriculars.length === 0 &&
+    !network
+  ) {
+    return (
+      <div className="empty-white-block empty-profile-message">
+        It's really quiet over here...
+      </div>
+    );
+  }
 
   return (
     <>
@@ -101,17 +122,15 @@ export default function ProfileViewPage({
                 />
                 <div className="profile-size">
                   <h1 className="profile-font profile-name-size">
-                    {`${firstName} ${middleName ? middleName + " " : ""}${lastName}`}
+                    {`${firstName} ${
+                      middleName ? middleName + " " : ""
+                    }${lastName}`}
                   </h1>
                   <p className="profile-font profile-class-size">
                     {classification}
                   </p>
                 </div>
-                <div
-                  className="network"
-                >
-                  {network}
-                </div>
+                <div className="network">{network}</div>
               </div>
               <div>
                 <div
@@ -335,101 +354,109 @@ export default function ProfileViewPage({
           {classification == "Student" && (
             <>
               {extracurriculars.length > 0 && (
-                <div className="extra-container">
-                  <h3 className="title-text profile-font">EXTRACURRICULARS</h3>
-                  <div className="title-extra-line"></div>
-                  <Carousel
-                    ref={extracurricularsCarouselRef}
-                    renderPagination={({ pages, activePage, onClick }) => (
-                      <div className="custom-pagination">
-                        {pages.map((idx) => (
-                          <button
-                            key={idx}
-                            className={`pagination-dot ${
-                              activePage === idx ? "active" : ""
-                            }`}
-                            onClick={() => onClick(idx)}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  >
-                    {extracurriculars.map((extracurricular, index) => (
-                      <div key={index}>
-                        <div className="extra-tab-container">
-                          <h4 className="profile-title profile-font-bold profile-font profile-gold">
-                            {extracurricular.extracurricular}
-                          </h4>
-                          <p className="profile-descript profile-font">
-                            {extracurricular.description}
-                          </p>
+                <>
+                  <div className="extra-container">
+                    <h3 className="title-text profile-font">
+                      EXTRACURRICULARS
+                    </h3>
+                    <div className="title-extra-line"></div>
+                    <Carousel
+                      ref={extracurricularsCarouselRef}
+                      renderPagination={({ pages, activePage, onClick }) => (
+                        <div className="custom-pagination">
+                          {pages.map((idx) => (
+                            <button
+                              key={idx}
+                              className={`pagination-dot ${
+                                activePage === idx ? "active" : ""
+                              }`}
+                              onClick={() => onClick(idx)}
+                            />
+                          ))}
                         </div>
-                      </div>
-                    ))}
-                  </Carousel>
+                      )}
+                    >
+                      {extracurriculars.map((extracurricular, index) => (
+                        <div key={index}>
+                          <div className="extra-tab-container">
+                            <h4 className="profile-title profile-font-bold profile-font profile-gold">
+                              {extracurricular.extracurricular}
+                            </h4>
+                            <p className="profile-descript profile-font">
+                              {extracurricular.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </Carousel>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+          {experiences.length > 0 && (
+            <>
+              {classification == "Student" && (
+                <div className="experience-container">
+                  <h3 className="title-text profile-font">EXPERIENCE</h3>
+                  <div className="title-experience-line"></div>
+                  <>
+                    <Carousel
+                      className="experiences-carousel"
+                      ref={experiencesCarouselRef}
+                      renderPagination={({ pages, activePage, onClick }) => (
+                        <div className="custom-pagination">
+                          {pages.map((idx) => (
+                            <button
+                              key={idx}
+                              className={`pagination-dot ${
+                                activePage === idx ? "active" : ""
+                              }`}
+                              onClick={() => onClick(idx)}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    >
+                      {experiences.map((experience, index) => (
+                        <div key={index}>
+                          <div className="experience-tab-container">
+                            <div>
+                              <p className="profile-title profile-font profile-font-bold">
+                                {experience.jobTitle}
+                              </p>
+                              <p className="experience-company-name  profile-gold profile-font">
+                                {experience.companyName}
+                              </p>
+                              {experience.location.length > 0 && (
+                                <p className="profile-font experience-text profile-gold">
+                                  {experience.location}
+                                </p>
+                              )}
+                              {experience.endDate.length > 0 && (
+                                <p className="profile-font experience-text profile-gold experience-time-type">
+                                  {experience.startDate} {experience.endDate}
+                                </p>
+                              )}
+                              <p className="profile-font experience-text profile-gold experience-time-type">
+                                {experience.jobType}
+                              </p>
+                            </div>
+                            {experience.description.length > 0 && (
+                              <p className="profile-descript profile-font">
+                                {experience.description}
+                              </p>
+                            )}{" "}
+                          </div>
+                        </div>
+                      ))}
+                    </Carousel>
+                  </>
                 </div>
               )}
             </>
           )}
-          {classification == "Student" && (
-            <div className="experience-container">
-              <h3 className="title-text profile-font">EXPERIENCE</h3>
-              <div className="title-experience-line"></div>
-              <>
-                <Carousel
-                  className="experiences-carousel"
-                  ref={experiencesCarouselRef}
-                  renderPagination={({ pages, activePage, onClick }) => (
-                    <div className="custom-pagination">
-                      {pages.map((idx) => (
-                        <button
-                          key={idx}
-                          className={`pagination-dot ${
-                            activePage === idx ? "active" : ""
-                          }`}
-                          onClick={() => onClick(idx)}
-                        />
-                      ))}
-                    </div>
-                  )}
-                >
-                  {experiences.map((experience, index) => (
-                    <div key={index}>
-                      <div className="experience-tab-container">
-                        <div>
-                          <p className="profile-title profile-font profile-font-bold">
-                            {experience.jobTitle}
-                          </p>
-                          <p className="experience-company-name  profile-gold profile-font">
-                            {experience.companyName}
-                          </p>
-                          {experience.location.length > 0 && (
-                            <p className="profile-font experience-text profile-gold">
-                              {experience.location}
-                            </p>
-                          )}
-                          {experience.endDate.length > 0 && (
-                            <p className="profile-font experience-text profile-gold experience-time-type">
-                              {experience.startDate} {experience.endDate}
-                            </p>
-                          )}
-                          <p className="profile-font experience-text profile-gold experience-time-type">
-                            {experience.jobType}
-                          </p>
-                        </div>
-                        {experience.description.length > 0 && (
-                          <p className="profile-descript profile-font">
-                            {experience.description}
-                          </p>
-                        )}{" "}
-                      </div>
-                    </div>
-                  ))}
-                </Carousel>
-              </>
-            </div>
-          )}
-          {/* <div className="skills-container">
+          {/* <div className="skills-container"> #081e3f librebaskerville
             <h3 className="title-text profile-font">SKILLS</h3>
             <div className="title-skills-line"></div>
             {skills.length > 0 && (
