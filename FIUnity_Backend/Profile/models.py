@@ -94,6 +94,7 @@ class Profile(models.Model):
             self.email = self.user.email
             self.grad_term = self.user.grad_term
             self.graduation_year = self.user.graduation_year
+            self.status = self.user.status
         self.check_graduation_status()
         super(Profile, self).save(*args, **kwargs)
 
@@ -151,8 +152,7 @@ class Project(models.Model):
 # Creating the section containing the user's extracurricular activities
 class Extracurricular(models.Model):
     user = models.ForeignKey(AppUser, related_name="extracurriculars", on_delete=models.CASCADE)
-    extracurricular = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True,
-                                     related_name = "extra")
+    extracurricular = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True, related_name = "extra")
     description = models.TextField(max_length=200, blank=True)
     tagline = models.CharField(max_length=200, blank = True, null = True)
 
