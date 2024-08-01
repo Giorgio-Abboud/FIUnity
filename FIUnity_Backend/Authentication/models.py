@@ -1,8 +1,9 @@
-from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from rest_framework_simplejwt.tokens import RefreshToken
 from .managers import UserManager
+from datetime import date
+from django.utils.timezone import now
 
 TERM_CHOICES = [
         ('Spring', 'Spring'),
@@ -20,6 +21,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     graduation_year = models.IntegerField(default=2024)
     grad_term = models.CharField(max_length=10, choices=TERM_CHOICES)
+    status = models.CharField(max_length=50, default='')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['PID', 'first_name', 'last_name', 'graduation_year', 'grad_term']
@@ -40,8 +42,16 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         return f"{self.first_name.title()} {self.last_name.title()}"
 
-    @property
-    def is_alumni(self):
-        current_year = timezone.now().year
-        profile = self.profile  # assuming there is a related_name="profile" in the Profile model
-        return profile.graduation_year < current_year if profile else False
+    def set_graduation_status(self):
+        term_dates = {
+            'Spring': (4, 26),
+            'Summer': (7, 26),
+            'Fall': (12, 9)
+        }
+        month, day = term_dates.get(self.grad_term, (4, 26))
+        graduation_date = date(self.graduation_year, month, day)
+        self.status = 'Alumni' if graduation_date <= now().date() else 'Student'
+
+    def save(self, *args, **kwargs):
+        self.set_graduation_status()
+        super().save(*args, **kwargs)
