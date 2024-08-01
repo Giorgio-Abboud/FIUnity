@@ -7,62 +7,54 @@ const API_URL = 'http://localhost:8000/profile';
 const axiosInstance = axios.create({
   baseURL: API_URL,
   headers: {
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
     'Content-Type': 'application/json'
   }
 });
 
+// Add a request interceptor to include the JWT token
 axiosInstance.interceptors.request.use(
-    (config) => {
-      const token = localStorage.getItem('access_token');
-      if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+  (config) => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
-},
-(error) => {
-      return Promise.reject(error);
-    }
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
-// Fetch extracurriculars
-export const fetchExtracurriculars = async () => {
-  try {
-    const response = await axiosInstance.get('/extracurricular/');
-    console.log("Access Token:", localStorage.getItem('access_token'));
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching extracurriculars:', error);
-    throw error;
-  }
-};
+// // Fetch extracurriculars
+// export const fetchExtracurriculars = async () => {
+//   try {
+//     const response = await axiosInstance.get('/extracurriculars/');
+//     console.log('response', response);
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error fetching extracurriculars:', error);
+//     throw error;
+//   }
+// };
 
 // Create extracurricular
 export const createExtracurricular = async (data) => {
     try {
-      console.log("BEFORE POST REQUEST");
-      console.log("data", data)
-
-      const response = await axiosInstance.post('/extracurricular/', {
-        extracurricular: {
-            name: data.name || '',
+      const response = await axiosInstance.post('/extracurriculars/', {
+            extracurricular: data.name || '',
             description: data.description || ''
-          }
       });      
       
       console.log("AFTER POST REQUEST");
       return response.data;
     } catch (error) {
       if (error.response) {
-        // Server responded with a status other than 2xx
         console.error('Error response data:', error.response.data);
         console.error('Error response status:', error.response.status);
         console.error('Error response headers:', error.response.headers);
       } else if (error.request) {
-        // Request was made but no response received
         console.error('Error request data:', error.request);
       } else {
-        // Something else went wrong
         console.error('Error message:', error.message);
       }
       throw error;
@@ -72,7 +64,7 @@ export const createExtracurricular = async (data) => {
 // Update extracurricular
 export const updateExtracurricular = async (id, data) => {
   try {
-    const response = await axiosInstance.patch(`/extracurricular/${id}/`, data);
+    const response = await axiosInstance.patch(`/extracurriculars/${id}/`, data);
     return response.data;
   } catch (error) {
     console.error('Error updating extracurricular:', error);
@@ -83,7 +75,7 @@ export const updateExtracurricular = async (id, data) => {
 // Delete extracurricular
 export const deleteExtracurricular = async (id) => {
   try {
-    const response = await axiosInstance.delete(`/extracurricular/${id}/`);
+    const response = await axiosInstance.delete(`/extracurriculars/${id}/`);
     return response.data;
   } catch (error) {
     console.error('Error deleting extracurricular:', error);
@@ -91,32 +83,39 @@ export const deleteExtracurricular = async (id) => {
   }
 };
 
-// Fetch projects
-export const fetchProjects = async () => {
-  try {
-    const response = await axiosInstance.get('/project/');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching projects:', error);
-    throw error;
-  }
-};
 
 // Create project
 export const createProject = async (data) => {
   try {
-    const response = await axiosInstance.post('/project/', data);
+    console.log('data coming in', data)
+
+    const response = await axiosInstance.post('/projects/', {
+      project: data.name,
+      description: data.description,
+      skills: data.skills,
+    });
+    
     return response.data;
   } catch (error) {
-    console.error('Error creating project:', error);
+    if (error.response) {
+      console.error('Error response data:', error.response.data);
+      console.error('Error response status:', error.response.status);
+      console.error('Error response headers:', error.response.headers);
+    } else if (error.request) {
+      console.error('Error request data:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
     throw error;
   }
 };
 
 // Update project
-export const updateProject = async (id, data) => {
+export const updateProject = async (data) => {
   try {
-    const response = await axiosInstance.patch(`/project/${id}/`, data);
+    console.log('data', data)
+    const response = await axiosInstance.patch(`/projects/${id}/`, data);
+    console.log('response', response)
     return response.data;
   } catch (error) {
     console.error('Error updating project:', error);
@@ -127,10 +126,11 @@ export const updateProject = async (id, data) => {
 // Delete project
 export const deleteProject = async (id) => {
   try {
-    const response = await axiosInstance.delete(`/project/${id}/`);
+    const response = await axiosInstance.delete(`/projects/${id}/`);
     return response.data;
   } catch (error) {
     console.error('Error deleting project:', error);
     throw error;
   }
 };
+
