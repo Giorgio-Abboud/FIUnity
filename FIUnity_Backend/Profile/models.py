@@ -7,12 +7,19 @@ from django.dispatch import receiver
 from datetime import date
 from django.utils.timezone import now
 
-# Creating the options for the terms and employment types
+# Creating the options for the terms, networking, and employment types
 TERM_CHOICES = [
         ('Spring', 'Spring'),
         ('Summer', 'Summer'),
         ('Fall', 'Fall'),
     ]
+
+NETWORK_CHOICES = [
+    ('Open to Hire', 'Open to Hire'),
+    ('Open to Internship', 'Open to Internship'),
+    ('Open to Job', 'Open to Job'),
+    ('Open to Connect', 'Open to Connect'),
+]
 
 JOB_TYPE_CHOICES = [
         ('Full-time', 'Full-time'),
@@ -67,6 +74,7 @@ class Profile(models.Model):
     career_interest = models.CharField(max_length=50, default='')
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     status = models.CharField(max_length=50, default='')
+    network = models.CharField(choices=NETWORK_CHOICES, default='Open to Connect')
 
     def full_name(self):
         return f"{self.user.first_name} {self.user.last_name}"
