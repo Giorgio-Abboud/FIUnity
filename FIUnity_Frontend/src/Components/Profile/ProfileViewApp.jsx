@@ -1,5 +1,9 @@
 import ProfileViewPage from "./ProfileViewPage";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import defaultProfilePicture from "../../assets/Default_pfp.png";
+// import {
+// } from "../api/profileApi.js";
 
 const exampleExperiences = [
   {
@@ -51,28 +55,28 @@ const exampleProjects = [
   },
 ];
 
-const extracurriculars = [
-  {
-    name: "Women in Computer Science",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  },
-  {
-    name: "INIT",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-  },
-  {
-    name: "SWE",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  },
-  {
-    name: "INIT",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-  },
-];
+// const extracurriculars = [
+//   {
+//     name: "Women in Computer Science",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+//   },
+//   {
+//     name: "INIT",
+//     description:
+//       "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
+//   },
+//   {
+//     name: "SWE",
+//     description:
+//       "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+//   },
+//   {
+//     name: "INIT",
+//     description:
+//       "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
+//   },
+// ];
 
 const skills = [
   {
@@ -131,34 +135,58 @@ const skills = [
   },
 ];
 
-function ProfileViewApp() {
+
+const ProfileViewApp = () => {
+
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/profile/mainpage/", {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        });
+        console.log('response', response)
+        setProfileData(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err);
+        setLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <>
       <ProfileViewPage
-        firstName="Roary"
-        middleName="Shay"
-        lastName="Royce"
-        classification="Student"
-        gradTerm="Fall"
-        gradDate="2020"
-        network="OPEN TO CONNECT"
-        major="Computer Science"
-        minor="Math"
-        currJobPosition="Senior Developer" //set character limit
-        careerInterest="Full-Stack Development"
-        aboutMe="Hello! My name is Alex, and I’m a passionate and curious individual with a profound love for technology and continuous learning. Ever since I can remember, I've been fascinated by how things work and how to make them better. This curiosity led me to pursue a degree in Computer Science, where I delved into the world of programming, algorithms, and software development. My journey has been a thrilling adventure of discovering new technologies, solving complex problems, and creating innovative solutions that make a difference.
-
-Outside the realm of coding, I am an avid reader and an enthusiastic writer. I find solace in the pages of a good book, whether it's a gripping thriller, an inspiring biography, or a thought-provoking piece of science fiction. Writing allows me to articulate my thoughts and share my ideas with others, fostering connections and sparking conversations.
-
-When I’m not immersed in the digital world, I love to explore the great outdoors. Hiking through lush forests, scaling mountain peaks, and camping under the stars are some of my favorite ways to unwind and reconnect with nature. I believe that the natural world offers a wealth of inspiration and perspective that is invaluable in our fast-paced, tech-driven lives.
-
-" //max char count: 850
-        resumeURL={"https://google.com/"}
-        profilePic="/images/roary-profile-pic.jpg"
-        experiences={exampleExperiences}
-        projects={exampleProjects}
-        skills={skills}
-        extracurriculars={extracurriculars}
+          firstName={profileData.profile.first_name}
+          middleName={profileData.profile.middle_name}
+          lastName={profileData.profile.last_name}
+          classification={profileData.profile.check_graduation_status}
+          gradTerm={profileData.profile.grad_term}
+          gradDate={profileData.profile.graduation_year}
+          network={profileData.profile.network}
+          major={profileData.major}
+          minor={profileData.profile.minor}
+          currJobPosition={profileData.curr_job_position}
+          careerInterest={profileData.profile.career_interest}
+          aboutMe={profileData.profile.about_me}
+          resumeURL={profileData.resume_url}
+          profilePic={profileData.profile.profile_pic}
+          experiences={profileData.experience_data || []}
+          projects={profileData.project_data || []}
+          skills={profileData.skill_data || []}
+          extracurriculars={profileData.extra_data|| []}
       />
     </>
   );

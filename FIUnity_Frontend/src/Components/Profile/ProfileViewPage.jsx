@@ -1,7 +1,7 @@
 import "./ProfileView.css";
 import React, { useState, useEffect, useRef } from "react";
 import Carousel from "react-elastic-carousel";
-import { useSpring, animated } from "react-spring";
+import defaultProfilePicture from "../../assets/Default_pfp.png";
 
 export default function ProfileViewPage({
   firstName,
@@ -30,6 +30,7 @@ export default function ProfileViewPage({
   const projectCarouselRef = useRef(null);
   const extracurricularsCarouselRef = useRef(null);
   const experiencesCarouselRef = useRef(null);
+  const profilePictureUrl = profilePic ? profilePic : defaultProfilePicture;
 
   useEffect(() => {
     const projectInterval = setInterval(() => {
@@ -74,12 +75,17 @@ export default function ProfileViewPage({
       }
     }, 5000);
 
+    
+
     return () => {
       clearInterval(projectInterval);
       clearInterval(experiencesInterval);
       clearInterval(extracurricularsInterval);
     };
   }, [projects.length, extracurriculars.length, experiences.length]);
+
+  if (!firstName && !lastName && !classification && !gradDate && !gradTerm && !currJobPosition && !careerInterest && !major && !minor && !resumeURL && !aboutMe && projects.length === 0 && experiences.length === 0 && !profilePic && skills.length === 0 && extracurriculars.length === 0 && !network) {
+    return <div className="empty-white-block empty-profile-message">It's really quiet over here...</div>;  }
 
   return (
     <>
@@ -89,13 +95,13 @@ export default function ProfileViewPage({
             <div>
               <div className="profile-white-block">
                 <img
-                  src={profilePic}
+                  src={profilePictureUrl}
                   alt="profile picture"
                   className="profile-p-pic"
                 />
                 <div className="profile-size">
                   <h1 className="profile-font profile-name-size">
-                    {firstName} {middleName} {lastName}
+                    {`${firstName} ${middleName ? middleName + " " : ""}${lastName}`}
                   </h1>
                   <p className="profile-font profile-class-size">
                     {classification}
@@ -352,7 +358,7 @@ export default function ProfileViewPage({
                       <div key={index}>
                         <div className="extra-tab-container">
                           <h4 className="profile-title profile-font-bold profile-font profile-gold">
-                            {extracurricular.name}
+                            {extracurricular.extracurricular}
                           </h4>
                           <p className="profile-descript profile-font">
                             {extracurricular.description}

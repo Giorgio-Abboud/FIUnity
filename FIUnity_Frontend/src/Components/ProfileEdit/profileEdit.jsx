@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
-  fetchExtracurriculars,
   createExtracurricular,
   updateExtracurricular,
   deleteExtracurricular,
-  fetchProjects,
   createProject,
   updateProject,
   deleteProject,
 } from "../api/profileApi.js";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
+import axios from 'axios';
 
-const ProfileEdit = ({ classification = "Student" }) => {
+const ProfileEdit = (classification) => {
   const [profile, setProfile] = useState({
     firstName: "",
     lastName: "",
@@ -63,18 +61,6 @@ const ProfileEdit = ({ classification = "Student" }) => {
 
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const loadExtracurriculars = async () => {
-      try {
-        const data = await fetchExtracurriculars();
-        setExtracurriculars(data);
-      } catch (error) {
-        console.error("Error fetching extracurriculars:", error);
-      }
-    };
-
-    loadExtracurriculars();
-  }, []);
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
@@ -116,11 +102,13 @@ const ProfileEdit = ({ classification = "Student" }) => {
 
   const handleProjectChange = (index, e) => {
     const { name, value } = e.target;
-    const newProjects = projects.slice();
-    newProjects[index][name] = value;
-    setProjects(newProjects);
+    // Update the specific project entry in the state
+    const updatedProjects = projects.map((item, idx) =>
+      idx === index ? { ...item, [name]: value } : item
+    );
+    setProjects(updatedProjects);
   };
-
+  
   const handleExtracurrChange = (index, e) => {
     const { name, value } = e.target;
     // Update the specific extracurricular entry in the state
@@ -264,23 +252,49 @@ const ProfileEdit = ({ classification = "Student" }) => {
       return;
     }
 
-    const profileData = {
-      profile,
-      experiences: experiences.map((exp) => ({
-        ...exp,
-        endDate: exp.current ? null : exp.endDate,
-      })),
-      projects,
-      extracurriculars: extracurr,
-      skills,
-    };
+    const profiles = {
+      full_name: profile.firstName + ' ' + profile.lastName,
+      check_graduation_status: '',
+      first_name: profile.firstName, 
+      middle_name: profile.middleName,
+      last_name: profile.lastName, 
+      email: localStorage.getItem('user_id'),
+      grad_term: profile.gradTerm,
+      graduation_year: profile.graduationYear,
+      major: profile.major,
+      minor: profile.minor,
+      career_interest: profile.careerInterest,
+      picture: null,
+      status: '',
+      // network: profile.network
+    }
 
+    const profileData = {
+      profiles,
+      // experiences: experiences.map((exp) => ({
+      //   ...exp,
+      //   endDate: exp.current ? null : exp.endDate,
+      // })),
+      // projects: projects,
+      // extracurriculars: extracurr,
+      // skills: skills,
+    };
+    
     try {
+      console.log('profile data', profileData)
+
+      const response = await axios.patch('http://localhost:8000/profile/userprofile/', profileData, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+    });
+
+    console.log('Profile updated successfully:', response.data);
+
+      // Handle extracurriculars
       for (const extracurrData of extracurr) {
-        if (
-          extracurrData.extracurrName.trim() &&
-          extracurrData.description.trim()
-        ) {
+        if (extracurrData.extracurrName.trim() && extracurrData.description.trim()) {
           try {
             const extracurricularResponse = await createExtracurricular({
               name: extracurrData.extracurrName,
@@ -292,13 +306,39 @@ const ProfileEdit = ({ classification = "Student" }) => {
           }
         }
       }
-
+  
+      // Handle projects
+      for (const projectData of projects) {
+        if (projectData.projectName.trim() && projectData.description.trim()) {
+          try {
+            console.log('project data', projectData)
+            const projectResponse = await createProject({
+              name: projectData.projectName,
+              description: projectData.description,
+              skills: projectData.projectSkills
+            });
+            console.log("Project created:", projectResponse);
+          } catch (error) {
+            console.error("Failed to create project:", error);
+          }
+        }
+      }
+  
       // Optionally, navigate to a different page after successful submission
       // navigate("/view-profile");
     } catch (error) {
-      console.error("Error processing extracurriculars:", error);
-    }
-  };
+      console.error('Error updating profile:', error);
+      if (error.response) {
+          console.error('Error response data:', error.response.data);
+          console.error('Error response status:', error.response.status);
+          console.error('Error response headers:', error.response.headers);
+      } else if (error.request) {
+          console.error('Error request data:', error.request);
+      } else {
+          console.error('Error message:', error.message);
+      }
+  }
+};
 
   return (
     <div className="profile-form">
@@ -864,8 +904,8 @@ const ProfileEdit = ({ classification = "Student" }) => {
               >
                 <option value="">Choose One</option>
                 <option value="Open to Hire">Open to Hire</option>
-                <option value="Open to Internship">Open to Internship</option>
-                <option value="Open to Job">Open to Job</option>
+                <option value="Seeking Internship">Open to Internship</option>
+                <option value="Seeking Job">Open to Job</option>
                 <option value="Open to Connect">Open to Connect</option>
               </select>
             </div>

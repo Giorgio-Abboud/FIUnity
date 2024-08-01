@@ -1,6 +1,28 @@
-.profile-font-bold {
+.profile-font-bold, .empty-profile-message {
   font-weight: bold;
   color: #0c3d72;
+}
+
+.empty-profile-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
+  text-align: center;
+  font-size: 1.5em;
+}
+
+.empty-white-block {
+  margin-top: 400px;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+  width: 500px;
+  padding-top: 10px;
+  height: 100px;
+  background-color: rgba(255, 255, 255, 0.623);
+  border: 1px solid #ccc;
+  border-radius: 13px;
 }
 
 .profile-gold {
