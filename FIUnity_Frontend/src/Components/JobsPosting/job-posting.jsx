@@ -62,7 +62,7 @@ const JobAddingPosting = () => {
     // Send a POST request to the backend with the job posting information as JSON
     try {
       const response = await axios.post(
-        "http://localhost:8008/jobs/job-posting/",
+        "http://localhost:8000/jobs/job-posting/",
         jobPostingData
       );
       if (response.status === 201) {

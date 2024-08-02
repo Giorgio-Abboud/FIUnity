@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from "react";
+import axiosInstance from "../api/profileApi.js";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import {
+  createExtracurricular,
+  updateExtracurricular,
+  deleteExtracurricular,
+  createProject,
+  updateProject,
+  deleteProject,
+  createSkill,
+  createExperience,
+  updateExperience,
+  deleteExperience,
+} from "../api/profileApi.js";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
-import { Link } from "react-router-dom";
+import axios from "axios";
 
-const ProfileEdit = ({ classification = "Alum" }) => {
+const ProfileEdit = ({ classification }) => {
   const [profile, setProfile] = useState({
     firstName: "",
     lastName: "",
@@ -56,7 +68,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
-    setProfile({ ...profile, [name]: value });
+    setProfile((prevProfile) => ({ ...prevProfile, [name]: value }));
   };
 
   const handleGradBlur = (e) => {
@@ -82,7 +94,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
   const handleMajorChange = (event) => {
     const value = event.target.value;
     setSelectedMajor(value);
-    handleProfileChange(event);
+    setProfile((prevProfile) => ({ ...prevProfile, major: value }));
   };
 
   const handleExperienceChange = (index, e) => {
@@ -94,16 +106,31 @@ const ProfileEdit = ({ classification = "Alum" }) => {
 
   const handleProjectChange = (index, e) => {
     const { name, value } = e.target;
-    const newProjects = projects.slice();
-    newProjects[index][name] = value;
-    setProjects(newProjects);
+    // Update the specific project entry in the state
+    const updatedProjects = projects.map((item, idx) =>
+      idx === index ? { ...item, [name]: value } : item
+    );
+    setProjects(updatedProjects);
   };
 
   const handleExtracurrChange = (index, e) => {
     const { name, value } = e.target;
-    const newExtracurr = extracurr.slice();
-    newExtracurr[index][name] = value;
-    setExtracurr(newExtracurr);
+    // Update the specific extracurricular entry in the state
+    const updatedExtracurr = extracurr.map((item, idx) =>
+      idx === index ? { ...item, [name]: value } : item
+    );
+    setExtracurr(updatedExtracurr);
+  };
+
+  const deleteExtracurr = async (index, id) => {
+    try {
+      await deleteExtracurricular(id);
+      const newExtracurr = extracurr.slice();
+      newExtracurr.splice(index, 1);
+      setExtracurr(newExtracurr);
+    } catch (error) {
+      console.error("Error deleting extracurricular:", error);
+    }
   };
 
   const handleSkillChange = (e) => {
@@ -198,7 +225,8 @@ const ProfileEdit = ({ classification = "Alum" }) => {
   };
 
   const addExtracurr = () => {
-    setExtracurr([...extracurr, { extracurrName: "", description: "" }]);
+    const newExtracurricular = { extracurrName: "", description: "" };
+    setExtracurr([...extracurr, newExtracurricular]);
   };
 
   const addSkill = () => {
@@ -227,31 +255,184 @@ const ProfileEdit = ({ classification = "Alum" }) => {
       form.reportValidity();
       return;
     }
+    console.log("profile", profile);
 
-    const profileData = {
-      profile,
-      experiences: experiences.map((exp) => ({
-        ...exp,
-        endDate: exp.current ? null : exp.endDate,
-      })),
-      projects,
-      skills,
-    };
+    const formData = new FormData();
 
-    console.log("It got here too");
+    formData.append("first_name", profile.firstName)
+    formData.append("last_name", profile.lastName)
+    formData.append("grad_term", profile.gradTerm);
+    formData.append("about", profile.aboutMe);
+    formData.append("graduation_year", profile.graduationYear);
+    formData.append("major", profile.major);
+    formData.append("minor", profile.minor);
+    formData.append("career_interest", profile.careerInterest);
+    formData.append("network", profile.network);
+
+    if (profile.profilePicture) {
+      formData.append("picture", profile.profilePicture);
+    }
+    if (profile.resume) {
+      formData.append("resume", profile.resume);
+    }
+    if (profile.middleName) {
+      formData.append("middle_name", profile.middleName);
+    }
+
     try {
-      const response = await axios.post(
-        "http://localhost:8008/profile/profile-edit/",
-        profileData
-      );
-      if (response.status === 201) {
-        console.log("Profile edit successful");
-        navigate("/view-profile");
-      } else {
-        console.error("Profile edit failed");
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
       }
+
+      // Update profile information
+      const response = await axios.patch(
+        "http://localhost:8000/profile/userprofile/",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+
+      console.log("Profile updated successfully:", response.data);
+
+      // Handle extracurriculars
+      for (const extracurrData of extracurr) {
+        console.log('extra name', extracurrData.extracurrName)
+        if (
+          extracurrData.extracurrName.trim() &&
+          extracurrData.description.trim()
+        ) {
+          try {
+            // Check if the extracurricular already exists
+            const existingExtracurriculars = await axiosInstance.get(
+              "/extracurriculars/"
+            );
+            const existingExtracurricular = existingExtracurriculars.data.find(
+              (e) => e.name === extracurrData.extracurrName
+            );
+
+            if (existingExtracurricular) {
+              // Update existing extracurricular
+              await updateExtracurricular(
+                existingExtracurricular.id,
+                extracurrData
+              );
+            } else {
+              // Create new extracurricular
+              await createExtracurricular({
+                extracurricular: extracurrData.extracurrName,
+                description: extracurrData.description,
+              });
+            }
+          } catch (error) {
+            console.error("Failed to create or update extracurricular:", error);
+          }
+        }
+      }
+
+      // Handle projects
+      for (const projectData of projects) {
+        if (projectData.projectName.trim() && projectData.description.trim()) {
+          try {
+            // Check if the project already exists
+            const existingProjects = await axiosInstance.get("/projects/");
+            const existingProject = existingProjects.data.find(
+              (p) => p.name === projectData.projectName
+            );
+
+            if (existingProject) {
+              // Update existing project
+              await updateProject(existingProject.id, projectData);
+            } else {
+              // Create new project
+              await createProject({
+                project: projectData.projectName,
+                description: projectData.description,
+                skills: projectData.projectSkills,
+              });
+            }
+          } catch (error) {
+            console.error("Failed to create or update project:", error);
+          }
+        }
+      }
+
+      // Handle experiences
+      for (const experienceData of experiences) {
+        if (
+          experienceData.jobTitle.trim() &&
+          experienceData.companyName.trim()
+        ) {
+          try {
+            // Check if the experience already exists
+            const existingExperiences = await axiosInstance.get(
+              "/experiences/"
+            );
+            const existingExperience = existingExperiences.data.find(
+              (e) => e.jobTitle === experienceData.jobTitle
+            );
+
+            if (existingExperience) {
+              // Update existing experience
+              await updateExperience(existingExperience.id, {
+                ...experienceData,
+                endDate: experienceData.current ? null : experienceData.endDate,
+              });
+            } else {
+              // Create new experience
+              await createExperience({
+                job_position: experienceData.jobTitle,
+                company: experienceData.companyName,
+                job_type: experienceData.type,
+                location: experienceData.location,
+                start_date: experienceData.startDate,
+                end_date: experienceData.current
+                  ? null
+                  : experienceData.endDate,
+                currently_working: experienceData.current,
+                description: experienceData.description,
+                tagline: "",
+              });
+            }
+          } catch (error) {
+            console.error("Failed to create or update experience:", error);
+          }
+        }
+      }
+
+      // Handle skills
+      for (const skill of skills) {
+        console.log('skill name', skill)
+        try {
+          // Check if the skill already exists
+          const existingSkills = await axiosInstance.get("/skills/");
+          const existingSkill = existingSkills.data.find(
+            (s) => s.name === skill
+          );
+
+          if (!existingSkill) {
+            // Create new skill if not exists
+            await createSkill({ skill_name: skill });
+          }
+        } catch (error) {
+          console.error("Failed to create skill:", error);
+        }
+      }
+
+      // navigate("/view-profile");
     } catch (error) {
-      console.error("Error sending profile edit request:", error);
+      console.error("Error updating profile:", error);
+      if (error.response) {
+        console.error("Error response data:", error.response.data);
+        console.error("Error response status:", error.response.status);
+        console.error("Error response headers:", error.response.headers);
+      } else if (error.request) {
+        console.error("Error request data:", error.request);
+      } else {
+        console.error("Error message:", error.message);
+      }
     }
   };
 
@@ -414,9 +595,9 @@ const ProfileEdit = ({ classification = "Alum" }) => {
               required
             >
               <option value="">Choose one</option>
-              <option value="option1">Spring</option>
-              <option value="option2">Summer</option>
-              <option value="option3">Fall</option>
+              <option value="Spring">Spring</option>
+              <option value="Summer">Summer</option>
+              <option value="Fall">Fall</option>
             </select>
 
             {classification === "Student" && (
@@ -819,8 +1000,8 @@ const ProfileEdit = ({ classification = "Alum" }) => {
               >
                 <option value="">Choose One</option>
                 <option value="Open to Hire">Open to Hire</option>
-                <option value="Open to Internship">Open to Internship</option>
-                <option value="Open to Job">Open to Job</option>
+                <option value="Seeking Internship">Seeking Internship</option>
+                <option value="Seeking Job">Seeking Job</option>
                 <option value="Open to Connect">Open to Connect</option>
               </select>
             </div>
@@ -855,7 +1036,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
         {currentStep == 3 && (
           <>
             <div className="Edit-Profile-Button">
-              <button onSubmit={handleSubmit} className="edit-profile-submit">
+              <button onClick={handleSubmit} className="edit-profile-submit">
                 Save{" "}
               </button>
               {/* <Link to="/view-profile" className="edit-profile-button">

@@ -16,8 +16,8 @@ TERM_CHOICES = [
 
 NETWORK_CHOICES = [
     ('Open to Hire', 'Open to Hire'),
-    ('Open to Internship', 'Open to Internship'),
-    ('Open to Job', 'Open to Job'),
+    ('Seeking Internship', 'Seeking Internship'),
+    ('Seeking Job', 'Seeking Job'),
     ('Open to Connect', 'Open to Connect'),
 ]
 
