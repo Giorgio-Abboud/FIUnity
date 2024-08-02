@@ -75,6 +75,9 @@ class Profile(models.Model):
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     status = models.CharField(max_length=50, default='')
     network = models.CharField(choices=NETWORK_CHOICES, default='Open to Connect')
+    about = models.TextField(blank = True, null = True, default=None)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+    about = models.TextField(max_length=200, default='')
 
     def full_name(self):
         return f"{self.user.first_name} {self.user.last_name}"
@@ -186,9 +189,6 @@ class MainProfile(models.Model):
     # current_company =  models.OneToOneField(Experience, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     # current_extracurricular =  models.OneToOneField(Extracurricular, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     # current_project =  models.OneToOneField(Project, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    about = models.TextField(blank = True, null = True, default=None)
-    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
-    about = models.TextField(max_length=200, default='')
     
     def __str__(self):
         return f'{self.profile.full_name()} --> {self.id}'

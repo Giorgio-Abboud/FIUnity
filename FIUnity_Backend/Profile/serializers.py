@@ -335,10 +335,10 @@ class MainPageSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         
         user = instance.profile.user
-        experience_data = Experience.objects.filter(user=instance.profile.user)[:2]
-        extra_data = Extracurricular.objects.filter(user=instance.profile.user)[:2]
-        project_data = Project.objects.filter(user=instance.profile.user).order_by('-id')[:1]
-        skill_data = StandaloneSkill.objects.filter(user=instance.profile.user)[:3]
+        experience_data = Experience.objects.filter(user=instance.profile.user).order_by('-start_date')#[:2]
+        extra_data = Extracurricular.objects.filter(user=instance.profile.user)#[:2]
+        project_data = Project.objects.filter(user=instance.profile.user).order_by('-id')#[:1]
+        skill_data = StandaloneSkill.objects.filter(user=instance.profile.user)#[:3]
         
         data['experience_data'] = SingleExperienceSerializer(instance=experience_data, many=True).data
         data['extra_data'] = SingleExtracurricularSerializer(instance=extra_data, many=True).data

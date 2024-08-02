@@ -1,25 +1,90 @@
 import pytest
 from django.contrib.auth import get_user_model
-from Authentication.serializers import UserRegistrationSerializer
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from Authentication.serializers import UserRegistrationSerializer, UserLoginSerializer, UserLogoutSerializer
+from Profile.models import Profile, MainProfile
+
+User = get_user_model()
 
 @pytest.mark.django_db
-def test_user_registration_serializer():
-    user_data = {
-        'email': 'testuser@example.com',
-        'first_name': 'Test',
-        'last_name': 'User',
-        'PID': '1234567',
-        'password': 'password123',
-        'graduation_year': 2024,
-        'grad_term': 'Spring'
-    }
-    serializer = UserRegistrationSerializer(data=user_data)
-    assert serializer.is_valid()
-    user = serializer.save()
-    assert user.email == 'testuser@example.com'
-    assert user.PID == '1234567'
-    assert user.first_name == 'Test'
-    assert user.last_name == 'User'
-    assert user.graduation_year == 2024
-    assert user.grad_term == 'Spring'
-    assert user.check_password('password123')
+class TestUserSerializers:
+
+    def test_user_registration_serializer(self):
+        data = {
+            'email': 'test@example.com',
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'PID': '1234567',
+            'password': 'password123',
+            'graduation_year': 2025,
+            'grad_term': 'Fall',
+            # 'status': 'active'  # Assuming status is a required field
+        }
+        serializer = UserRegistrationSerializer(data=data)
+        assert serializer.is_valid(), serializer.errors
+        user = serializer.save()
+
+        assert User.objects.filter(email='test@example.com').exists()
+        assert Profile.objects.filter(user=user).exists()
+        assert MainProfile.objects.filter(profile__user=user).exists()
+
+    def test_user_login_serializer(self):
+        user = User.objects.create_user(
+            email='login@example.com',
+            first_name='Login',
+            last_name='User',
+            PID='7654321',
+            password='loginpass123',
+            graduation_year=2024,
+            grad_term='Spring',
+            # status='Student'
+        )
+
+        data = {
+            'email': 'login@example.com',
+            'password': 'loginpass123'
+        }
+        serializer = UserLoginSerializer(data=data)
+        assert serializer.is_valid(), serializer.errors
+        validated_data = serializer.validated_data
+
+        assert 'access_token' in validated_data
+        assert 'refresh_token' in validated_data
+        assert validated_data['email'] == 'login@example.com'
+        assert validated_data['full_name'] == user.get_full_name()
+
+    def test_user_login_serializer_invalid_credentials(self):
+        data = {
+            'email': 'wrong@example.com',
+            'password': 'wrongpassword'
+        }
+        serializer = UserLoginSerializer(data=data)
+        assert serializer.is_valid(), serializer.errors
+
+        with pytest.raises(AuthenticationFailed):
+            serializer.validated_data
+
+    def test_user_logout_serializer(self):
+        user = User.objects.create_user(
+            email='logout@example.com',
+            first_name='Logout',
+            last_name='User',
+            PID='7890123',
+            password='logoutpass123',
+            graduation_year=2023,
+            grad_term='Winter',
+            # status='active'
+        )
+        refresh = RefreshToken.for_user(user)
+
+        data = {
+            'refresh_token': str(refresh)
+        }
+        serializer = UserLogoutSerializer(data=data)
+        assert serializer.is_valid(), serializer.errors
+
+        # Save method should blacklist the refresh token
+        serializer.save()
+        with pytest.raises(TokenError):
+            RefreshToken(str(refresh)).check_blacklist()

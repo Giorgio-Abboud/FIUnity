@@ -11,7 +11,7 @@ TERM_CHOICES = [
         ('Fall', 'Fall'),
     ]
 
-class AppUser(AbstractBaseUser, PermissionsMixin):
+class AppUser(AbstractBaseUser):
     email = models.EmailField(max_length=50, unique=True)
     PID = models.CharField(max_length=7, unique=True)
     first_name = models.CharField(max_length=50)
