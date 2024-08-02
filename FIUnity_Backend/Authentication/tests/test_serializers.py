@@ -31,18 +31,17 @@ class TestUserSerializers:
 
     def test_user_login_serializer(self):
         user = User.objects.create_user(
-            email='login@example.com',
+            email='login32@example.com',
             first_name='Login',
             last_name='User',
-            PID='7654321',
+            PID='7659321',
             password='loginpass123',
             graduation_year=2024,
             grad_term='Spring',
-            # status='Student'
         )
 
         data = {
-            'email': 'login@example.com',
+            'email': 'login32@example.com',
             'password': 'loginpass123'
         }
         serializer = UserLoginSerializer(data=data)
@@ -51,8 +50,8 @@ class TestUserSerializers:
 
         assert 'access_token' in validated_data
         assert 'refresh_token' in validated_data
-        assert validated_data['email'] == 'login@example.com'
-        assert validated_data['full_name'] == user.get_full_name()
+        assert validated_data['email'] == 'login32@example.com'
+        assert validated_data['full_name'] == user.get_full_name
 
     def test_user_login_serializer_invalid_credentials(self):
         data = {
@@ -60,8 +59,10 @@ class TestUserSerializers:
             'password': 'wrongpassword'
         }
         serializer = UserLoginSerializer(data=data)
-        assert serializer.is_valid(), serializer.errors
+        assert not serializer.is_valid(), "Serializer should not be valid with wrong credentials"
+        assert 'non_field_errors' in serializer.errors, "Serializer should have non_field_errors for invalid credentials"
 
+        # To ensure the exception is raised when accessing validated_data
         with pytest.raises(AuthenticationFailed):
             serializer.validated_data
 
