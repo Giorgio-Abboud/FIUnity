@@ -2,139 +2,33 @@ import ProfileViewPage from "./ProfileViewPage";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
-// import {
-// } from "../api/profileApi.js";
 
-const exampleExperiences = [
-  {
-    jobTitle: "Software Engineer",
-    companyName: "Capital One",
-    location: "San Francisco, CA",
-    startDate: "Jan 2020",
-    endDate: "- Present",
-    jobType: "Part-time",
-    description:
-      "Worked on developing web applications using React and Node.js. Assisted in developing mobile applications and performing code reviews. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    jobTitle: "Junior Developer",
-    companyName: "Google",
-    location: "New York, NY",
-    startDate: "Jun 2018",
-    endDate: "- Aug 2019",
-    jobType: "Internship",
-    description:
-      "As a Software Engineer, I thrive in designing and developing robust software solutions that drive business efficiency and user satisfaction. I am skilled in analyzing user requirements, architecting scalable systems, and implementing clean, maintainable code in languages like Java and Python. Collaborating with cross-functional teams, I translate complex technical requirements into elegant software designs, ensuring seamless integration with existing systems and adherence to industry best practices. My role involves conducting rigorous testing, debugging issues, and optimizing performance to deliver reliable software solutions. I am passionate about continuous learning, staying abreast of emerging technologies, and mentoring junior engineers to foster a culture of innovation and excellence.", //discuss how size increases and boxes look weird
-  },
-];
+const mapExperienceData = (data) => {
+  return data.map(exp => ({
+    jobTitle: exp.job_position,
+    jobType: exp.job_type,
+    companyName: exp.company_data.name, 
+    location: exp.location,
+    startDate: exp.start_date,
+    endDate: exp.end_date || 'Present',
+    description: exp.description,
+  }));
+};
 
-const exampleProjects = [
-  {
-    name: "Project 1",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-    skills: ["Java", "Django", "Python"],
-  },
-  {
-    name: "Project 2",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-    skills: ["Java", "Django", "Python"],
-  },
-  {
-    name: "Project 3",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-    skills: ["Java", "Django", "Python"],
-  },
-  {
-    name: "Project 4",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-    skills: ["Java", "Django", "Python"],
-  },
-];
+const mapProjectData = (data) => {
+  return data.map(project => ({
+    name: project.project_data.name || '',
+    description: project.description, 
+    skills: project.skills || [], 
+  }));
+};
 
-// const extracurriculars = [
-//   {
-//     name: "Women in Computer Science",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-//   },
-//   {
-//     name: "INIT",
-//     description:
-//       "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-//   },
-//   {
-//     name: "SWE",
-//     description:
-//       "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-//   },
-//   {
-//     name: "INIT",
-//     description:
-//       "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-//   },
-// ];
-
-const skills = [
-  {
-    name: "Java",
-  },
-  {
-    name: "Django",
-  },
-  {
-    name: "Python",
-  },
-  {
-    name: "React",
-  },
-  {
-    name: "JavaScript",
-  },
-  {
-    name: "Node.js",
-  },
-  {
-    name: "C++",
-  },
-  {
-    name: "Ruby on Rails",
-  },
-  {
-    name: "SQL",
-  },
-  {
-    name: "Angular",
-  },
-  {
-    name: "Swift",
-  },
-  {
-    name: "Spring",
-  },
-  {
-    name: "Kotlin",
-  },
-  {
-    name: "Vue.js",
-  },
-  {
-    name: "PHP",
-  },
-  {
-    name: "ASP.NET",
-  },
-  {
-    name: "Go",
-  },
-  {
-    name: "Flask",
-  },
-];
-
+const mapSkillData = (data) => {
+  console.log('data', data);
+  return data.map(skill => ({
+    skillName: skill.skill_name
+  }));
+};
 
 const ProfileViewApp = () => {
 
@@ -151,8 +45,9 @@ const ProfileViewApp = () => {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
           }
         });
-        console.log('response', response)
-        setProfileData(response.data);
+        console.log('response', response.data);
+
+        setProfileData({...response.data, experience_data: mapExperienceData(response.data.experience_data), project_data: mapProjectData(response.data.project_data), skill_data: mapSkillData(response.data.skill_data)});
         setLoading(false);
       } catch (err) {
         setError(err);
@@ -176,17 +71,17 @@ const ProfileViewApp = () => {
           gradTerm={profileData.profile.grad_term}
           gradDate={profileData.profile.graduation_year}
           network={profileData.profile.network}
-          major={profileData.major}
+          major={profileData.profile.major}
           minor={profileData.profile.minor}
           currJobPosition={profileData.curr_job_position}
           careerInterest={profileData.profile.career_interest}
-          aboutMe={profileData.profile.about_me}
-          resumeURL={profileData.resume_url}
-          profilePic={profileData.profile.profile_pic}
-          experiences={profileData.experience_data || []}
-          projects={profileData.project_data || []}
-          skills={profileData.skill_data || []}
-          extracurriculars={profileData.extra_data|| []}
+          aboutMe={profileData.profile.about}
+          resumeURL={profileData.profile.resume}
+          profilePic={profileData.profile.picture || defaultProfilePicture}
+          experiences={profileData.experience_data}
+          projects={profileData.project_data}
+          skills={profileData.skill_data}
+          extracurriculars={profileData.extra_data}
       />
     </>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import axiosInstance from "../api/profileApi.js";
 import { useNavigate } from "react-router-dom";
 import {
-  axiosInstance,
   createExtracurricular,
   updateExtracurricular,
   deleteExtracurricular,
@@ -11,7 +11,7 @@ import {
   createSkill,
   createExperience,
   updateExperience,
-  deleteExperience
+  deleteExperience,
 } from "../api/profileApi.js";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
@@ -96,7 +96,6 @@ const ProfileEdit = ({ classification }) => {
     setSelectedMajor(value);
     setProfile((prevProfile) => ({ ...prevProfile, major: value }));
   };
-  
 
   const handleExperienceChange = (index, e) => {
     const { name, value } = e.target;
@@ -256,48 +255,41 @@ const ProfileEdit = ({ classification }) => {
       form.reportValidity();
       return;
     }
+    console.log("profile", profile);
 
-    const profiles = {
-      full_name: `${profile.firstName} ${
-        profile.middleName ? profile.middleName + " " : ""
-      }${profile.lastName}`,
-      check_graduation_status: classification,
-      first_name: profile.firstName,
-      middle_name: profile.middleName,
-      last_name: profile.lastName,
-      about: profile.aboutMe,
-      email: localStorage.getItem("user_id"),
-      grad_term: profile.gradTerm,
-      graduation_year: profile.graduationYear,
-      major: profile.selectedMajor,
-      minor: profile.minor,
-      career_interest: profile.careerInterest,
-      picture:  profile.profilePicture ? URL.createObjectURL(profile.profilePicture) : null,
-      status: classification,
-      network: profile.network,
-    };
+    const formData = new FormData();
 
-    const profileData = {
-      profiles,
-      // experiences: experiences.map((exp) => ({
-      //   ...exp,
-      //   endDate: exp.current ? null : exp.endDate,
-      // })),
-      // projects: projects,
-      // extracurriculars: extracurr,
-      // skills: skills,
-    };
+    formData.append("first_name", profile.firstName)
+    formData.append("last_name", profile.lastName)
+    formData.append("grad_term", profile.gradTerm);
+    formData.append("about", profile.aboutMe);
+    formData.append("graduation_year", profile.graduationYear);
+    formData.append("major", profile.major);
+    formData.append("minor", profile.minor);
+    formData.append("career_interest", profile.careerInterest);
+    formData.append("network", profile.network);
+
+    if (profile.profilePicture) {
+      formData.append("picture", profile.profilePicture);
+    }
+    if (profile.resume) {
+      formData.append("resume", profile.resume);
+    }
+    if (profile.middleName) {
+      formData.append("middle_name", profile.middleName);
+    }
 
     try {
-      console.log("profile data", profileData);
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
 
       // Update profile information
       const response = await axios.patch(
         "http://localhost:8000/profile/userprofile/",
-        profileData,
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
@@ -305,108 +297,131 @@ const ProfileEdit = ({ classification }) => {
 
       console.log("Profile updated successfully:", response.data);
 
+      // Handle extracurriculars
+      for (const extracurrData of extracurr) {
+        console.log('extra name', extracurrData.extracurrName)
+        if (
+          extracurrData.extracurrName.trim() &&
+          extracurrData.description.trim()
+        ) {
+          try {
+            // Check if the extracurricular already exists
+            const existingExtracurriculars = await axiosInstance.get(
+              "/extracurriculars/"
+            );
+            const existingExtracurricular = existingExtracurriculars.data.find(
+              (e) => e.name === extracurrData.extracurrName
+            );
 
-    // Handle extracurriculars
-    for (const extracurrData of extracurr) {
-      if (extracurrData.extracurrName.trim() && extracurrData.description.trim()) {
-        try {
-          // Check if the extracurricular already exists
-          const existingExtracurriculars = await axiosInstance.get('/extracurriculars/');
-          const existingExtracurricular = existingExtracurriculars.data.find(e => e.name === extracurrData.extracurrName);
-
-          if (existingExtracurricular) {
-            // Update existing extracurricular
-            await updateExtracurricular(existingExtracurricular.id, extracurrData);
-          } else {
-            // Create new extracurricular
-            await createExtracurricular({
-              extracurricular: extracurrData.extracurrName || '',
-              description: extracurrData.description,
-            });
-          }
-        } catch (error) {
-          console.error("Failed to create or update extracurricular:", error);
-        }
-      }
-    }
-
-    // Handle projects
-    for (const projectData of projects) {
-      if (projectData.projectName.trim() && projectData.description.trim()) {
-        try {
-          // Check if the project already exists
-          const existingProjects = await axiosInstance.get('/projects/');
-          const existingProject = existingProjects.data.find(p => p.name === projectData.projectName);
-
-          if (existingProject) {
-            // Update existing project
-            await updateProject(existingProject.id, projectData);
-          } else {
-            // Create new project
-            await createProject({
-              name: projectData.projectName,
-              description: projectData.description,
-              skills: projectData.projectSkills
-            });
-          }
-        } catch (error) {
-          console.error("Failed to create or update project:", error);
-        }
-      }
-    }
-
-        // Handle experiences
-        for (const experienceData of experiences) {
-          if (experienceData.jobTitle.trim() && experienceData.companyName.trim()) {
-            try {
-              // Check if the experience already exists
-              const existingExperiences = await axiosInstance.get('/experiences/');
-              const existingExperience = existingExperiences.data.find(e => e.jobTitle === experienceData.jobTitle);
-    
-              if (existingExperience) {
-                // Update existing experience
-                await updateExperience(existingExperience.id, {
-                  ...experienceData,
-                  endDate: experienceData.current ? null : experienceData.endDate,
-                });
-              } else {
-                // Create new experience
-                await createExperience({
-                  job_position: experienceData.jobTitle,
-                  company: experienceData.companyName,
-                  job_type: experienceData.type,
-                  location: experienceData.location,
-                  start_date: experienceData.startDate,
-                  end_date: experienceData.current ? null : experienceData.endDate,
-                  currently_working: experienceData.current,
-                  description: experienceData.description,
-                  tagline: ''
-                });
-              }
-            } catch (error) {
-              console.error("Failed to create or update experience:", error);
+            if (existingExtracurricular) {
+              // Update existing extracurricular
+              await updateExtracurricular(
+                existingExtracurricular.id,
+                extracurrData
+              );
+            } else {
+              // Create new extracurricular
+              await createExtracurricular({
+                extracurricular: extracurrData.extracurrName,
+                description: extracurrData.description,
+              });
             }
+          } catch (error) {
+            console.error("Failed to create or update extracurricular:", error);
           }
-        }    
-
-    // Handle skills
-    for (const skill of skills) {
-      try {
-        // Check if the skill already exists
-        const existingSkills = await axiosInstance.get('/skills/');
-        const existingSkill = existingSkills.data.find(s => s.name === skill);
-
-        if (!existingSkill) {
-          // Create new skill if not exists
-          await createSkill({ skill_name: skill });
         }
-      } catch (error) {
-        console.error("Failed to create skill:", error);
       }
-    }
 
-    // navigate("/view-profile");
+      // Handle projects
+      for (const projectData of projects) {
+        if (projectData.projectName.trim() && projectData.description.trim()) {
+          try {
+            // Check if the project already exists
+            const existingProjects = await axiosInstance.get("/projects/");
+            const existingProject = existingProjects.data.find(
+              (p) => p.name === projectData.projectName
+            );
 
+            if (existingProject) {
+              // Update existing project
+              await updateProject(existingProject.id, projectData);
+            } else {
+              // Create new project
+              await createProject({
+                project: projectData.projectName,
+                description: projectData.description,
+                skills: projectData.projectSkills,
+              });
+            }
+          } catch (error) {
+            console.error("Failed to create or update project:", error);
+          }
+        }
+      }
+
+      // Handle experiences
+      for (const experienceData of experiences) {
+        if (
+          experienceData.jobTitle.trim() &&
+          experienceData.companyName.trim()
+        ) {
+          try {
+            // Check if the experience already exists
+            const existingExperiences = await axiosInstance.get(
+              "/experiences/"
+            );
+            const existingExperience = existingExperiences.data.find(
+              (e) => e.jobTitle === experienceData.jobTitle
+            );
+
+            if (existingExperience) {
+              // Update existing experience
+              await updateExperience(existingExperience.id, {
+                ...experienceData,
+                endDate: experienceData.current ? null : experienceData.endDate,
+              });
+            } else {
+              // Create new experience
+              await createExperience({
+                job_position: experienceData.jobTitle,
+                company: experienceData.companyName,
+                job_type: experienceData.type,
+                location: experienceData.location,
+                start_date: experienceData.startDate,
+                end_date: experienceData.current
+                  ? null
+                  : experienceData.endDate,
+                currently_working: experienceData.current,
+                description: experienceData.description,
+                tagline: "",
+              });
+            }
+          } catch (error) {
+            console.error("Failed to create or update experience:", error);
+          }
+        }
+      }
+
+      // Handle skills
+      for (const skill of skills) {
+        console.log('skill name', skill)
+        try {
+          // Check if the skill already exists
+          const existingSkills = await axiosInstance.get("/skills/");
+          const existingSkill = existingSkills.data.find(
+            (s) => s.name === skill
+          );
+
+          if (!existingSkill) {
+            // Create new skill if not exists
+            await createSkill({ skill_name: skill });
+          }
+        } catch (error) {
+          console.error("Failed to create skill:", error);
+        }
+      }
+
+      // navigate("/view-profile");
     } catch (error) {
       console.error("Error updating profile:", error);
       if (error.response) {
@@ -580,9 +595,9 @@ const ProfileEdit = ({ classification }) => {
               required
             >
               <option value="">Choose one</option>
-              <option value="option1">Spring</option>
-              <option value="option2">Summer</option>
-              <option value="option3">Fall</option>
+              <option value="Spring">Spring</option>
+              <option value="Summer">Summer</option>
+              <option value="Fall">Fall</option>
             </select>
 
             {classification === "Student" && (
@@ -985,8 +1000,8 @@ const ProfileEdit = ({ classification }) => {
               >
                 <option value="">Choose One</option>
                 <option value="Open to Hire">Open to Hire</option>
-                <option value="Seeking Internship">Open to Internship</option>
-                <option value="Seeking Job">Open to Job</option>
+                <option value="Seeking Internship">Seeking Internship</option>
+                <option value="Seeking Job">Seeking Job</option>
                 <option value="Open to Connect">Open to Connect</option>
               </select>
             </div>

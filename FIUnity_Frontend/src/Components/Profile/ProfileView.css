@@ -83,6 +83,7 @@
 .skills-container {
   margin-right: 15px;
   max-height: 180px;
+  min-height: 180px;
 }
 
 .skills-alum-container {
@@ -116,6 +117,9 @@
 .experience-tab-skill::-webkit-scrollbar {
   display: none;
 }
+
+.custom-pagination::-webkit-scrollbar {
+  display: none; }
 
 .sticky-heading {
   position: sticky;
@@ -168,10 +172,9 @@
 .project-container,
 .experience-alum-container {
   margin-top: 25px;
-  padding-bottom: 8px;
+  padding-bottom: 15px;
   padding-right: 15px;
   width: 350px;
-  min-height: 270px;
   background-color: rgba(255, 255, 255, 0.623);
   border: 1px solid #ccc;
   border-radius: 13px;
@@ -306,14 +309,15 @@
 .project-tab-skill,
 .experience-tab-skill {
   padding-bottom: 15px;
+  margin-bottom: 9px;
   margin-left: 10px;
   margin-top: 18px;
   background-color: rgba(211, 213, 224, 0.591);
   border: 1px solid #ccc;
-  max-height: 175px;
   min-width: 317px;
   max-width: 317px;
-  min-height: 175px;
+  min-height: 180px;
+  max-height: 180px;
   border-radius: 13px;
   overflow-y: auto;
   -ms-overflow-style: none; /* IE and Edge */
@@ -353,9 +357,14 @@
 
 .custom-pagination {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; 
   align-items: center;
+  overflow-x: auto; 
   margin-top: 9px;
+  width: 90%; /* Make sure it fills the container */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
 }
 
 .pagination-dot {
@@ -366,6 +375,7 @@
   margin: 0 3px;
   cursor: pointer;
   transition: background-color 0.5s ease;
+  
 }
 
 .pagination-dot.active {

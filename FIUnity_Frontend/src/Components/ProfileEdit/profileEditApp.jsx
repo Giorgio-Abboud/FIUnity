@@ -15,6 +15,7 @@ function ProfileEditing() {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
           }
         });
+        console.log('response', response.data.profile.check_graduation_status)
         setClassification(response.data.profile.check_graduation_status); 
       } catch (error) {
         console.error("Error fetching classification:", error);

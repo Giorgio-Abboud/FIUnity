@@ -4,25 +4,26 @@ import Carousel from "react-elastic-carousel";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 
 export default function ProfileViewPage({
-  firstName,
-  middleName,
-  lastName,
-  classification,
-  gradDate,
-  gradTerm,
-  currJobPosition,
-  careerInterest,
-  major,
-  minor,
-  resumeURL,
-  aboutMe,
-  projects,
-  experiences,
-  profilePic,
-  skills,
-  extracurriculars,
-  network,
+  firstName = '',
+  middleName = '',
+  lastName = '',
+  classification = '',
+  gradDate = '',
+  gradTerm = '',
+  currJobPosition = '',
+  careerInterest = '',
+  major = '',
+  minor = '',
+  resumeURL = '',
+  aboutMe = '',
+  projects = [], 
+  experiences = [], 
+  profilePic = '',
+  skills = [],
+  extracurriculars = [],
+  network = ''
 }) {
+  
   const [currentProjectSlide, setProjectCurrentSlide] = useState(0);
   const [currentExtracurricularSlide, setCurrentExtracurricularSlide] =
     useState(0);
@@ -74,6 +75,8 @@ export default function ProfileViewPage({
         });
       }
     }, 5000);
+
+    
 
     return () => {
       clearInterval(projectInterval);
@@ -179,7 +182,7 @@ export default function ProfileViewPage({
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {resumeURL}
+                        Check out my resume!
                       </a>
                     </p>
                   </div>
@@ -215,7 +218,7 @@ export default function ProfileViewPage({
                   <div className="skills-item-container">
                     {skills.map((skill, index) => (
                       <div key={index}>
-                        <p className="skills-item">{skill.name}</p>
+                        <p className="skills-item">{skill.skillName}</p>
                       </div>
                     ))}
                   </div>
@@ -315,7 +318,7 @@ export default function ProfileViewPage({
                             )}
                             {experience.endDate.length > 0 && (
                               <p className="profile-font experience-text profile-gold experience-time-type">
-                                {experience.startDate} {experience.endDate}
+                                {experience.startDate} -- {experience.endDate}
                               </p>
                             )}
                             <p className="profile-font experience-text profile-gold experience-time-type">
@@ -378,8 +381,8 @@ export default function ProfileViewPage({
               )}
             </>
           )}
-          {experiences.length > 0 && (
-            <>
+          {/* {experiences.length > 0 && (
+            <> */}
               {classification == "Student" && (
                 <div className="experience-container">
                   <h3 className="title-text profile-font">EXPERIENCE</h3>
@@ -438,29 +441,8 @@ export default function ProfileViewPage({
                   </>
                 </div>
               )}
-            </>
-          )}
-          {/* <div className="skills-container"> #081e3f librebaskerville
-            <h3 className="title-text profile-font">SKILLS</h3>
-            <div className="title-skills-line"></div>
-            {skills.length > 0 && (
-              <div>
-                {skills.map((skill, index) => (
-                  <div key={index}>
-                    <div className="skills-project-tab-container">
-                      <div></div>
-                      <p className="profile-skills profile-font-bold">
-                        {skill.name}
-                      </p>
-                      <p className="profile-skills-level profile-gold">
-                        {skill.proficiency}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div> */}
+            {/* </>
+          )} */}
         </div>
       </div>
     </>

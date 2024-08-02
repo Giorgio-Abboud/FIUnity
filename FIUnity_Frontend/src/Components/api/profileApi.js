@@ -28,8 +28,9 @@ axiosInstance.interceptors.request.use(
 // Create extracurricular
 export const createExtracurricular = async (data) => {
     try {
+      console.log('extracur data', data)
       const response = await axiosInstance.post('/extracurriculars/', data);      
-      
+      console.log('extracurr after request', response)
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -71,7 +72,7 @@ export const deleteExtracurricular = async (id) => {
 // Create project
 export const createProject = async (data) => {
   try {
-    console.log('data coming in', data)
+    console.log('project coming in', data)
 
     const response = await axiosInstance.post('/projects/', data);
     
@@ -91,7 +92,7 @@ export const createProject = async (data) => {
 };
 
 // Update project
-export const updateProject = async (data) => {
+export const updateProject = async (id, data) => {
   try {
     console.log('update project data', data)
     const response = await axiosInstance.patch(`/projects/${id}/`, data);
@@ -154,8 +155,9 @@ export const createSkill = async (data) => {
   try {
     console.log('skill data before axios', data)
 
-    const response = await axiosInstance.post('/skills/', {
-      skills: data.name});
+    const response = await axiosInstance.post('/skills/', data);
+      console.log('skills after request', response)
+
     return response.data;
   } catch (error) {
     console.error('Error creating experience:', error);
