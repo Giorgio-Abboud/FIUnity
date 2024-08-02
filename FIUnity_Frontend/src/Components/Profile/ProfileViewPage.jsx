@@ -83,23 +83,7 @@ export default function ProfileViewPage({
   }, [projects.length, extracurriculars.length, experiences.length]);
 
   if (
-    !firstName &&
-    !lastName &&
-    !classification &&
-    !gradDate &&
-    !gradTerm &&
-    !currJobPosition &&
-    !careerInterest &&
-    !major &&
-    !minor &&
-    !resumeURL &&
-    !aboutMe &&
-    projects.length === 0 &&
-    experiences.length === 0 &&
-    !profilePic &&
-    skills.length === 0 &&
-    extracurriculars.length === 0 &&
-    !network
+    !careerInterest // check if profile edit was completed, since this is a required field
   ) {
     return (
       <div className="empty-white-block empty-profile-message">
@@ -135,7 +119,7 @@ export default function ProfileViewPage({
               <div>
                 <div
                   className={
-                    classification == "Alum" ? "info-block-alum" : "info-block"
+                    classification == "Alumni" ? "info-block-alum" : "info-block"
                   }
                 >
                   <div className="three-text-flex">
@@ -145,7 +129,7 @@ export default function ProfileViewPage({
                     </p>
                   </div>
                   <div>
-                    {classification == "Alum" ? (
+                    {classification == "Alumni" ? (
                       <div className="three-text-flex">
                         <p className="profile-font profile-font-bold">
                           Job Title:
@@ -203,7 +187,7 @@ export default function ProfileViewPage({
               </div>
               <div
                 className={
-                  classification == "Alum"
+                  classification == "Alumni"
                     ? "about-us-alum"
                     : "about-us-container"
                 }
@@ -219,7 +203,7 @@ export default function ProfileViewPage({
               {skills.length > 0 && (
                 <div
                   className={
-                    classification == "Alum"
+                    classification == "Alumni"
                       ? "skills-alum-container"
                       : "skills-container"
                   }

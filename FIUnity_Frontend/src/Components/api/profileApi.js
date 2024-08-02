@@ -25,27 +25,11 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// // Fetch extracurriculars
-// export const fetchExtracurriculars = async () => {
-//   try {
-//     const response = await axiosInstance.get('/extracurriculars/');
-//     console.log('response', response);
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error fetching extracurriculars:', error);
-//     throw error;
-//   }
-// };
-
 // Create extracurricular
 export const createExtracurricular = async (data) => {
     try {
-      const response = await axiosInstance.post('/extracurriculars/', {
-            extracurricular: data.name || '',
-            description: data.description || ''
-      });      
+      const response = await axiosInstance.post('/extracurriculars/', data);      
       
-      console.log("AFTER POST REQUEST");
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -89,11 +73,7 @@ export const createProject = async (data) => {
   try {
     console.log('data coming in', data)
 
-    const response = await axiosInstance.post('/projects/', {
-      project: data.name,
-      description: data.description,
-      skills: data.skills,
-    });
+    const response = await axiosInstance.post('/projects/', data);
     
     return response.data;
   } catch (error) {
@@ -113,7 +93,7 @@ export const createProject = async (data) => {
 // Update project
 export const updateProject = async (data) => {
   try {
-    console.log('data', data)
+    console.log('update project data', data)
     const response = await axiosInstance.patch(`/projects/${id}/`, data);
     console.log('response', response)
     return response.data;
@@ -134,3 +114,64 @@ export const deleteProject = async (id) => {
   }
 };
 
+// Create an experience
+export const createExperience = async (data) => {
+  try {
+    console.log('experience data before axios', data)
+
+    const response = await axiosInstance.post('/experiences/', data);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating experience:', error);
+    throw error;
+  }
+};
+
+// Update an experience
+export const updateExperience = async (id, data) => {
+  try {
+    const response = await axiosInstance.patch(`/experiences/${id}/`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating experience:', error);
+    throw error;
+  }
+};
+
+// Delete an experience
+export const deleteExperience = async (id) => {
+  try {
+    const response = await axiosInstance.delete(`/experiences/${id}/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    throw error;
+  }
+};
+
+// Create a skill
+export const createSkill = async (data) => {
+  try {
+    console.log('skill data before axios', data)
+
+    const response = await axiosInstance.post('/skills/', {
+      skills: data.name});
+    return response.data;
+  } catch (error) {
+    console.error('Error creating experience:', error);
+    throw error;
+  }
+};
+
+// Delete a skill
+export const deleteSkill = async (id) => {
+  try {
+    const response = await axiosInstance.delete(`/skills/${id}/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    throw error;
+  }
+};
+
+export default axiosInstance;
