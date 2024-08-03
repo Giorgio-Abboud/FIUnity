@@ -2,28 +2,29 @@ import "./ProfileView.css";
 import React, { useState, useEffect, useRef } from "react";
 import Carousel from "react-elastic-carousel";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
+import { CiEdit } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileViewPage({
-  firstName = '',
-  middleName = '',
-  lastName = '',
-  classification = '',
-  gradDate = '',
-  gradTerm = '',
-  currJobPosition = '',
-  careerInterest = '',
-  major = '',
-  minor = '',
-  resumeURL = '',
-  aboutMe = '',
-  projects = [], 
-  experiences = [], 
-  profilePic = '',
+  firstName = "",
+  middleName = "",
+  lastName = "",
+  classification = "",
+  gradDate = "",
+  gradTerm = "",
+  currJobPosition = "",
+  careerInterest = "",
+  major = "",
+  minor = "",
+  resumeURL = "",
+  aboutMe = "",
+  projects = [],
+  experiences = [],
+  profilePic = "",
   skills = [],
   extracurriculars = [],
-  network = ''
+  network = "",
 }) {
-  
   const [currentProjectSlide, setProjectCurrentSlide] = useState(0);
   const [currentExtracurricularSlide, setCurrentExtracurricularSlide] =
     useState(0);
@@ -32,6 +33,11 @@ export default function ProfileViewPage({
   const extracurricularsCarouselRef = useRef(null);
   const experiencesCarouselRef = useRef(null);
   const profilePictureUrl = profilePic ? profilePic : defaultProfilePicture;
+  const navigate = useNavigate()
+
+  const handleEditClick = () => {
+    navigate('/profile-edit'); 
+  };
 
   useEffect(() => {
     const projectInterval = setInterval(() => {
@@ -76,8 +82,6 @@ export default function ProfileViewPage({
       }
     }, 5000);
 
-    
-
     return () => {
       clearInterval(projectInterval);
       clearInterval(experiencesInterval);
@@ -86,11 +90,16 @@ export default function ProfileViewPage({
   }, [projects.length, extracurriculars.length, experiences.length]);
 
   if (
-    !careerInterest // check if profile edit was completed, since this is a required field
+    !network // check if profile edit was completed, since this is a required field
   ) {
     return (
-      <div className="empty-white-block empty-profile-message">
+      <div className="empty-profile-message">
         It's really quiet over here...
+        <div className="edit-container">
+            <button className="edit-button" onClick={handleEditClick}>
+              <CiEdit />
+            </button>
+          </div>
       </div>
     );
   }
@@ -114,15 +123,16 @@ export default function ProfileViewPage({
                     }${lastName}`}
                   </h1>
                   <p className="profile-font profile-class-size">
-                    {classification}
-                  </p>
+                  {`${classification === "Alumni" ? "Alum" : classification}`}                  </p>
                 </div>
                 <div className="network">{network}</div>
               </div>
               <div>
                 <div
                   className={
-                    classification == "Alumni" ? "info-block-alum" : "info-block"
+                    classification == "Alumni"
+                      ? "info-block-alum"
+                      : "info-block"
                   }
                 >
                   <div className="three-text-flex">
@@ -381,8 +391,8 @@ export default function ProfileViewPage({
               )}
             </>
           )}
-          {/* {experiences.length > 0 && (
-            <> */}
+          {experiences.length > 0 && (
+            <>
               {classification == "Student" && (
                 <div className="experience-container">
                   <h3 className="title-text profile-font">EXPERIENCE</h3>
@@ -441,8 +451,13 @@ export default function ProfileViewPage({
                   </>
                 </div>
               )}
-            {/* </>
-          )} */}
+            </>
+          )}
+          <div className="edit-container">
+            <button className="edit-button" onClick={handleEditClick}>
+              <CiEdit />
+            </button>
+          </div>
         </div>
       </div>
     </>

@@ -441,8 +441,16 @@ const ProfileEdit = ({ classification }) => {
       }
     }
 
-    // Handle resume
-    if (profile.resumeURL) {
+    if (classification === "alumni" && profile.url) {
+      // Fetch file from URL if it's for alumni
+      try {
+        const response = await fetch(profile.url);
+        const blob = await response.blob();
+        formData.append("resume", blob, "resume.pdf");
+      } catch (error) {
+        console.error("Error fetching resume file from URL:", error);
+      }
+    } else if (profile.resumeURL) {
       const resumeFile = await convertBlobUrlToFile(
         profile.resumeURL,
         "resume.pdf"
@@ -450,6 +458,10 @@ const ProfileEdit = ({ classification }) => {
       if (resumeFile) {
         formData.append("resume", resumeFile);
       }
+    }
+
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
     }
 
     try {
@@ -561,8 +573,7 @@ const ProfileEdit = ({ classification }) => {
               job_type: experienceData.type,
               location: experienceData.location,
               start_date: experienceData.startDate,
-              end_date: experienceData.current ? null : experienceData.endDate,
-              currently_working: experienceData.current,
+              end_date: experienceData.current ? null : (experienceData.endDate || ''),              currently_working: experienceData.current,
               description: experienceData.description,
               tagline: "",
             });
@@ -574,8 +585,7 @@ const ProfileEdit = ({ classification }) => {
               job_type: experienceData.type,
               location: experienceData.location,
               start_date: experienceData.startDate,
-              end_date: experienceData.current ? null : experienceData.endDate,
-              currently_working: experienceData.current,
+              end_date: experienceData.current ? null : (experienceData.endDate || ''),              currently_working: experienceData.current,
               description: experienceData.description,
               tagline: "",
             });
@@ -594,7 +604,8 @@ const ProfileEdit = ({ classification }) => {
       }
 
       console.log("SUCCESS :)");
-      // navigate("/view-profile");
+      navigate("/view-profile");
+
     } catch (error) {
       console.error("Error updating profile:", error);
       if (error.response) {
@@ -1230,12 +1241,10 @@ const ProfileEdit = ({ classification }) => {
           <>
             <div className="Edit-Profile-Button">
               <button onClick={handleSubmit} className="edit-profile-submit">
-                Save{" "}
+                Save
               </button>
-              {/* <Link to="/view-profile" className="edit-profile-button">
-              </Link> */}
             </div>
-          </> // save will only redirect to the view profile page if backend recieved information correctly
+          </> 
         )}
       </form>
     </div>

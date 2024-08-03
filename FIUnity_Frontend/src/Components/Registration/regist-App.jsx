@@ -57,7 +57,7 @@ export default function Registration() {
       email: email,
       password: password,
       grad_term: gradTerm,
-      grad_year: gradYear,
+      graduation_year: gradYear,
     };
 
     try {

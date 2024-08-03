@@ -1,4 +1,4 @@
-.profile-font-bold, .empty-profile-message {
+.profile-font-bold {
   font-weight: bold;
   color: #0c3d72;
 }
@@ -10,19 +10,6 @@
   height: 100vh; 
   text-align: center;
   font-size: 1.5em;
-}
-
-.empty-white-block {
-  margin-top: 400px;
-  margin-bottom: auto;
-  margin-left: auto;
-  margin-right: auto;
-  width: 500px;
-  padding-top: 10px;
-  height: 100px;
-  background-color: rgba(255, 255, 255, 0.623);
-  border: 1px solid #ccc;
-  border-radius: 13px;
 }
 
 .profile-gold {
@@ -330,8 +317,8 @@
 }
 
 .experience-tab-skill {
-  min-height: 438px;
-  max-height: 438px;
+  min-height: 425px;
+  max-height: 425px;
 }
 
 .project-tab-noskill,
@@ -408,4 +395,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.edit-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+}
+
+.edit-button {
+  border: 5px solid gold;
+  border-radius: 50%;
+  padding: 15px; 
+  box-sizing: border-box;
+  font-size: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-button:hover {
+background-color: rgba(255, 217, 0, 0.6);
+}
+
+.edit-icon {
+  padding-left: 10px;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
 }
