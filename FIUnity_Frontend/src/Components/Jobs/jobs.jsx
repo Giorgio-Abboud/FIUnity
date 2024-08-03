@@ -36,7 +36,7 @@ const JobsList = () => {
   useEffect(() => {
     // Fetch job posting data from your backend
     axios
-      .get("http://localhost:8000/jobs/job-posting/")
+      .get("http://localhost:8008/jobs/job-posting/")
       .then((response) => {
         setJobs(response.data);
       })
@@ -48,7 +48,7 @@ const JobsList = () => {
   const handleJobClick = (jobPosition) => {
     // Fetch job posting details for the selected job
     axios
-      .get(`http://localhost:8000/jobs/job-posting/`)
+      .get(`http://localhost:8008/jobs/job-posting/`)
       .then((response) => {
         console.log(response.data);
         const selectedJobIndex = jobs.findIndex(

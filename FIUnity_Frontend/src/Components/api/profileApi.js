@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base URL for your API
-const API_URL = 'http://localhost:8000/profile';
+const API_URL = 'http://localhost:8008/profile';
 
 // Axios instance with token authentication
 const axiosInstance = axios.create({

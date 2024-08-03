@@ -11,7 +11,7 @@ function Homepage() {
   useEffect(() => {
     (async function () {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/feed/posts/", {
+        const response = await axios.get("http://127.0.0.1:8008/feed/posts/", {
           headers: {
             "Content-Type": "application/json",
             mode: "cors",

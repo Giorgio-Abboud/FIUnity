@@ -65,19 +65,22 @@ class UserLoginSerializer(serializers.Serializer):
         password = attrs.get('password')
         PID = attrs.get('PID')
         request = self.context.get('request')
-        user = authenticate(request, email=email, password=password, PID=PID)
 
-        if not user:
+        try:
+            user = authenticate(request, email=email, password=password, PID=PID)
+            if not user:
+                raise AuthenticationFailed("Invalid credentials")
+
+            tokens = user.tokens()
+
+            return {
+                'email': user.email,
+                'full_name': user.get_full_name,
+                'access_token': str(tokens.get('access')),
+                'refresh_token': str(tokens.get('refresh'))
+            }
+        except AuthenticationFailed:
             raise AuthenticationFailed("Invalid credentials")
-
-        tokens = user.tokens()
-
-        return {
-            'email': user.email,
-            'full_name': user.get_full_name,
-            'access_token': str(tokens.get('access')),
-            'refresh_token': str(tokens.get('refresh'))
-        }
     
 # Logout user and expire the token
 class UserLogoutSerializer(serializers.Serializer):
