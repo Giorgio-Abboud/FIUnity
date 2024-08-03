@@ -103,14 +103,13 @@ const dummySearchData = [
     classification: "Alumni",
     profilePic: "/images/roary-profile-pic.jpg",
   },
-]; //NEW CODE
+];
 
 const NavBar = () => {
   const [isSearchBold, setIsSearchBold] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [searchInput, setSearchInput] = useState(""); //NEW CODE
-  const [searchResults, setSearchResults] = useState([]); //NEW CODE
-  const [searchBarInput, setSearchBarInput] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSearchClick = () => {
@@ -130,18 +129,13 @@ const NavBar = () => {
     } else {
       setSearchResults([]);
     }
-  }; //NEW CODE
-
-
-  const handleSearchBarInputChange = (e) => {
-    setSearchBarInput(e.target.value);
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const searchBarInfo = {
-      searchBarInput: searchBarInput,
+      searchBarInput: searchInput,
     };
 
     axios
@@ -167,7 +161,7 @@ const NavBar = () => {
         );
       });
   };
-  
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -181,36 +175,22 @@ const NavBar = () => {
           className={`searchBox ${isSearchBold ? "bold-search" : ""}`}
           onClick={handleSearchClick}
         >
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchInput} //NEW CODE
-            onChange={handleSearchChange} //NEW CODE
-          />
-          <button className="search-button">
-            <img src={Pawprint_icon} alt="Paw Print Icon" />
-          </button>
-        </div>
-      <div
-        className={`searchBox ${isSearchBold ? "bold-search" : ""}`}
-        onClick={handleSearchClick}
-      >
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchBarInput}
-            onChange={handleSearchBarInputChange}
-          />
-        
-        <button type="submit" className="navBarSubmit">
-            <img src={Pawprint_icon} alt="Paw Print Icon" className="pawprint-icon" />
-          </button>
+          <form onSubmit={handleSubmit} className= "searchInputNavBar">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchInput}
+              onChange={handleSearchChange}
+            />
           </form>
-      </div>
-      
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+          <div className="navBarSubmit">
+            <button type="submit">
+              <img src={Pawprint_icon} alt="Paw Print Icon" className="pawprint-icon" />
+            </button>
+            </div>
+        </div>
 
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
 
         <div className="NavBar_Icons">
           <div className="icon-container">
@@ -247,7 +227,7 @@ const NavBar = () => {
               />
             </div>
           ))}
-        </div> //NEW CODE FROM SEARCH RESULTS...
+        </div>
       )}
     </>
   );

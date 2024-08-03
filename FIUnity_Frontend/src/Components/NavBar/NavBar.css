@@ -22,19 +22,30 @@
   display: flex;
   align-items: center;
   background-color: aliceblue;
-  padding: 5px 10px;
+  padding: 0px 10px;
   border-radius: 50px;
-  width: 600px;
+  width: 400px; 
+  height: 50px; 
+  box-sizing: border-box; 
 }
 
 .searchBox input {
-  padding: 16px;
+  padding: 0px 15px; 
+  height: 100%;
   background: transparent;
   border: 0;
   outline: 0;
   color: black;
   font-size: 15px;
-  width: 100%;
+  text-align: left;
+  line-height: 40px; 
+  box-sizing: border-box;
+  margin-bottom: 45px;
+}
+
+.searchInputNavBar{
+  margin-top: 45px;
+  width: 50px;
 }
 
 .bold-search {
@@ -44,6 +55,7 @@
 .searchBox.bold-search input {
   font-weight: bold;
 }
+
 
 /* Icons */
 .NavBar_Icons {
@@ -108,7 +120,7 @@
 }
 
 .job-dropdown{
-  margin-left: 80px;
+  margin: 40px;
 }
 
 .job-dropdown:hover .jobs-dropdown-content {
@@ -198,7 +210,7 @@
   margin-bottom: 7px;
 }
 
-.peofile-btn a {
+.profile-btn a {
   margin: 10px;
   font-size: 18px;
   cursor: pointer;
@@ -222,8 +234,9 @@
   border-radius: 10px;
   height: 40px; /* Adjusted margin for spacing */
   font-size: 14px;
-  margin-left: 10px;
+  margin-left: 80px;
   margin-right: 20px;
+  margin-bottom: 0px;
 }
 
 .Logout:hover {
@@ -244,9 +257,16 @@
   }
 
   .searchBox {
-    width: 100%;
-    max-width: none;
-    margin: 10px 0; /* Adjusted margin for spacing */
+    width: calc(100% - 120px);
+    margin-right: 10px;
+  }
+
+  .navBarSubmit {
+    margin-left: auto; /* Push button to the right */
+    margin-right: 10px; /* Margin on the right */
+    width: 100px; /* Adjust width */
+    height: 40px; /* Adjust height */
+    font-size: 14px; /* Smaller font size */
   }
 
   .NavBar_Icons {
@@ -254,20 +274,78 @@
     margin-top: 10px;
   }
 
-  .icon-container,
-  .job-btn {
-    margin: 10px 0; /* Adjusted margin for spacing */
+  .job-btn,
+  .profile-btn {
+    margin: 0px 20px; /* Reduce margin for smaller screens */
+  }
+
+  .job-btn .job-icon,
+  .profile-btn .profile-icon {
+    height: 25px;
+    width: 25px;
+  }
+
+  .job-btn a,
+  .profile-btn a {
+    font-size: 16px; /* Slightly smaller font size */
+  }
+
+  .Logout {
+    font-size: 12px;
+    padding: 5px 10px;
+    margin-left: 20px; /* Adjust margin for smaller screens */
+    margin-right: 10px;
   }
 }
+
+  .navBarSubmit{
+    margin-left: 280px;
+  }
 
 @media (max-width: 480px) {
   .nav-link {
     font-size: 14px;
   }
 
+  .job-btn,
+  .profile-btn {
+    margin: 0px 10px; /* Further reduce margin */
+  }
+
+  .job-btn .job-icon,
+  .profile-btn .profile-icon {
+    height: 20px;
+    width: 20px;
+  }
+
+  .job-btn a,
+  .profile-btn a {
+    font-size: 14px; /* Smaller font size */
+  }
+
   .Logout {
-    font-size: 12px;
-    padding: 5px 10px;
+    font-size: 10px;
+    padding: 5px 8px;
+    margin-left: 10px; /* Adjust margin for mobile screens */
+    margin-right: 5px;
+  }
+  
+  .searchBox {
+    width: calc(100% - 80px); /* Full width minus space for button */
+    margin-right: 5px;
+    padding: 0px 5px; /* Adjust padding */
+  }
+
+  .searchBox input {
+    font-size: 14px; /* Smaller font size */
+  }
+
+  .navBarSubmit {
+    margin-left: auto; /* Push button to the right */
+    margin-right: 5px; /* Margin on the right */
+    width: 80px; /* Adjust width */
+    height: 35px; /* Adjust height */
+    font-size: 12px; /* Smaller font size */
   }
 }
 
@@ -288,7 +366,7 @@
 .search-result {
   display: flex;
   align-items: center;
-  padding: 2px 7px;
+  padding: 2px 70px;
   cursor: pointer;
 }
 

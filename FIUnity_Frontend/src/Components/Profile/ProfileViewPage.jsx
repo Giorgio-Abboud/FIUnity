@@ -1,6 +1,7 @@
 import "./ProfileView.css";
 import React, { useState, useEffect, useRef } from "react";
-import Carousel from "react-elastic-carousel";
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useSpring, animated } from "react-spring";
 
 export default function ProfileViewPage({
