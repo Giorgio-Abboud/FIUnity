@@ -29,7 +29,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         )
         user.save()
 
-     # Create the profile
+        # Create the profile
         profile = Profile.objects.create(
             user=user,
             first_name=user.first_name,
