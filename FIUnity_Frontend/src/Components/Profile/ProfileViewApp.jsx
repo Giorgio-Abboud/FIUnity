@@ -23,6 +23,13 @@ const mapProjectData = (data) => {
   }));
 };
 
+const mapExtracurrData = (data) => {
+  return data.map(extracurr => ({
+    extracurricular: extracurr.extracurricular_data.name || '',
+    description: extracurr.description || ''
+  }))
+}
+
 const mapSkillData = (data) => {
   console.log('data', data);
   return data.map(skill => ({
@@ -47,7 +54,7 @@ const ProfileViewApp = () => {
         });
         console.log('response', response.data);
 
-        setProfileData({...response.data, experience_data: mapExperienceData(response.data.experience_data), project_data: mapProjectData(response.data.project_data), skill_data: mapSkillData(response.data.skill_data)});
+        setProfileData({...response.data, experience_data: mapExperienceData(response.data.experience_data), project_data: mapProjectData(response.data.project_data), extra_data: mapExtracurrData(response.data.extra_data), skill_data: mapSkillData(response.data.skill_data)});
         setLoading(false);
       } catch (err) {
         setError(err);
