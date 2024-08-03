@@ -140,11 +140,16 @@
   word-wrap: break-word;
 }
 
-.skills-item-container {
+.skills-item-container, .skills-item-project-container {
+  margin-top: 10px;;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-left: 20px;
+}
+
+.skills-item-project-container {
+  margin-top: 25px;
 }
 
 .profile-flex {
@@ -316,8 +321,8 @@
   border: 1px solid #ccc;
   min-width: 317px;
   max-width: 317px;
-  min-height: 180px;
-  max-height: 180px;
+  min-height: 160px;
+  max-height: 160px;
   border-radius: 13px;
   overflow-y: auto;
   -ms-overflow-style: none; /* IE and Edge */

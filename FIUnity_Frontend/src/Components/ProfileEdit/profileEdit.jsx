@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 import axiosInstance from "../api/profileApi.js";
 import { useNavigate } from "react-router-dom";
 import {
@@ -9,6 +10,7 @@ import {
   updateProject,
   deleteProject,
   createSkill,
+  deleteSkill,
   createExperience,
   updateExperience,
   deleteExperience,
@@ -28,7 +30,7 @@ const ProfileEdit = ({ classification }) => {
     minor: "",
     careerInterest: "",
     aboutMe: "",
-    profilePicture: null,
+    profilePicture: defaultProfilePicture,
     resume: null,
     url: "",
     resumeURL: "",
@@ -37,6 +39,7 @@ const ProfileEdit = ({ classification }) => {
 
   const [experiences, setExperiences] = useState([
     {
+      id: "",
       jobTitle: "",
       companyName: "",
       type: "",
@@ -51,20 +54,102 @@ const ProfileEdit = ({ classification }) => {
   const [projects, setProjects] = useState([
     { projectName: "", description: "", projectSkills: [], skillsInput: "" },
   ]);
-
   const [extracurr, setExtracurr] = useState([
-    { extracurrName: "", description: "" },
+    { id: "", xtracurrName: "", description: "" },
   ]);
-
+  const [skills, setSkills] = useState([{ skillName: "" }]);
   const [selectedMajor, setSelectedMajor] = useState(profile.major);
-
-  const [skills, setSkills] = useState([]);
   const [skillsError, setSkillsError] = useState(false);
-
   const [url, setUrl] = useState(profile.url);
   const [urlError, setUrlError] = useState("");
-
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const profile = await axiosInstance.get("/userprofile/");
+        const experience = await axiosInstance.get("/experiences/");
+        const project = await axiosInstance.get("/projects/");
+        const extracurr = await axiosInstance.get("/extracurriculars/");
+        const skills = await axiosInstance.get("/skills/");
+
+        const data = profile.data;
+        const expData = experience.data;
+        const projData = project.data;
+        const skillsData = skills.data;
+        const extracurrData = extracurr.data;
+
+        const fetchBlob = async (url) => {
+          const profile = await fetch(url);
+          const blob = await profile.blob();
+          return blob;
+        };
+
+        const profilePictureBlob = data.picture
+          ? await fetchBlob(data.picture)
+          : null;
+        const resumeBlob = data.resume ? await fetchBlob(data.resume) : null;
+
+        // Check if data exists and update the state
+        if (data) {
+          setProfile({
+            firstName: data.first_name || "",
+            lastName: data.last_name || "",
+            middleName: data.middle_name || "",
+            graduationYear: data.graduation_year || "",
+            gradTerm: data.grad_term || "",
+            major: data.major || "",
+            minor: data.minor || "",
+            careerInterest: data.career_interest || "",
+            aboutMe: data.about || "",
+            profilePicture: profilePictureBlob
+              ? URL.createObjectURL(profilePictureBlob)
+              : null,
+            resumeURL: resumeBlob ? URL.createObjectURL(resumeBlob) : "",
+            network: data.network || "",
+          });
+          setExperiences(
+            (expData || []).map((experience) => ({
+              id: experience.id || null,
+              jobTitle: experience.job_position || "",
+              companyName: experience.company_data?.name || "",
+              type: experience.job_type || "",
+              location: experience.location || "",
+              startDate: experience.start_date || "",
+              endDate: experience.end_date || "",
+              current: experience.currently_working || false,
+              description: experience.description || "",
+            }))
+          );
+          setProjects(
+            (projData || []).map((project) => ({
+              id: project.id || null,
+              projectName: project.project_data.name || "", // Ensure project name is retrieved from project_data
+              description: project.description || "", // Set description
+              projectSkills: project.skills || [], // Set skills, if any; assuming skills is an array
+            }))
+          );
+          setExtracurr(
+            (extracurrData || []).map((extracurr) => ({
+              id: extracurr.id || null,
+              extracurrName: extracurr.extracurricular_data.name || "",
+              description: extracurr.description || "",
+            }))
+          );
+          setSkills(
+            (skillsData || []).map((skill) => ({
+              id: skill.id || null,
+              skillName: skill.skill_name || "",
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Failed to fetch profile data:", error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
@@ -90,6 +175,10 @@ const ProfileEdit = ({ classification }) => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setSelectedMajor(profile.major);
+  }, [profile.major]);
 
   const handleMajorChange = (event) => {
     const value = event.target.value;
@@ -122,17 +211,6 @@ const ProfileEdit = ({ classification }) => {
     setExtracurr(updatedExtracurr);
   };
 
-  const deleteExtracurr = async (index, id) => {
-    try {
-      await deleteExtracurricular(id);
-      const newExtracurr = extracurr.slice();
-      newExtracurr.splice(index, 1);
-      setExtracurr(newExtracurr);
-    } catch (error) {
-      console.error("Error deleting extracurricular:", error);
-    }
-  };
-
   const handleSkillChange = (e) => {
     const { value } = e.target;
     setSkills([...skills, value]);
@@ -155,29 +233,89 @@ const ProfileEdit = ({ classification }) => {
       }
     }
   };
-  const handleKeyDown = (e, index) => {
+
+  const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       const trimmedValue = e.target.value.trim();
       if (trimmedValue !== "") {
-        const newSkills = [...skills, trimmedValue];
-        setSkills(newSkills);
+        const newSkill = { id: uuidv4(), skillName: trimmedValue };
+        setSkills([...skills, newSkill]);
         e.target.value = "";
       }
     }
   };
 
+  const handleRemoveExperience = async (id) => {
+    try {
+      console.log(id);
+      await deleteExperience(id);
+      setExperiences((prevExperiences) =>
+        prevExperiences.filter((experience) => experience.id !== id)
+      );
+    } catch (error) {
+      console.error("Failed to delete experience:", error);
+    }
+  };
+
+  const handleRemoveExtracurricular = async (id) => {
+    try {
+      console.log(id);
+      await deleteExtracurricular(id);
+      setExtracurr((prevExtracurriculars) =>
+        prevExtracurriculars.filter(
+          (extracurricular) => extracurricular.id !== id
+        )
+      );
+    } catch (error) {
+      console.error("Failed to delete extracurricular activity:", error);
+    }
+  };
+
+  const handleRemoveSkill = async (id) => {
+    try {
+      console.log(id);
+      setSkills((prevSkills) => prevSkills.filter((skill) => skill.id !== id));
+      await deleteSkill(id);
+    } catch (error) {
+      console.error("Failed to delete skill:", error);
+    }
+  };
+
+  const handleRemoveProject = async (id) => {
+    try {
+      console.log(id);
+      await deleteProject(id);
+      setProjects((prevProjects) =>
+        prevProjects.filter((project) => project.id !== id)
+      );
+    } catch (error) {
+      console.error("Failed to delete project:", error);
+    }
+  };
+
   const removeSkill = (projectIndex, skillIndex) => {
-    const newSkills = [...projects[projectIndex].projectSkills];
-    newSkills.splice(skillIndex, 1);
-    const newProjects = [...projects];
-    newProjects[projectIndex].projectSkills = newSkills;
-    setProjects(newProjects);
+    setProjects((prevProjects) => {
+      const updatedProjects = prevProjects.map((project, pIndex) => {
+        if (pIndex === projectIndex) {
+          const updatedSkills = project.projectSkills.filter((_, sIndex) => sIndex !== skillIndex);
+          return { ...project, projectSkills: updatedSkills };
+        }
+        return project;
+      });
+      return updatedProjects;
+    });
   };
 
   const handleProfilePictureChange = (e) => {
-    // Update the profile picture state when a new file is selected
-    setProfile({ ...profile, profilePicture: e.target.files[0] });
+    const file = e.target.files[0];
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      setProfile((prevProfile) => ({
+        ...prevProfile,
+        profilePicture: fileUrl,
+      }));
+    }
   };
 
   const handleUrlChange = (e) => {
@@ -197,21 +335,35 @@ const ProfileEdit = ({ classification }) => {
 
   const handleResumeChange = (e) => {
     const file = e.target.files[0];
-    const fileURL = URL.createObjectURL(file);
-    setProfile({ ...profile, resume: file, resumeURL: fileURL });
+    if (file) {
+      const fileURL = URL.createObjectURL(file);
+      setProfile({ ...profile, resume: file, resumeURL: fileURL });
+    }
+  };
+
+  const convertBlobUrlToFile = async (blobUrl, fileName) => {
+    try {
+      const response = await fetch(blobUrl);
+      const blob = await response.blob();
+      return new File([blob], fileName, { type: blob.type });
+    } catch (error) {
+      console.error("Failed to convert Blob URL to File:", error);
+      return null;
+    }
   };
 
   const addExperience = () => {
     setExperiences([
       ...experiences,
       {
+        id: uuidv4(),
         jobTitle: "",
         companyName: "",
         type: "",
         location: "",
         startDate: "",
         endDate: "",
-        current: "",
+        current: false,
         description: "",
       },
     ]);
@@ -220,17 +372,23 @@ const ProfileEdit = ({ classification }) => {
   const addProject = () => {
     setProjects([
       ...projects,
-      { projectName: "", description: "", projectSkills: [], skillsInput: "" },
+      {
+        id: uuidv4(),
+        projectName: "",
+        description: "",
+        projectSkills: [],
+        skillsInput: "",
+      },
     ]);
   };
 
   const addExtracurr = () => {
-    const newExtracurricular = { extracurrName: "", description: "" };
+    const newExtracurricular = {
+      id: uuidv4(),
+      extracurrName: "",
+      description: "",
+    };
     setExtracurr([...extracurr, newExtracurricular]);
-  };
-
-  const addSkill = () => {
-    setSkills([...skills, { skillName: "" }]);
   };
 
   const nextStep = () => {
@@ -259,31 +417,42 @@ const ProfileEdit = ({ classification }) => {
 
     const formData = new FormData();
 
-    formData.append("first_name", profile.firstName)
-    formData.append("last_name", profile.lastName)
-    formData.append("grad_term", profile.gradTerm);
-    formData.append("about", profile.aboutMe);
-    formData.append("graduation_year", profile.graduationYear);
-    formData.append("major", profile.major);
-    formData.append("minor", profile.minor);
-    formData.append("career_interest", profile.careerInterest);
-    formData.append("network", profile.network);
+    if (profile.firstName) formData.append("first_name", profile.firstName);
+    if (profile.lastName) formData.append("last_name", profile.lastName);
+    if (profile.middleName) formData.append("middle_name", profile.middleName);
+    if (profile.gradTerm) formData.append("grad_term", profile.gradTerm);
+    if (profile.aboutMe) formData.append("about", profile.aboutMe);
+    if (profile.graduationYear)
+      formData.append("graduation_year", profile.graduationYear);
+    if (profile.major) formData.append("major", profile.major);
+    if (profile.minor) formData.append("minor", profile.minor);
+    if (profile.careerInterest)
+      formData.append("career_interest", profile.careerInterest);
+    if (profile.network) formData.append("network", profile.network);
 
+    // Handle profile picture
     if (profile.profilePicture) {
-      formData.append("picture", profile.profilePicture);
+      const profilePictureFile = await convertBlobUrlToFile(
+        profile.profilePicture,
+        "profile-picture.jpg"
+      );
+      if (profilePictureFile) {
+        formData.append("picture", profilePictureFile);
+      }
     }
-    if (profile.resume) {
-      formData.append("resume", profile.resume);
-    }
-    if (profile.middleName) {
-      formData.append("middle_name", profile.middleName);
+
+    // Handle resume
+    if (profile.resumeURL) {
+      const resumeFile = await convertBlobUrlToFile(
+        profile.resumeURL,
+        "resume.pdf"
+      );
+      if (resumeFile) {
+        formData.append("resume", resumeFile);
+      }
     }
 
     try {
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-
       // Update profile information
       const response = await axios.patch(
         "http://localhost:8000/profile/userprofile/",
@@ -297,37 +466,58 @@ const ProfileEdit = ({ classification }) => {
 
       console.log("Profile updated successfully:", response.data);
 
+      // Fetch existing data once
+      const [
+        existingExtracurriculars,
+        existingProjects,
+        existingExperiences,
+        existingSkills,
+      ] = await Promise.all([
+        axiosInstance.get("/extracurriculars/"),
+        axiosInstance.get("/projects/"),
+        axiosInstance.get("/experiences/"),
+        axiosInstance.get("/skills/"),
+      ]);
+
+      // Convert existing data to maps
+      const extracurricularMap = new Map(
+        existingExtracurriculars.data.map((e) => [
+          e.extracurricular_data.name,
+          e,
+        ])
+      );
+      const projectMap = new Map(
+        existingProjects.data.map((p) => [p.project_data.name, p])
+      );
+      const experienceMap = new Map(
+        existingExperiences.data.map((e) => [e.job_position, e])
+      );
+      const skillMap = new Map(
+        existingSkills.data.map((s) => [s.skill_name, s])
+      );
+
       // Handle extracurriculars
       for (const extracurrData of extracurr) {
-        console.log('extra name', extracurrData.extracurrName)
         if (
           extracurrData.extracurrName.trim() &&
           extracurrData.description.trim()
         ) {
-          try {
-            // Check if the extracurricular already exists
-            const existingExtracurriculars = await axiosInstance.get(
-              "/extracurriculars/"
-            );
-            const existingExtracurricular = existingExtracurriculars.data.find(
-              (e) => e.name === extracurrData.extracurrName
-            );
+          const existingExtracurricular = extracurricularMap.get(
+            extracurrData.extracurrName
+          );
 
-            if (existingExtracurricular) {
-              // Update existing extracurricular
-              await updateExtracurricular(
-                existingExtracurricular.id,
-                extracurrData
-              );
-            } else {
-              // Create new extracurricular
-              await createExtracurricular({
-                extracurricular: extracurrData.extracurrName,
-                description: extracurrData.description,
-              });
-            }
-          } catch (error) {
-            console.error("Failed to create or update extracurricular:", error);
+          if (existingExtracurricular) {
+            // Update existing extracurricular
+            await updateExtracurricular(existingExtracurricular.id, {
+              extracurricular: extracurrData.extracurrName,
+              description: extracurrData.description,
+            });
+          } else {
+            // Create new extracurricular
+            await createExtracurricular({
+              extracurricular: extracurrData.extracurrName,
+              description: extracurrData.description,
+            });
           }
         }
       }
@@ -335,26 +525,22 @@ const ProfileEdit = ({ classification }) => {
       // Handle projects
       for (const projectData of projects) {
         if (projectData.projectName.trim() && projectData.description.trim()) {
-          try {
-            // Check if the project already exists
-            const existingProjects = await axiosInstance.get("/projects/");
-            const existingProject = existingProjects.data.find(
-              (p) => p.name === projectData.projectName
-            );
+          const existingProject = projectMap.get(projectData.projectName);
 
-            if (existingProject) {
-              // Update existing project
-              await updateProject(existingProject.id, projectData);
-            } else {
-              // Create new project
-              await createProject({
-                project: projectData.projectName,
-                description: projectData.description,
-                skills: projectData.projectSkills,
-              });
-            }
-          } catch (error) {
-            console.error("Failed to create or update project:", error);
+          if (existingProject) {
+            // Update existing project
+            await updateProject(existingProject.id, {
+              project: projectData.projectName,
+              description: projectData.description,
+              skills: projectData.projectSkills,
+            });
+          } else {
+            // Create new project
+            await createProject({
+              project: projectData.projectName,
+              description: projectData.description,
+              skills: projectData.projectSkills,
+            });
           }
         }
       }
@@ -365,62 +551,49 @@ const ProfileEdit = ({ classification }) => {
           experienceData.jobTitle.trim() &&
           experienceData.companyName.trim()
         ) {
-          try {
-            // Check if the experience already exists
-            const existingExperiences = await axiosInstance.get(
-              "/experiences/"
-            );
-            const existingExperience = existingExperiences.data.find(
-              (e) => e.jobTitle === experienceData.jobTitle
-            );
-
-            if (existingExperience) {
-              // Update existing experience
-              await updateExperience(existingExperience.id, {
-                ...experienceData,
-                endDate: experienceData.current ? null : experienceData.endDate,
-              });
-            } else {
-              // Create new experience
-              await createExperience({
-                job_position: experienceData.jobTitle,
-                company: experienceData.companyName,
-                job_type: experienceData.type,
-                location: experienceData.location,
-                start_date: experienceData.startDate,
-                end_date: experienceData.current
-                  ? null
-                  : experienceData.endDate,
-                currently_working: experienceData.current,
-                description: experienceData.description,
-                tagline: "",
-              });
-            }
-          } catch (error) {
-            console.error("Failed to create or update experience:", error);
+          const existingExperience = experienceMap.get(experienceData.jobTitle);
+          console.log(experienceData);
+          if (existingExperience) {
+            // Update existing experience
+            await updateExperience(existingExperience.id, {
+              job_position: experienceData.jobTitle,
+              company: experienceData.companyName,
+              job_type: experienceData.type,
+              location: experienceData.location,
+              start_date: experienceData.startDate,
+              end_date: experienceData.current ? null : experienceData.endDate,
+              currently_working: experienceData.current,
+              description: experienceData.description,
+              tagline: "",
+            });
+          } else {
+            // Create new experience
+            await createExperience({
+              job_position: experienceData.jobTitle,
+              company: experienceData.companyName,
+              job_type: experienceData.type,
+              location: experienceData.location,
+              start_date: experienceData.startDate,
+              end_date: experienceData.current ? null : experienceData.endDate,
+              currently_working: experienceData.current,
+              description: experienceData.description,
+              tagline: "",
+            });
           }
         }
       }
 
       // Handle skills
       for (const skill of skills) {
-        console.log('skill name', skill)
-        try {
-          // Check if the skill already exists
-          const existingSkills = await axiosInstance.get("/skills/");
-          const existingSkill = existingSkills.data.find(
-            (s) => s.name === skill
-          );
+        const existingSkill = skillMap.get(skill.skillName);
 
-          if (!existingSkill) {
-            // Create new skill if not exists
-            await createSkill({ skill_name: skill });
-          }
-        } catch (error) {
-          console.error("Failed to create skill:", error);
+        if (!existingSkill) {
+          // Only create new skill if it does not exist
+          await createSkill({ skill_name: skill.skillName });
         }
       }
 
+      console.log("SUCCESS :)");
       // navigate("/view-profile");
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -453,7 +626,7 @@ const ProfileEdit = ({ classification }) => {
                 <img
                   src={
                     profile.profilePicture
-                      ? URL.createObjectURL(profile.profilePicture)
+                      ? profile.profilePicture
                       : defaultProfilePicture
                   }
                   alt="Profile"
@@ -728,7 +901,7 @@ const ProfileEdit = ({ classification }) => {
           <>
             <h3>Experiences</h3>
             {experiences.map((experience, index) => (
-              <div key={index} className="experience-section">
+              <div key={experience.id} className="experience-section">
                 <label htmlFor={`jobTitle-${index}`}>
                   Job Title <div className="required-fields">*</div>{" "}
                 </label>
@@ -825,19 +998,17 @@ const ProfileEdit = ({ classification }) => {
                     type="checkbox"
                     name="current"
                     checked={experience.current}
-                    onChange={() =>
+                    onChange={(e) =>
                       handleExperienceChange(index, {
-                        target: { name: "current", value: !experience.current },
+                        target: { name: "current", value: e.target.checked },
                       })
                     }
                   />
 
                   <label className="checkbox-label">
-                    {" "}
                     I'm currently in this position
                   </label>
                 </div>
-
                 <label htmlFor={`description-${index}`}>Description </label>
                 <textarea
                   id={`description-${index}`}
@@ -845,6 +1016,13 @@ const ProfileEdit = ({ classification }) => {
                   value={experience.description}
                   onChange={(e) => handleExperienceChange(index, e)}
                 />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveExperience(experience.id)}
+                  className="remove-item"
+                >
+                  Remove
+                </button>
               </div>
             ))}
             <button
@@ -859,7 +1037,7 @@ const ProfileEdit = ({ classification }) => {
               <>
                 <h3>Projects</h3>
                 {projects.map((project, index) => (
-                  <div key={index} className="project-section">
+                  <div key={project.id} className="project-section">
                     <label htmlFor={`projectName-${index}`}>
                       Project Name <div className="required-fields">*</div>
                     </label>
@@ -910,6 +1088,13 @@ const ProfileEdit = ({ classification }) => {
                         </li>
                       ))}
                     </ul>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveProject(project.id)}
+                      className="remove-item"
+                    >
+                      Remove
+                    </button>
                   </div>
                 ))}
                 <button
@@ -930,7 +1115,7 @@ const ProfileEdit = ({ classification }) => {
               <>
                 <h3>Extracurricular Activities</h3>
                 {extracurr.map((extracurrs, index) => (
-                  <div key={index} className="extracurr-section">
+                  <div key={extracurrs.id} className="extracurr-section">
                     <label htmlFor={`extracurrName-${index}`}>
                       Extracurricular Name{" "}
                     </label>
@@ -949,6 +1134,13 @@ const ProfileEdit = ({ classification }) => {
                       value={extracurrs.description}
                       onChange={(e) => handleExtracurrChange(index, e)}
                     />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveExtracurricular(extracurrs.id)}
+                      className="remove-item"
+                    >
+                      Remove
+                    </button>
                   </div>
                 ))}
                 <button
@@ -964,19 +1156,20 @@ const ProfileEdit = ({ classification }) => {
             <h3>Add Skills</h3>
             <div className="skills-section">
               <input
+                // id={`skillName-${index}`}
                 type="text"
                 className="skills-list"
                 placeholder="Add a skill and press ENTER (e.g., Java)"
                 onKeyDown={handleKeyDown}
               />
               <ul className="skills-list">
-                {skills.map((skill, index) => (
-                  <li key={index} className="skills-item">
-                    {skill}
+                {skills.map((skill) => (
+                  <li key={skill.id} className="skills-item">
+                    {skill.skillName}
                     <button
                       type="button"
                       className="remove-skill-button"
-                      onClick={() => removeSkill(index)}
+                      onClick={() => handleRemoveSkill(skill.id)}
                     >
                       &times;
                     </button>
