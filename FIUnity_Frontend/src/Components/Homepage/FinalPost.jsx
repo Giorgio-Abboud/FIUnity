@@ -1,10 +1,12 @@
-import { FaRegHeart } from "react-icons/fa";
 import "./Post.css";
 import { useEffect, useState } from "react";
 import { AiOutlineLike } from "react-icons/ai";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { IoShareOutline } from "react-icons/io5";
+import { MdOutlineReportGmailerrorred } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { BiRepost } from "react-icons/bi";
+
 import axios from "axios";
 
 export default function FinalPost({
@@ -13,19 +15,17 @@ export default function FinalPost({
   lastName,
   classification,
   description,
-  imagesData,
+  image,
   timestamp,
   comments,
   onCommentSubmit,
-  commentCount,
+  no_of_comment,
 }) {
   const [userInput, setUserInput] = useState("");
   const [postLikesCount, setPostLikesCount] = useState(0);
   const [commentLikesCount, setCommentLikesCount] = useState(0);
   const [showCommentSection, setShowCommentSection] = useState(false);
-
-  console.log(imagesData);
-  console.log(commentCount);
+  const [posts, setPosts] = useState([]);
 
   const [adjustedTimestamp, setAdjustedTimestamp] = useState("");
   const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState(
@@ -74,30 +74,36 @@ export default function FinalPost({
   };
 
   const handleCommentSubmit = async () => {
+    if (!userInput.trim()) {
+      alert("Comment cannot be empty");
+      return;
+    }
+
     const currentDateTime = new Date()
       .toISOString()
       .slice(0, 19)
       .replace("T", " ");
 
+    const user_id = localStorage.getItem("user_id");
+
     const commentData = {
-      post: postId,
-      user: 1,
-      first_name: firstName,
-      last_name: lastName,
-      text: userInput,
-      created_at: currentDateTime,
+      post_id: postId,
+      user_id: user_id,
+      comment: userInput,
+      date: currentDateTime,
     };
 
     console.log("commentData");
     console.log(commentData);
+
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/feed/comments/",
+        `http://127.0.0.1:8000/feed/posts/${postId}/comment/`,
         commentData,
         {
           headers: {
             "Content-Type": "application/json",
-            mode: "cors",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
       );
@@ -116,12 +122,12 @@ export default function FinalPost({
   const handleLikeClick = async () => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/feed/posts/${postId}/like/`,
+        `http://127.0.0.1:8000/posts/${postId}/likePost/`, 
         null,
         {
           headers: {
-            "Content-Type": "application/json",
-            mode: "cors",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
       );
@@ -136,52 +142,67 @@ export default function FinalPost({
 
   return (
     <>
-      {console.log("Image Data:", imagesData)}
       <div className=" final-post-box font">
-        <div className="name-container">
-          <div>
-            <div className="time-container">
+        <button className="icon-button">
+          <div className="report-final">
+            <MdOutlineReportGmailerrorred />
+          </div>
+        </button>
+        <div className="time-container">
+          <div className="profile-pic-flex">
+            <div className="profile-pic"></div>
+            <div>
               <div className="name">
                 {firstName} {lastName}
               </div>
-              <div className="time-stamp-post homepage-time-font final-post-time-stamp">
-                Posted on: {adjustedTimestamp}
-              </div>
+              <div className="classification">{classification}</div>
             </div>
-            <div className="classification">{classification}</div>
+          </div>
+          <div className="homepage-time-font">
+            Posted on: {adjustedTimestamp}
           </div>
         </div>
-        <p className="homepage-font">{description}</p>
-        <div className="post-features icon-cursor">
-          <div
-            className="Post-icon-color homepage-font"
-            onClick={handleLikeClick}
-          >
-            {postLikesCount}
-            <AiOutlineLike />
-            Like
+        {image && <img src={image} className="post-pic" />}
+        <p className="post-text">{description}</p>
+        <div className="delete-comment-container">
+          <div className="post-features icon-cursor">
+            <div className="Post-icon-color" onClick={handleLikeClick}>
+              {postLikesCount}
+              <AiOutlineLike />
+              Like
+            </div>
+            <div
+              className="Post-icon-color"
+              onClick={() => setShowCommentSection(!showCommentSection)}
+            >
+              {no_of_comment              }
+              <FaRegCommentAlt />
+              Comment
+            </div>
+            <div className="Post-icon-color">
+              <IoShareOutline /> Share
+            </div>
+            <div className="Post-icon-color">
+              <BiRepost /> Repost
+            </div>
           </div>
-          <div
-            className="Post-icon-color homepage-font"
-            onClick={() => setShowCommentSection(!showCommentSection)}
-          >
-            {commentCount}
-            <FaRegCommentAlt />
-            Comment
-          </div>
-          <div className="Post-icon-color homepage-font">
-            <IoShareOutline /> Share
-          </div>
-          <div className="Post-icon-color homepage-font">
-            <BiRepost /> Repost
+          <div>
+            <button className="icon-button">
+              <div>
+                <MdDelete />
+              </div>
+            </button>
           </div>
         </div>
 
         {showCommentSection && (
           <>
             <div className="comment-flex">
-              <div className="name">
-                {firstName} {lastName}
+              <div>
+                <div className="comment-name">
+                  {firstName} {lastName}
+                </div>
+                <div className="classification-comment">{classification}</div>
               </div>
               <textarea
                 className="comment scrollbar"
@@ -208,27 +229,102 @@ export default function FinalPost({
                   .map((comment, index) => (
                     <div key={index} className="comment-post-box font">
                       <div className="time-container">
-                        <p className="name">
-                          {comment.first_name} {comment.last_name}
-                        </p>
+                        <div className="comment-profile-pic"></div>
+                        <div>
+                          <p className="comment-name">
+                            {comment.commenter_name}
+                          </p>
+                          <div className="classification-comment">
+                            {classification}
+                          </div>
+                        </div>
+                        <button className="icon-button">
+                          <div className="report-comment">
+                            <MdOutlineReportGmailerrorred />
+                          </div>
+                        </button>
                         <div className="time-stamp-comment homepage-time-font">
                           Posted on: {adjustedCommentTimestamps[index]}
                         </div>
                       </div>
-                      <p className="comment-descript">{comment.text}</p>
-                      <div className="Post-icon-color homepage-font">
-                        {commentLikesCount} <AiOutlineLike />
+                      <div className="comment-text-container scrollbar">
+                        <p className="comment-descript">{comment.comment}</p>
+                      </div>
+                      <div className="delete-comment-container">
+                        <div className="Post-icon-color ">
+                          {commentLikesCount} <AiOutlineLike />
+                        </div>
+                        <button className="icon-button">
+                          <div>
+                            <MdDelete />
+                          </div>
+                        </button>
                       </div>
                     </div>
                   ))
               ) : (
-                <p className="no-comment homepage-font">
-                  Be the first to comment...
-                </p>
+                <p className="no-comment">Be the first to comment...</p>
               )}
             </div>
           </>
         )}
+        {/* <>
+          <div className="comment-flex">
+            <div>
+              <div className="comment-name">
+                {firstName} {lastName}
+              </div>
+              <div className="classification-comment">{classification}</div>
+            </div>
+            <textarea
+              className="comment scrollbar"
+              value={userInput}
+              onChange={(event) => {
+                setUserInput(event.target.value);
+              }}
+              placeholder="Add a comment..."
+            />
+            <button className="post-button" onClick={handleCommentSubmit}>
+              Post
+            </button>
+          </div>
+          <div>
+            {console.log(
+              "Adjusted Comment Timestamps:",
+              adjustedCommentTimestamps
+            )}
+            <div className="comment-post-box font">
+              <div className="time-container">
+                <div className="comment-profile-pic"></div>
+                <div>
+                  <p className="comment-name">Rafe Cameron</p>
+                  <div className="classification-comment">{classification}</div>
+                </div>
+                <button className="icon-button">
+                  <div className="report-comment">
+                    <MdOutlineReportGmailerrorred />
+                  </div>
+                </button>
+                <div className="time-stamp-comment homepage-time-font">
+                  Posted on: 12:20:22 EST
+                </div>
+              </div>
+              <div className="comment-text-container scrollbar">
+                <p className="comment-descript"></p>
+              </div>
+              <div className="delete-comment-container">
+                <div className="Post-icon-color homepage-font ">
+                  {commentLikesCount} <AiOutlineLike />
+                </div>
+                <button className="icon-button">
+                  <div>
+                    <MdDelete />
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </> */}
       </div>
     </>
   );

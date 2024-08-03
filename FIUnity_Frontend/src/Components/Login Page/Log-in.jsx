@@ -31,7 +31,7 @@ export default function RegistrationLogIn() {
     };
 
     axios
-      .post("http://localhost:8000/authentication/login/", loginInfo, {
+      .post("/authentication/login/", loginInfo, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -41,26 +41,36 @@ export default function RegistrationLogIn() {
         if (response.status === 200) {
           console.log("Login successful");
           console.log("this is the response:", response);
+
           // Store CSRF token and user_id in local storage
           // localStorage.setItem("csrfToken", response.data.csrfToken);
-          localStorage.setItem("user_id", response.data.user_id);
-          localStorage.setItem("first_name", response.data.first_name);
-          localStorage.setItem("last_name", response.data.last_name);
-          localStorage.setItem("access_token", response.data.access_token);
-          localStorage.setItem("refresh_token", response.data.refresh_token);
+
+          const { email, full_name, access_token, refresh_token } =
+            response.data;
+          const [first_name, last_name] = full_name.split(" ");
+
+          localStorage.setItem("user_id", email);
+          localStorage.setItem("first_name", first_name || "");
+          localStorage.setItem("last_name", last_name || "");
+          localStorage.setItem("access_token", access_token);
+          localStorage.setItem("refresh_token", refresh_token);
+
           // history.push("/newsfeed");
           // window.location.href = "http://localhost:5173/newsfeed";
           navigate("/newsfeed");
 
           // Check if data is stored
-          // const storedData = localStorage.getItem("csrfToken");
-          const accessToken = localStorage.getItem("access_token");
-          const refreshToken = localStorage.getItem("refresh_token");
-
-          // Log the stored data
-          // console.log("Stored Data:", storedData);
-          console.log("Access Token:", accessToken);
-          console.log("Refresh Token:", refreshToken);
+          console.log("Stored user_id:", localStorage.getItem("user_id"));
+          console.log("Stored first_name:", localStorage.getItem("first_name"));
+          console.log("Stored last_name:", localStorage.getItem("last_name"));
+          console.log(
+            "Stored access_token:",
+            localStorage.getItem("access_token")
+          );
+          console.log(
+            "Stored refresh_token:",
+            localStorage.getItem("refresh_token")
+          );
         } else {
           console.error("Login failed");
           setErrorMessage("Login failed. Please check your credentials.");
