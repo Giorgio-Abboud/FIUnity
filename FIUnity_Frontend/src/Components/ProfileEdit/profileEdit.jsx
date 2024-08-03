@@ -392,18 +392,11 @@ const ProfileEdit = ({ classification }) => {
     setExtracurr([...extracurr, newExtracurricular]);
   };
 
-<<<<<<< HEAD
-  const addSkill = () => {
-    setSkills([...skills, { skillName: "" }]);
-  };
-
   const handleOnSearchChange = (searchData) => {
     console.log('searchData:', searchData);
     
   }
 
-=======
->>>>>>> bf0db2c63de7c86935c1f6335e414093aa5e5eed
   const nextStep = () => {
     const form = document.getElementById("profileForm");
     if (form.checkValidity()) {
