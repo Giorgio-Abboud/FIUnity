@@ -56,6 +56,30 @@ function Homepage() {
     );
   };
 
+   const handleLikeSubmit = async (postId) => {
+    try {
+      // Send a POST request to like the post
+      await axios.post(`http://127.0.0.1:8000/feed/posts/${postId}/likePost/`, {}, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+        }
+      });
+
+      // Update local state to reflect the new like
+      setAllPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              likes_count: (post.likes_count || 0) + 1,
+            }
+          : post
+      ));
+    } catch (error) {
+      console.error("Failed to like the post:", error);
+    }
+  };
   return (
     <>
       <CreatePost
