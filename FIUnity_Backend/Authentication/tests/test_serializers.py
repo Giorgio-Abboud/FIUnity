@@ -1,9 +1,11 @@
 import pytest
 from django.contrib.auth import get_user_model
-from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from Authentication.serializers import UserRegistrationSerializer, UserLoginSerializer, UserLogoutSerializer
 from Profile.models import Profile, MainProfile
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient
 
 User = get_user_model()
 
@@ -53,18 +55,18 @@ class TestUserSerializers:
         assert validated_data['email'] == 'login32@example.com'
         assert validated_data['full_name'] == user.get_full_name
 
-    def test_user_login_serializer_invalid_credentials(self):
-        data = {
-            'email': 'wrong@example.com',
+    def test_user_login_failed(self):
+        client = APIClient()
+        url = reverse('login')  # Replace 'user-login' with the actual name of your login URL route
+        payload = {
+            'email': 'nonexistentuser@example.com',
             'password': 'wrongpassword'
         }
-        serializer = UserLoginSerializer(data=data)
-        assert not serializer.is_valid(), "Serializer should not be valid with wrong credentials"
-        assert 'non_field_errors' in serializer.errors, "Serializer should have non_field_errors for invalid credentials"
 
-        # To ensure the exception is raised when accessing validated_data
-        with pytest.raises(AuthenticationFailed):
-            serializer.validated_data
+        response = client.post(url, payload)
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert response.data['detail'] == "Invalid credentials"
 
     def test_user_logout_serializer(self):
         user = User.objects.create_user(

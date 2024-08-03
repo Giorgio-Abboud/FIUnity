@@ -26,6 +26,18 @@ def test_appuser_creation():
     assert user.status == 'Student'
 
 @pytest.mark.django_db
+def test_appuser_creation_invalid_email():
+    User = AppUser
+    with pytest.raises(TypeError) as excinfo:
+        User.objects.create_user(
+            email='invalid-email',  # Invalid email format
+            PID='1234567',
+            # missing required fields
+        )
+    
+    assert str(excinfo.value) == "UserManager.create_user() missing 5 required positional arguments: 'first_name', 'last_name', 'password', 'graduation_year', and 'grad_term'"
+
+@pytest.mark.django_db
 def test_appuser_str():
     User = AppUser
     user = User.objects.create_user(

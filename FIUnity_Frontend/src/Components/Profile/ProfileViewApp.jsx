@@ -39,7 +39,7 @@ const ProfileViewApp = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/profile/mainpage/", {
+        const response = await axios.get("http://localhost:8008/profile/mainpage/", {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
