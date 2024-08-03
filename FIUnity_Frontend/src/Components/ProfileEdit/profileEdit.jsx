@@ -17,11 +17,8 @@ import {
 } from "../api/profileApi.js";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
-<<<<<<< HEAD
 import Search from './search'
-=======
 import axios from "axios";
->>>>>>> bf0db2c63de7c86935c1f6335e414093aa5e5eed
 
 const ProfileEdit = ({ classification }) => {
   const [profile, setProfile] = useState({
