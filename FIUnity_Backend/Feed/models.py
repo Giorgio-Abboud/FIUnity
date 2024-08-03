@@ -37,6 +37,20 @@ class Comment(models.Model):
     comment = models.TextField(max_length=500, default="")
     date = models.DateTimeField(default=datetime.datetime.today)
 
+    def no_of_like(self):
+        return self.likes.count()
+
     class Meta:
         ordering = ["-date"]
+
+class CommentLike(models.Model):
+    comment = models.ForeignKey(Comment, related_name='likes', on_delete=models.CASCADE)
+    user = models.ForeignKey(AppUser, related_name='comment_likes', on_delete=models.CASCADE)
+    is_like = models.BooleanField(default=True)  # True for like, False for dislike
+    date = models.DateTimeField(default=datetime.datetime.today)
+
+    class Meta:
+        ordering = ["-date"]
+        unique_together = (('user', 'comment'),)
+        index_together = (('user', 'comment'),)
 
