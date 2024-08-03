@@ -252,11 +252,11 @@ class ExtracurricularSerializer(serializers.ModelSerializer):
 
 # Serializer used to update a single instance of an extracurricular model
 class SingleExtracurricularSerializer(serializers.ModelSerializer):
-    extra_data = OrganizationSerializer(source = "extra", read_only = True)
+    extracurricular_data = OrganizationSerializer(source="extracurricular", read_only=True)
 
     class Meta:
         model = Extracurricular
-        exclude = ['tagline']
+        fields = ['id', 'user', 'extracurricular', 'description', 'extracurricular_data']
         extra_kwargs = {'extracurricular': {'required': True},}
 
     def update(self, instance, validated_data):
@@ -269,11 +269,11 @@ class SingleExtracurricularSerializer(serializers.ModelSerializer):
 
 # Serializer used to list extracurricular instances
 class ShortExtracurricularSerializer(serializers.ModelSerializer):
-    extra_data = OrganizationSerializer(source = "extra", read_only = True)
+    fields = ['id', 'user', 'extracurricular', 'description', 'tagline', 'extracurricular_data']
     
     class Meta:
         model = Extracurricular
-        fields = ['tagline', 'extracurricular', 'extra_data']
+        fields = ['tagline', 'extracurricular', 'extracurricular_data']
         
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -334,11 +334,11 @@ class MainPageSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         
-        user = instance.profile.user
-        experience_data = Experience.objects.filter(user=instance.profile.user)[:2]
-        extra_data = Extracurricular.objects.filter(user=instance.profile.user)[:2]
-        project_data = Project.objects.filter(user=instance.profile.user).order_by('-id')[:1]
-        skill_data = StandaloneSkill.objects.filter(user=instance.profile.user)[:3]
+        # user = instance.profile.user
+        experience_data = Experience.objects.filter(user=instance.profile.user).order_by('-start_date')[:2]
+        extra_data = Extracurricular.objects.filter(user=instance.profile.user).order_by('-id')[:2]
+        project_data = Project.objects.filter(user=instance.profile.user).order_by('-id')[:2]
+        skill_data = StandaloneSkill.objects.filter(user=instance.profile.user).order_by('-id')[:2]
         
         data['experience_data'] = SingleExperienceSerializer(instance=experience_data, many=True).data
         data['extra_data'] = SingleExtracurricularSerializer(instance=extra_data, many=True).data

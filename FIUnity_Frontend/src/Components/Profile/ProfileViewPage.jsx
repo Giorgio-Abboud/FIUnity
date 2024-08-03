@@ -1,28 +1,29 @@
 import "./ProfileView.css";
 import React, { useState, useEffect, useRef } from "react";
 import Carousel from "react-elastic-carousel";
-import { useSpring, animated } from "react-spring";
+import defaultProfilePicture from "../../assets/Default_pfp.png";
 
 export default function ProfileViewPage({
-  firstName,
-  middleName,
-  lastName,
-  classification,
-  gradDate,
-  gradTerm,
-  currJobPosition,
-  careerInterest,
-  major,
-  minor,
-  resumeURL,
-  aboutMe,
-  projects,
-  experiences,
-  profilePic,
-  skills,
-  extracurriculars,
-  network,
+  firstName = '',
+  middleName = '',
+  lastName = '',
+  classification = '',
+  gradDate = '',
+  gradTerm = '',
+  currJobPosition = '',
+  careerInterest = '',
+  major = '',
+  minor = '',
+  resumeURL = '',
+  aboutMe = '',
+  projects = [], 
+  experiences = [], 
+  profilePic = '',
+  skills = [],
+  extracurriculars = [],
+  network = ''
 }) {
+  
   const [currentProjectSlide, setProjectCurrentSlide] = useState(0);
   const [currentExtracurricularSlide, setCurrentExtracurricularSlide] =
     useState(0);
@@ -30,6 +31,7 @@ export default function ProfileViewPage({
   const projectCarouselRef = useRef(null);
   const extracurricularsCarouselRef = useRef(null);
   const experiencesCarouselRef = useRef(null);
+  const profilePictureUrl = profilePic ? profilePic : defaultProfilePicture;
 
   useEffect(() => {
     const projectInterval = setInterval(() => {
@@ -74,12 +76,24 @@ export default function ProfileViewPage({
       }
     }, 5000);
 
+    
+
     return () => {
       clearInterval(projectInterval);
       clearInterval(experiencesInterval);
       clearInterval(extracurricularsInterval);
     };
   }, [projects.length, extracurriculars.length, experiences.length]);
+
+  if (
+    !careerInterest // check if profile edit was completed, since this is a required field
+  ) {
+    return (
+      <div className="empty-white-block empty-profile-message">
+        It's really quiet over here...
+      </div>
+    );
+  }
 
   return (
     <>
@@ -89,28 +103,26 @@ export default function ProfileViewPage({
             <div>
               <div className="profile-white-block">
                 <img
-                  src={profilePic}
+                  src={profilePictureUrl}
                   alt="profile picture"
                   className="profile-p-pic"
                 />
                 <div className="profile-size">
                   <h1 className="profile-font profile-name-size">
-                    {firstName} {middleName} {lastName}
+                    {`${firstName} ${
+                      middleName ? middleName + " " : ""
+                    }${lastName}`}
                   </h1>
                   <p className="profile-font profile-class-size">
                     {classification}
                   </p>
                 </div>
-                <div
-                  className="network"
-                >
-                  {network}
-                </div>
+                <div className="network">{network}</div>
               </div>
               <div>
                 <div
                   className={
-                    classification == "Alum" ? "info-block-alum" : "info-block"
+                    classification == "Alumni" ? "info-block-alum" : "info-block"
                   }
                 >
                   <div className="three-text-flex">
@@ -120,7 +132,7 @@ export default function ProfileViewPage({
                     </p>
                   </div>
                   <div>
-                    {classification == "Alum" ? (
+                    {classification == "Alumni" ? (
                       <div className="three-text-flex">
                         <p className="profile-font profile-font-bold">
                           Job Title:
@@ -170,7 +182,7 @@ export default function ProfileViewPage({
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {resumeURL}
+                        Check out my resume!
                       </a>
                     </p>
                   </div>
@@ -178,7 +190,7 @@ export default function ProfileViewPage({
               </div>
               <div
                 className={
-                  classification == "Alum"
+                  classification == "Alumni"
                     ? "about-us-alum"
                     : "about-us-container"
                 }
@@ -194,7 +206,7 @@ export default function ProfileViewPage({
               {skills.length > 0 && (
                 <div
                   className={
-                    classification == "Alum"
+                    classification == "Alumni"
                       ? "skills-alum-container"
                       : "skills-container"
                   }
@@ -206,7 +218,7 @@ export default function ProfileViewPage({
                   <div className="skills-item-container">
                     {skills.map((skill, index) => (
                       <div key={index}>
-                        <p className="skills-item">{skill.name}</p>
+                        <p className="skills-item">{skill.skillName}</p>
                       </div>
                     ))}
                   </div>
@@ -249,7 +261,7 @@ export default function ProfileViewPage({
                             <p className="profile-descript profile-font">
                               {project.description}
                             </p>
-                            <div className="skills-item-container">
+                            <div className="skills-item-project-container">
                               {project.skills.map((skill, index) => (
                                 <div key={index}>
                                   <p className="skills-item">{skill}</p>
@@ -306,7 +318,7 @@ export default function ProfileViewPage({
                             )}
                             {experience.endDate.length > 0 && (
                               <p className="profile-font experience-text profile-gold experience-time-type">
-                                {experience.startDate} {experience.endDate}
+                                {experience.startDate} -- {experience.endDate}
                               </p>
                             )}
                             <p className="profile-font experience-text profile-gold experience-time-type">
@@ -329,121 +341,108 @@ export default function ProfileViewPage({
           {classification == "Student" && (
             <>
               {extracurriculars.length > 0 && (
-                <div className="extra-container">
-                  <h3 className="title-text profile-font">EXTRACURRICULARS</h3>
-                  <div className="title-extra-line"></div>
-                  <Carousel
-                    ref={extracurricularsCarouselRef}
-                    renderPagination={({ pages, activePage, onClick }) => (
-                      <div className="custom-pagination">
-                        {pages.map((idx) => (
-                          <button
-                            key={idx}
-                            className={`pagination-dot ${
-                              activePage === idx ? "active" : ""
-                            }`}
-                            onClick={() => onClick(idx)}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  >
-                    {extracurriculars.map((extracurricular, index) => (
-                      <div key={index}>
-                        <div className="extra-tab-container">
-                          <h4 className="profile-title profile-font-bold profile-font profile-gold">
-                            {extracurricular.name}
-                          </h4>
-                          <p className="profile-descript profile-font">
-                            {extracurricular.description}
-                          </p>
+                <>
+                  <div className="extra-container">
+                    <h3 className="title-text profile-font">
+                      EXTRACURRICULARS
+                    </h3>
+                    <div className="title-extra-line"></div>
+                    <Carousel
+                      ref={extracurricularsCarouselRef}
+                      renderPagination={({ pages, activePage, onClick }) => (
+                        <div className="custom-pagination">
+                          {pages.map((idx) => (
+                            <button
+                              key={idx}
+                              className={`pagination-dot ${
+                                activePage === idx ? "active" : ""
+                              }`}
+                              onClick={() => onClick(idx)}
+                            />
+                          ))}
                         </div>
-                      </div>
-                    ))}
-                  </Carousel>
-                </div>
+                      )}
+                    >
+                      {extracurriculars.map((extracurricular, index) => (
+                        <div key={index}>
+                          <div className="extra-tab-container">
+                            <h4 className="profile-title profile-font-bold profile-font profile-gold">
+                              {extracurricular.extracurricular}
+                            </h4>
+                            <p className="profile-descript profile-font">
+                              {extracurricular.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </Carousel>
+                  </div>
+                </>
               )}
             </>
           )}
-          {classification == "Student" && (
-            <div className="experience-container">
-              <h3 className="title-text profile-font">EXPERIENCE</h3>
-              <div className="title-experience-line"></div>
-              <>
-                <Carousel
-                  className="experiences-carousel"
-                  ref={experiencesCarouselRef}
-                  renderPagination={({ pages, activePage, onClick }) => (
-                    <div className="custom-pagination">
-                      {pages.map((idx) => (
-                        <button
-                          key={idx}
-                          className={`pagination-dot ${
-                            activePage === idx ? "active" : ""
-                          }`}
-                          onClick={() => onClick(idx)}
-                        />
-                      ))}
-                    </div>
-                  )}
-                >
-                  {experiences.map((experience, index) => (
-                    <div key={index}>
-                      <div className="experience-tab-container">
-                        <div>
-                          <p className="profile-title profile-font profile-font-bold">
-                            {experience.jobTitle}
-                          </p>
-                          <p className="experience-company-name  profile-gold profile-font">
-                            {experience.companyName}
-                          </p>
-                          {experience.location.length > 0 && (
-                            <p className="profile-font experience-text profile-gold">
-                              {experience.location}
-                            </p>
-                          )}
-                          {experience.endDate.length > 0 && (
-                            <p className="profile-font experience-text profile-gold experience-time-type">
-                              {experience.startDate} {experience.endDate}
-                            </p>
-                          )}
-                          <p className="profile-font experience-text profile-gold experience-time-type">
-                            {experience.jobType}
-                          </p>
+          {/* {experiences.length > 0 && (
+            <> */}
+              {classification == "Student" && (
+                <div className="experience-container">
+                  <h3 className="title-text profile-font">EXPERIENCE</h3>
+                  <div className="title-experience-line"></div>
+                  <>
+                    <Carousel
+                      className="experiences-carousel"
+                      ref={experiencesCarouselRef}
+                      renderPagination={({ pages, activePage, onClick }) => (
+                        <div className="custom-pagination">
+                          {pages.map((idx) => (
+                            <button
+                              key={idx}
+                              className={`pagination-dot ${
+                                activePage === idx ? "active" : ""
+                              }`}
+                              onClick={() => onClick(idx)}
+                            />
+                          ))}
                         </div>
-                        {experience.description.length > 0 && (
-                          <p className="profile-descript profile-font">
-                            {experience.description}
-                          </p>
-                        )}{" "}
-                      </div>
-                    </div>
-                  ))}
-                </Carousel>
-              </>
-            </div>
-          )}
-          {/* <div className="skills-container">
-            <h3 className="title-text profile-font">SKILLS</h3>
-            <div className="title-skills-line"></div>
-            {skills.length > 0 && (
-              <div>
-                {skills.map((skill, index) => (
-                  <div key={index}>
-                    <div className="skills-project-tab-container">
-                      <div></div>
-                      <p className="profile-skills profile-font-bold">
-                        {skill.name}
-                      </p>
-                      <p className="profile-skills-level profile-gold">
-                        {skill.proficiency}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div> */}
+                      )}
+                    >
+                      {experiences.map((experience, index) => (
+                        <div key={index}>
+                          <div className="experience-tab-container">
+                            <div>
+                              <p className="profile-title profile-font profile-font-bold">
+                                {experience.jobTitle}
+                              </p>
+                              <p className="experience-company-name  profile-gold profile-font">
+                                {experience.companyName}
+                              </p>
+                              {experience.location.length > 0 && (
+                                <p className="profile-font experience-text profile-gold">
+                                  {experience.location}
+                                </p>
+                              )}
+                              {experience.endDate.length > 0 && (
+                                <p className="profile-font experience-text profile-gold experience-time-type">
+                                  {experience.startDate} {experience.endDate}
+                                </p>
+                              )}
+                              <p className="profile-font experience-text profile-gold experience-time-type">
+                                {experience.jobType}
+                              </p>
+                            </div>
+                            {experience.description.length > 0 && (
+                              <p className="profile-descript profile-font">
+                                {experience.description}
+                              </p>
+                            )}{" "}
+                          </div>
+                        </div>
+                      ))}
+                    </Carousel>
+                  </>
+                </div>
+              )}
+            {/* </>
+          )} */}
         </div>
       </div>
     </>

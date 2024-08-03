@@ -7,12 +7,19 @@ from django.dispatch import receiver
 from datetime import date
 from django.utils.timezone import now
 
-# Creating the options for the terms and employment types
+# Creating the options for the terms, networking, and employment types
 TERM_CHOICES = [
         ('Spring', 'Spring'),
         ('Summer', 'Summer'),
         ('Fall', 'Fall'),
     ]
+
+NETWORK_CHOICES = [
+    ('Open to Hire', 'Open to Hire'),
+    ('Seeking Internship', 'Seeking Internship'),
+    ('Seeking Job', 'Seeking Job'),
+    ('Open to Connect', 'Open to Connect'),
+]
 
 JOB_TYPE_CHOICES = [
         ('Full-time', 'Full-time'),
@@ -67,6 +74,10 @@ class Profile(models.Model):
     career_interest = models.CharField(max_length=50, default='')
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     status = models.CharField(max_length=50, default='')
+    network = models.CharField(choices=NETWORK_CHOICES, default='Open to Connect')
+    about = models.TextField(blank = True, null = True, default=None)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+    about = models.TextField(max_length=200, default='')
 
     def full_name(self):
         return f"{self.user.first_name} {self.user.last_name}"
@@ -94,6 +105,7 @@ class Profile(models.Model):
             self.email = self.user.email
             self.grad_term = self.user.grad_term
             self.graduation_year = self.user.graduation_year
+            self.status = self.user.status
         self.check_graduation_status()
         super(Profile, self).save(*args, **kwargs)
 
@@ -151,8 +163,7 @@ class Project(models.Model):
 # Creating the section containing the user's extracurricular activities
 class Extracurricular(models.Model):
     user = models.ForeignKey(AppUser, related_name="extracurriculars", on_delete=models.CASCADE)
-    extracurricular = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True,
-                                     related_name = "extra")
+    extracurricular = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True, related_name = "extra")
     description = models.TextField(max_length=200, blank=True)
     tagline = models.CharField(max_length=200, blank = True, null = True)
 
@@ -178,9 +189,6 @@ class MainProfile(models.Model):
     # current_company =  models.OneToOneField(Experience, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     # current_extracurricular =  models.OneToOneField(Extracurricular, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     # current_project =  models.OneToOneField(Project, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    about = models.TextField(blank = True, null = True, default=None)
-    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
-    about = models.TextField(max_length=200, default='')
     
     def __str__(self):
         return f'{self.profile.full_name()} --> {self.id}'
