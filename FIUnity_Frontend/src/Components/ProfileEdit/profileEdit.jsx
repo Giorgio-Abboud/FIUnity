@@ -17,7 +17,11 @@ import {
 } from "../api/profileApi.js";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
+<<<<<<< HEAD
+import Search from './search'
+=======
 import axios from "axios";
+>>>>>>> bf0db2c63de7c86935c1f6335e414093aa5e5eed
 
 const ProfileEdit = ({ classification }) => {
   const [profile, setProfile] = useState({
@@ -43,7 +47,7 @@ const ProfileEdit = ({ classification }) => {
       jobTitle: "",
       companyName: "",
       type: "",
-      location: "",
+      location:"",
       startDate: "",
       endDate: "",
       current: false,
@@ -391,6 +395,18 @@ const ProfileEdit = ({ classification }) => {
     setExtracurr([...extracurr, newExtracurricular]);
   };
 
+<<<<<<< HEAD
+  const addSkill = () => {
+    setSkills([...skills, { skillName: "" }]);
+  };
+
+  const handleOnSearchChange = (searchData) => {
+    console.log('searchData:', searchData);
+    
+  }
+
+=======
+>>>>>>> bf0db2c63de7c86935c1f6335e414093aa5e5eed
   const nextStep = () => {
     const form = document.getElementById("profileForm");
     if (form.checkValidity()) {
@@ -467,7 +483,7 @@ const ProfileEdit = ({ classification }) => {
     try {
       // Update profile information
       const response = await axios.patch(
-        "http://localhost:8000/profile/userprofile/",
+        "http://localhost:8008/profile/userprofile/",
         formData,
         {
           headers: {
@@ -973,13 +989,7 @@ const ProfileEdit = ({ classification }) => {
                 )}
 
                 <label htmlFor={`location-${index}`}>Location</label>
-                <input
-                  type="text"
-                  id={`location-${index}`}
-                  name="location"
-                  value={experience.location}
-                  onChange={(e) => handleExperienceChange(index, e)}
-                />
+                <Search onSearchChange={handleOnSearchChange}/>
 
                 <label htmlFor={`startDate-${index}`}>
                   Start Date <div className="required-fields">*</div>

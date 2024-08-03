@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./job-posting.css";
+import { useNavigate } from "react-router-dom";
 import axios, { isCancel, AxiosError } from "axios";
 
 const JobAddingPosting = () => {
@@ -22,6 +23,8 @@ const JobAddingPosting = () => {
   //const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     console.log("Form submitted");
     e.preventDefault();
@@ -38,6 +41,8 @@ const JobAddingPosting = () => {
       usResidency,
       applicationLink,
     });
+
+    
 
     console.log("Hello");
     // Create an object with the job posting information
@@ -62,11 +67,12 @@ const JobAddingPosting = () => {
     // Send a POST request to the backend with the job posting information as JSON
     try {
       const response = await axios.post(
-        "http://localhost:8000/jobs/job-posting/",
+        "http://localhost:8008/jobs/job-posting/",
         jobPostingData
       );
       if (response.status === 201) {
         console.log("Job posting successful");
+        navigate("/jobs-list");
         //setIsPosted(true);
         //setRedirectUrl('http://localhost:5173/jobs-list/');
       } else {

@@ -77,6 +77,7 @@ class Profile(models.Model):
     network = models.CharField(choices=NETWORK_CHOICES, default='Open to Connect')
     about = models.TextField(blank = True, null = True, default=None)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+    company_url = models.URLField(blank=True, null=True, default='')
     about = models.TextField(max_length=200, default='')
 
     def full_name(self):
@@ -131,7 +132,7 @@ class Experience(models.Model):
         ]
 
     def save(self, *args, **kwargs):
-        self.tagline = f"{self.job_position} at {self.company} "
+        self.tagline = f"{self.job_position} at {self.company}"
         super().save(*args, **kwargs)
     
     def __str__(self):
