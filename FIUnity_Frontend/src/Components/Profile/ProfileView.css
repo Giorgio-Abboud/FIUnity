@@ -326,7 +326,7 @@
   padding-bottom: 15px;
   margin-left: 10px;
   max-height: 393px;
-  min-height: 393px;
+  min-height: 390px;
   min-width: 317px;
   max-width: 317px;
   margin-top: 20px;
@@ -339,8 +339,8 @@
 }
 
 .experience-tab-noskill {
-  min-height: 580px;
-  max-height: 580px;
+  min-height: 573px;
+  max-height: 573px;
 }
 
 .rec-arrow {
@@ -400,7 +400,9 @@
 .edit-container {
   display: flex;
   justify-content: flex-end;
-  padding: 20px;
+  padding-top: 24px;
+  padding-right: 34px;
+  padding-bottom: 30px;
 }
 
 .edit-button {
@@ -415,10 +417,6 @@
 
 .edit-button:hover {
 background-color: rgba(255, 217, 0, 0.6);
-}
-
-.edit-icon {
-  padding-left: 10px;
 }
 
 .loader-container {

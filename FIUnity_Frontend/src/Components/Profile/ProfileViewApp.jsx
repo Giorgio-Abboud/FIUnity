@@ -33,7 +33,7 @@ const mapExtracurrData = (data) => {
 };
 
 const mapSkillData = (data) => {
-  console.log("data", data);
+  console.log("skill data", data);
   return data.map((skill) => ({
     skillName: skill.skill_name,
   }));
@@ -104,10 +104,11 @@ const ProfileViewApp = () => {
         network={profileData.profile.network}
         major={profileData.profile.major}
         minor={profileData.profile.minor}
-        currJobPosition={profileData.curr_job_position}
+        currJobPosition={profileData.profile.current_job_title}
         careerInterest={profileData.profile.career_interest}
         aboutMe={profileData.profile.about}
         resumeURL={profileData.profile.resume}
+        companyURL = {profileData.profile.company_url}
         profilePic={profileData.profile.picture || defaultProfilePicture}
         experiences={profileData.experience_data}
         projects={profileData.project_data}

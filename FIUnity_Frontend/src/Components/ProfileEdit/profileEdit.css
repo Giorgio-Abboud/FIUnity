@@ -301,3 +301,15 @@
   cursor: pointer;
   margin-left: auto;
 }
+
+.search-container {
+  margin-bottom: 25px; /* Adjust margin as needed */
+}
+
+.search-input {
+  font-size: 13px;
+}
+
+.async-paginate__input::placeholder {
+  color: #999; /* Adjust color */
+}

@@ -17,7 +17,7 @@ import {
 } from "../api/profileApi.js";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
-import Search from './search'
+import Search from "./search";
 import axios from "axios";
 
 const ProfileEdit = ({ classification }) => {
@@ -44,7 +44,7 @@ const ProfileEdit = ({ classification }) => {
       jobTitle: "",
       companyName: "",
       type: "",
-      location:"",
+      location: "",
       startDate: "",
       endDate: "",
       current: false,
@@ -107,6 +107,7 @@ const ProfileEdit = ({ classification }) => {
               ? URL.createObjectURL(profilePictureBlob)
               : null,
             resumeURL: resumeBlob ? URL.createObjectURL(resumeBlob) : "",
+            url: data.company_url || "",
             network: data.network || "",
           });
           setExperiences(
@@ -248,12 +249,12 @@ const ProfileEdit = ({ classification }) => {
   };
 
   const handleRemoveExperience = async (id) => {
+    setExperiences((prevExperiences) =>
+      prevExperiences.filter((experience) => experience.id !== id)
+    );
     try {
       console.log(id);
       await deleteExperience(id);
-      setExperiences((prevExperiences) =>
-        prevExperiences.filter((experience) => experience.id !== id)
-      );
     } catch (error) {
       console.error("Failed to delete experience:", error);
     }
@@ -299,7 +300,9 @@ const ProfileEdit = ({ classification }) => {
     setProjects((prevProjects) => {
       const updatedProjects = prevProjects.map((project, pIndex) => {
         if (pIndex === projectIndex) {
-          const updatedSkills = project.projectSkills.filter((_, sIndex) => sIndex !== skillIndex);
+          const updatedSkills = project.projectSkills.filter(
+            (_, sIndex) => sIndex !== skillIndex
+          );
           return { ...project, projectSkills: updatedSkills };
         }
         return project;
@@ -392,10 +395,12 @@ const ProfileEdit = ({ classification }) => {
     setExtracurr([...extracurr, newExtracurricular]);
   };
 
-  const handleOnSearchChange = (searchData) => {
-    console.log('searchData:', searchData);
-    
-  }
+  const handleOnSearchChange = (index, searchData) => {
+    console.log("searchData:", searchData);
+    const newExperiences = [...experiences];
+    newExperiences[index].location = searchData.label;
+    setExperiences(newExperiences);
+  };
 
   const nextStep = () => {
     const form = document.getElementById("profileForm");
@@ -436,7 +441,6 @@ const ProfileEdit = ({ classification }) => {
       formData.append("career_interest", profile.careerInterest);
     if (profile.network) formData.append("network", profile.network);
 
-    // Handle profile picture
     if (profile.profilePicture) {
       const profilePictureFile = await convertBlobUrlToFile(
         profile.profilePicture,
@@ -447,16 +451,11 @@ const ProfileEdit = ({ classification }) => {
       }
     }
 
-    if (classification === "alumni" && profile.url) {
-      // Fetch file from URL if it's for alumni
-      try {
-        const response = await fetch(profile.url);
-        const blob = await response.blob();
-        formData.append("resume", blob, "resume.pdf");
-      } catch (error) {
-        console.error("Error fetching resume file from URL:", error);
-      }
-    } else if (profile.resumeURL) {
+    if (classification === "Alumni") {
+      formData.append("company_url", profile.url);
+    }
+
+    if (profile.resumeURL) {
       const resumeFile = await convertBlobUrlToFile(
         profile.resumeURL,
         "resume.pdf"
@@ -473,7 +472,7 @@ const ProfileEdit = ({ classification }) => {
     try {
       // Update profile information
       const response = await axios.patch(
-        "http://localhost:8008/profile/userprofile/",
+        "http://localhost:8000/profile/userprofile/",
         formData,
         {
           headers: {
@@ -579,7 +578,10 @@ const ProfileEdit = ({ classification }) => {
               job_type: experienceData.type,
               location: experienceData.location,
               start_date: experienceData.startDate,
-              end_date: experienceData.current ? null : (experienceData.endDate || ''),              currently_working: experienceData.current,
+              end_date: experienceData.current
+                ? null
+                : experienceData.endDate || "",
+              currently_working: experienceData.current,
               description: experienceData.description,
               tagline: "",
             });
@@ -591,7 +593,10 @@ const ProfileEdit = ({ classification }) => {
               job_type: experienceData.type,
               location: experienceData.location,
               start_date: experienceData.startDate,
-              end_date: experienceData.current ? null : (experienceData.endDate || ''),              currently_working: experienceData.current,
+              end_date: experienceData.current
+                ? null
+                : experienceData.endDate || "",
+              currently_working: experienceData.current,
               description: experienceData.description,
               tagline: "",
             });
@@ -599,19 +604,15 @@ const ProfileEdit = ({ classification }) => {
         }
       }
 
-      // Handle skills
       for (const skill of skills) {
         const existingSkill = skillMap.get(skill.skillName);
-
         if (!existingSkill) {
-          // Only create new skill if it does not exist
           await createSkill({ skill_name: skill.skillName });
         }
       }
 
       console.log("SUCCESS :)");
       navigate("/view-profile");
-
     } catch (error) {
       console.error("Error updating profile:", error);
       if (error.response) {
@@ -720,9 +721,6 @@ const ProfileEdit = ({ classification }) => {
                   onChange={handleProfileChange}
                   required
                 />
-                {/* {formErrors.firstNameError && (
-                  <span className="error">{formErrors.firstNameError}</span>
-                )} */}
 
                 <label htmlFor="middleName">Middle Name </label>
                 <input
@@ -979,7 +977,15 @@ const ProfileEdit = ({ classification }) => {
                 )}
 
                 <label htmlFor={`location-${index}`}>Location</label>
-                <Search onSearchChange={handleOnSearchChange}/>
+                <Search
+                  value={{
+                    value: experience.location,
+                    label: experience.location,
+                  }}
+                  onSearchChange={(searchData) =>
+                    handleOnSearchChange(index, searchData)
+                  }
+                />
 
                 <label htmlFor={`startDate-${index}`}>
                   Start Date <div className="required-fields">*</div>
@@ -1244,7 +1250,7 @@ const ProfileEdit = ({ classification }) => {
                 Save
               </button>
             </div>
-          </> 
+          </>
         )}
       </form>
     </div>

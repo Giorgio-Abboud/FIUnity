@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Set the base URL for your API requests
-axios.defaults.baseURL = "http://localhost:8008/";
+axios.defaults.baseURL = "http://localhost:8000/";
 
 // Intercept every request and include the JWT token if available
 axios.interceptors.request.use(

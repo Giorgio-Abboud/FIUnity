@@ -3,10 +3,12 @@ import { useState } from "react";
 import { SlPicture } from "react-icons/sl";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import axios from "axios";
+import defaultProfilePicture from "../../assets/Default_pfp.png";
 
 export default function CreatePost({
   firstName,
   lastName,
+  profilePic,
   classification,
   onPostSubmit,
 }) {
@@ -14,6 +16,7 @@ export default function CreatePost({
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileError, setFileError] = useState("");
   const [fileSuccessMessage, setFileSuccessMessage] = useState("");
+  const profilePictureUrl = profilePic ? profilePic : defaultProfilePicture;
 
   const handleIconClick = () => {
     document.getElementById("dockpicker").click();
@@ -72,16 +75,16 @@ export default function CreatePost({
     }
 
     const accessToken = localStorage.getItem("access_token");
-    console.log("accesstoken", accessToken)
-   
+    console.log("accesstoken", accessToken);
+
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8008/feed/posts/",
+        "http://127.0.0.1:8000/feed/posts/",
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            "Authorization": `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
             mode: "cors",
           },
         }
@@ -101,7 +104,13 @@ export default function CreatePost({
     <>
       <div className="large-post-box font">
         <div className="profile-pic-flex">
-          <div className="profile-pic"></div>
+          <div className="profile-pic">
+          <img
+                  src={profilePictureUrl}
+                  alt="profile picture"
+                  className="profile-pic"
+                />
+          </div>
           <div>
             <div className="name">
               {firstName} {lastName}

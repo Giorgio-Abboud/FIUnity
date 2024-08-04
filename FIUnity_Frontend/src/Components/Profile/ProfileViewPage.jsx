@@ -17,6 +17,7 @@ export default function ProfileViewPage({
   major = "",
   minor = "",
   resumeURL = "",
+  companyURL = "",
   aboutMe = "",
   projects = [],
   experiences = [],
@@ -33,10 +34,10 @@ export default function ProfileViewPage({
   const extracurricularsCarouselRef = useRef(null);
   const experiencesCarouselRef = useRef(null);
   const profilePictureUrl = profilePic ? profilePic : defaultProfilePicture;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleEditClick = () => {
-    navigate('/profile-edit'); 
+    navigate("/profile-edit");
   };
 
   useEffect(() => {
@@ -96,10 +97,10 @@ export default function ProfileViewPage({
       <div className="empty-profile-message">
         It's really quiet over here...
         <div className="edit-container">
-            <button className="edit-button" onClick={handleEditClick}>
-              <CiEdit />
-            </button>
-          </div>
+          <button className="edit-button" onClick={handleEditClick}>
+            <CiEdit />
+          </button>
+        </div>
       </div>
     );
   }
@@ -123,7 +124,8 @@ export default function ProfileViewPage({
                     }${lastName}`}
                   </h1>
                   <p className="profile-font profile-class-size">
-                  {`${classification === "Alumni" ? "Alum" : classification}`}                  </p>
+                    {`${classification === "Alumni" ? "Alum" : classification}`}{" "}
+                  </p>
                 </div>
                 <div className="network">{network}</div>
               </div>
@@ -188,11 +190,15 @@ export default function ProfileViewPage({
                     )}
                     <p className="three-text-ans profile-font">
                       <a
-                        href={resumeURL}
+                        href={
+                          classification === "Student" ? resumeURL : companyURL
+                        }
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Check out my resume!
+                        {classification === "Student"
+                          ? "Check out my resume!"
+                          : "Visit our company!"}
                       </a>
                     </p>
                   </div>
