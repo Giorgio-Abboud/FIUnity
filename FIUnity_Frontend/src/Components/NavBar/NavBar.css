@@ -1,5 +1,6 @@
 /* Base styles */
 .NavBar {
+  position: relative;
   height: 100px;
   display: flex;
   align-items: center;
@@ -85,15 +86,13 @@
 
 /* Dropdown */
 
-
-
 .jobs-dropdown-content {
   display: none;
   position: absolute;
   background-color: #ffffff;
   min-width: 150px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+  z-index: 1000;
 }
 
 .jobs-dropdown-content a {
@@ -273,24 +272,32 @@
 }
 
 .search-dropdown {
+  position: absolute; 
   background-color: aliceblue;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  margin-left: 18.5%;
-  width: 20.5%;
+  margin-left: 18.5%; 
+  width: 32%;
   max-height: 500px;
   border-radius: 20px;
   overflow-y: auto;
+  z-index: 1000; 
 }
 
+
 .search-dropdown::-webkit-scrollbar {
-  display: none; /*this solution works for WebKit-based browsers like Chrome and Safari*/
+  display: none; 
 }
 
 .search-result {
+  border-bottom: 1px solid #ccc;
   display: flex;
   align-items: center;
   padding: 2px 7px;
   cursor: pointer;
+}
+
+.search-result:last-child {
+  border-bottom: none; 
 }
 
 .search-result:hover {
@@ -307,6 +314,7 @@
 }
 
 .search-result-pic {
+  margin: 7px;
   width: 50px;
   height: 50px;
   border-radius: 50%;

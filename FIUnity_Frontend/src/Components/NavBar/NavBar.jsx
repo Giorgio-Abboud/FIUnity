@@ -6,6 +6,51 @@ import Newsfeed_icon from "../../assets/Newsfeed icon.png";
 import Jobs_icon from "../../assets/Jobs icon.png";
 import Profile_icon from "../../assets/Profile icon.png";
 import { Link } from "react-router-dom";
+import defaultProfilePicture from "../../assets/Default_pfp.png";
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:8000/profile/',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+const fetchProfiles = async (searchTerm) => {
+  try {
+    const response = await axiosInstance.get('/search/', {
+      params: { search: searchTerm } 
+    });
+
+    console.log('response:', response.data);
+
+    const mappedResults = response.data.map(profile => ({
+      fullName: profile.full_name, 
+      classification: profile.check_graduation_status,
+      profilePic: profile.picture || defaultProfilePicture
+    }));
+
+    console.log('Mapped search results:', mappedResults);
+    return mappedResults;
+  } catch (error) {
+    console.error('Error fetching profiles:', error);
+    throw error;
+  }
+};
+
 
 const JobDropdown = ({ isOpen, toggleDropdown }) => {
   return (
@@ -53,56 +98,6 @@ const ProfileDropdown = ({ isOpen, toggleDropdown }) => {
   );
 };
 
-const dummySearchData = [
-  {
-    firstName: "Roary",
-    lastName: "Royce",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Mathers",
-    classification: "Alumni",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Smith",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Smith",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Smith",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Smith",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Smith",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Chris",
-    lastName: "Hemsworth",
-    classification: "Alumni",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-]; //NEW CODE
 
 const NavBar = () => {
   const [isSearchBold, setIsSearchBold] = useState(false);
@@ -114,20 +109,22 @@ const NavBar = () => {
     setIsSearchBold(true);
   };
 
-  const handleSearchChange = (e) => {
+  
+  const handleSearchChange = async (e) => {
     const value = e.target.value;
     setSearchInput(value);
     if (value) {
-      const results = dummySearchData.filter((user) =>
-        `${user.firstName} ${user.lastName}`
-          .toLowerCase()
-          .includes(value.toLowerCase())
-      );
-      setSearchResults(results);
+      try {
+        const results = await fetchProfiles(value);
+        setSearchResults(results);
+      } catch (error) {
+        console.error('Error fetching search results:', error);
+        setSearchResults([]);
+      }
     } else {
       setSearchResults([]);
     }
-  }; //NEW CODE
+  };
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -176,7 +173,7 @@ const NavBar = () => {
           {searchResults.map((user, index) => (
             <div key={index} className="search-result">
               <div className="search-result-text">
-                <div className="bold-search">{`${user.firstName} ${user.lastName}`}</div>
+                <div className="bold-search">{`${user.fullName}`}</div>
                 <div className="search-result-status">
                   {user.classification}
                 </div>
