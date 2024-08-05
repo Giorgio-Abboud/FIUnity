@@ -75,8 +75,8 @@
 
 .skills-alum-container {
   margin-right: 15px;
-  max-height: 100px;
-  min-height: 100px;
+  max-height: 180px;
+  min-height: 180px;
 }
 
 .about-us-container {
@@ -267,6 +267,7 @@
 
 .three-text-ans {
   margin-left: 5px;
+  margin-right: 8px;
   color: #0c3d72;
 }
 
@@ -289,8 +290,8 @@
 }
 
 .extra-tab-container {
-  max-height: 80px;
-  min-height: 80px;
+  max-height: 60px;
+  min-height: 60px;
 }
 
 .experience-tab-container {
@@ -317,16 +318,16 @@
 }
 
 .experience-tab-skill {
-  min-height: 425px;
-  max-height: 425px;
+  min-height: 345px;
+  max-height: 345px;
 }
 
 .project-tab-noskill,
 .experience-tab-noskill {
   padding-bottom: 15px;
   margin-left: 10px;
-  max-height: 393px;
-  min-height: 390px;
+  max-height: 375px;
+  min-height: 375px;
   min-width: 317px;
   max-width: 317px;
   margin-top: 20px;
@@ -397,12 +398,17 @@
   justify-content: center;
 }
 
-.edit-container {
+.edit-container, .edit-container-empty {
   display: flex;
   justify-content: flex-end;
   padding-top: 24px;
   padding-right: 34px;
   padding-bottom: 30px;
+}
+
+.edit-container-empty {
+  padding-right: 0px;
+  padding-left: 20px;
 }
 
 .edit-button {

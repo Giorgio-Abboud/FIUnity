@@ -96,6 +96,7 @@ export const createProject = async (data) => {
 // Update project
 export const updateProject = async (id, data) => {
   try {
+    console.log('data and id', data, id)
     const response = await axiosInstance.patch(`/projects/${id}/`, data);
     console.log('updated project successfully')
     return response.data;
@@ -157,6 +158,7 @@ export const deleteExperience = async (id) => {
 export const createSkill = async (data) => {
   try {
 
+    console.log('skills before', data)
     const response = await axiosInstance.post('/skills/', data);
     console.log('skills created', response)
 

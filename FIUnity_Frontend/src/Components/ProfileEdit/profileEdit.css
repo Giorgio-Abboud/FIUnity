@@ -9,9 +9,19 @@
   padding: 20px;
 }
 
-.required-fields {
+.required-fields, .required-fields-company {
   display: inline;
   color: red;
+}
+
+.required-fields-company {
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+.url-req-container {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .display-personal-info {
@@ -58,7 +68,6 @@
 
 .resume {
     margin-top: 20px;
- 
   }
 
   .upload-success-message {
@@ -250,7 +259,9 @@
 
 .url-box {
   display: inline-block;
-  padding: 10px 23px;
+  padding-top: 10px;
+  padding-right: 30px;
+  padding-left: 10px;
   border: none;
   border-radius: 5px;
   max-width: 150px;
@@ -303,7 +314,7 @@
 }
 
 .search-container {
-  margin-bottom: 25px; /* Adjust margin as needed */
+  margin-bottom: 25px; 
 }
 
 .search-input {
@@ -311,5 +322,29 @@
 }
 
 .async-paginate__input::placeholder {
-  color: #999; /* Adjust color */
+  color: #999; 
+}
+
+.about-me-scroll, .extra-descript-scroll, .experience-scroll, .project-scroll {
+  min-height: 55px;
+  max-height: 200px;
+  overflow-y: auto;
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
+.about-me::-webkit-scrollbar {
+  display: none;
+}
+
+.extra-descript-scroll::-webkit-scrollbar { 
+  display: none;
+}
+
+.experience-scroll::-webkit-scrollbar { 
+  display: none;
+}
+
+.project-scroll::-webkit-scrollbar { 
+  display: none;
 }

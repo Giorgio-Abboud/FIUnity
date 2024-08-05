@@ -60,6 +60,8 @@ export default function Registration() {
       graduation_year: gradYear,
     };
 
+    console.log("Register Info:", registerInfo);
+
     try {
       const response = await axios.post(
         "/authentication/register/",

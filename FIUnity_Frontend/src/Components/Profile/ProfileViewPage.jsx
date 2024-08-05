@@ -91,12 +91,12 @@ export default function ProfileViewPage({
   }, [projects.length, extracurriculars.length, experiences.length]);
 
   if (
-    !network // check if profile edit was completed, since this is a required field
+    !aboutMe // check if profile edit was completed, since this is a required field
   ) {
     return (
       <div className="empty-profile-message">
         It's really quiet over here...
-        <div className="edit-container">
+        <div className="edit-container-empty">
           <button className="edit-button" onClick={handleEditClick}>
             <CiEdit />
           </button>
@@ -179,28 +179,39 @@ export default function ProfileViewPage({
                     )}
                   </div>
                   <div className="three-text-flex">
-                    {classification == "Student" ? (
-                      <p className="profile-font-bold profile-gold profile-bold">
-                        Resume:
-                      </p>
+                    {classification === "Student" ? (
+                      resumeURL ? (
+                        <>
+                          <p className="profile-font-bold profile-gold profile-bold">
+                            Resume:
+                          </p>
+                          <p className="three-text-ans profile-font">
+                            <a
+                              href={resumeURL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Check out my resume!
+                            </a>
+                          </p>
+                        </>
+                      ) : null
                     ) : (
-                      <p className="profile-font-bold profile-gold profile-bold">
-                        Company URL:
-                      </p>
+                      <>
+                        <p className="profile-font-bold profile-gold profile-bold">
+                          Company URL:
+                        </p>
+                        <p className="three-text-ans profile-font">
+                          <a
+                            href={companyURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Visit our company!
+                          </a>
+                        </p>
+                      </>
                     )}
-                    <p className="three-text-ans profile-font">
-                      <a
-                        href={
-                          classification === "Student" ? resumeURL : companyURL
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {classification === "Student"
-                          ? "Check out my resume!"
-                          : "Visit our company!"}
-                      </a>
-                    </p>
                   </div>
                 </div>
               </div>
