@@ -3,10 +3,20 @@ import { useState } from "react";
 import { SlPicture } from "react-icons/sl";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import axios from "axios";
+import defaultProfilePicture from "../../assets/Default_pfp.png";
 
-export default function CreatePost({ firstName, lastName, onPostSubmit }) {
+export default function CreatePost({
+  firstName,
+  lastName,
+  profilePic,
+  classification,
+  onPostSubmit,
+}) {
   const [userInput, setUserInput] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [fileError, setFileError] = useState("");
+  const [fileSuccessMessage, setFileSuccessMessage] = useState("");
+  const profilePictureUrl = profilePic ? profilePic : defaultProfilePicture;
 
   const handleIconClick = () => {
     document.getElementById("dockpicker").click();
@@ -14,6 +24,34 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
+    setFileSuccessMessage("");
+    const file = event.target.files[0];
+    if (file) {
+      if (file.type.startsWith("video")) {
+        const video = document.createElement("video");
+        video.preload = "metadata";
+
+        video.onloadedmetadata = function () {
+          window.URL.revokeObjectURL(video.src);
+          const duration = video.duration;
+
+          if (duration < 1 || duration > 20) {
+            setFileError("Video must be between 1 and 20 seconds long.");
+            setSelectedFile(null);
+            setFileSuccessMessage("");
+          } else {
+            setFileError("");
+            setSelectedFile(file);
+            setFileSuccessMessage("File upload successful");
+          }
+        };
+        video.src = URL.createObjectURL(file);
+      } else {
+        setFileError("");
+        setSelectedFile(file);
+        setFileSuccessMessage("File upload successful");
+      }
+    }
   };
 
   const handleSubmit = async () => {
@@ -21,15 +59,23 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
       .toISOString()
       .slice(0, 19)
       .replace("T", " ");
-    const formData = new FormData();
 
-    formData.append("user", 1);
-    formData.append("description", userInput);
+    const formData = new FormData();
+    const userId = localStorage.getItem("user_id");
+    formData.append("user", userId);
+    formData.append("body", userInput);
     formData.append("created_at", currentDateTime);
 
     if (selectedFile) {
-      formData.append("images", selectedFile); // Add the file to form data
+      formData.append("image", selectedFile); // Add the file to form data
     }
+
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    const accessToken = localStorage.getItem("access_token");
+    console.log("accesstoken", accessToken);
 
     try {
       const response = await axios.post(
@@ -37,7 +83,8 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // Set content type to multipart/form-data
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${accessToken}`,
             mode: "cors",
           },
         }
@@ -45,6 +92,7 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
       console.log("Post submitted:", response.data);
       setUserInput("");
       setSelectedFile(null); // Reset file input after submission
+      setFileSuccessMessage("");
       if (onPostSubmit) {
         onPostSubmit(response.data);
       }
@@ -52,12 +100,23 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
       console.error("Failed to submit post:", error);
     }
   };
-
   return (
     <>
       <div className="large-post-box font">
-        <div className="name">
-          {firstName} {lastName}
+        <div className="profile-pic-flex">
+          <div className="profile-pic">
+          <img
+                  src={profilePictureUrl}
+                  alt="profile picture"
+                  className="profile-pic"
+                />
+          </div>
+          <div>
+            <div className="name">
+              {firstName} {lastName}
+            </div>
+            <div className="classification">{classification}</div>
+          </div>
         </div>
         <div className="text-area-container">
           <textarea
@@ -89,6 +148,10 @@ export default function CreatePost({ firstName, lastName, onPostSubmit }) {
               Submit post
             </button>
           </div>
+          {fileError && <p className="file-error">{fileError}</p>}
+          {fileSuccessMessage && (
+            <p className="file-success">{fileSuccessMessage}</p>
+          )}
         </div>
       </div>
       <div className="Post-line"></div>

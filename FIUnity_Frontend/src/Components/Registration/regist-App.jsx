@@ -1,6 +1,7 @@
 import axios from "./axiosInstance";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./regist-App.css";
 
 export default function Registration() {
@@ -13,7 +14,7 @@ export default function Registration() {
   const [showPassword, setShowPassword] = useState(false);
   const [gradTerm, setGradTerm] = useState("");
   const [gradYear, setGradYear] = useState("");
-
+  const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -56,22 +57,28 @@ export default function Registration() {
       email: email,
       password: password,
       grad_term: gradTerm,
-      grad_year: gradYear,
+      graduation_year: gradYear,
     };
 
+    console.log("Register Info:", registerInfo);
+
     try {
-      const response = await axios.post("/authentication/register/", registerInfo, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.post(
+        "/authentication/register/",
+        registerInfo,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.status === 201) {
         console.log("Register successful");
         // Store CSRF token and user_id in local storage
         localStorage.setItem("csrfToken", response.data.token);
         localStorage.setItem("user_id", response.data.user_id);
-        window.location.href = "http://localhost:5173/test";
+        navigate("/test");
       } else {
         console.error("Register failed");
         setErrorMessage("Register failed. Please check your credentials.");
@@ -79,7 +86,10 @@ export default function Registration() {
     } catch (error) {
       console.error("Error sending login request:", error);
       if (error.response && error.response.data) {
-        setErrorMessage(error.response.data.detail || "An error occurred while registering. Please try again later.");
+        setErrorMessage(
+          error.response.data.detail ||
+            "An error occurred while registering. Please try again later."
+        );
       }
     }
   };
@@ -97,7 +107,6 @@ export default function Registration() {
             onChange={handleFirstNameChange}
           />
         </div>
-
         <div className="input-wrapper">
           <input
             type="text"
@@ -107,7 +116,6 @@ export default function Registration() {
             onChange={handleLastNameChange}
           />
         </div>
-
         <div className="input-wrapper">
           <input
             type="text"
@@ -117,7 +125,6 @@ export default function Registration() {
             onChange={handlePantherIDChange}
           />
         </div>
-
         <div className="input-wrapper">
           <input
             type="text"
@@ -161,13 +168,9 @@ export default function Registration() {
             {showPassword ? "Hide" : "Show"}
           </button>
         </div>
-        
-
-        <Link to="/test">
         <button className="submit-button" onClick={handleSubmit}>
-          Submit</button>        
-          </Link>
-
+          Submit
+        </button>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
     </div>

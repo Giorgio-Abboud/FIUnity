@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Like, Comment
+from .models import Post, Like, Comment, CommentLike
 
 class LikeSerializer(serializers.ModelSerializer):
     like_email = serializers.EmailField(read_only=True, source='user.email')
@@ -8,13 +8,28 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields = "__all__"
 
+class CommentLikeSerializer(serializers.ModelSerializer):
+    liker_email = serializers.EmailField(read_only=True, source='user.email')
+
+    class Meta:
+        model = CommentLike
+        fields = "__all__"
+
 class CommentSerializer(serializers.ModelSerializer):
     commenter_email = serializers.EmailField(read_only=True, source='user.email')
     commenter_name = serializers.CharField(read_only=True, source='user.get_full_name')
+    likes_count = serializers.SerializerMethodField()
+    dislikes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
         fields = "__all__"
+
+    def get_likes_count(self, obj):
+        return obj.likes.filter(is_like=True).count()
+
+    def get_dislikes_count(self, obj):
+        return obj.likes.filter(is_like=False).count()
 
 class PostSerializer(serializers.ModelSerializer):
     likes = LikeSerializer(read_only=True, many=True)
@@ -24,10 +39,11 @@ class PostSerializer(serializers.ModelSerializer):
     poster_email = serializers.EmailField(read_only=True, source='user.email')
     poster_id = serializers.IntegerField(read_only=True, source='user.id')
     poster_full_name = serializers.CharField(read_only=True, source='user.get_full_name')
+    is_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ['id', 'body', 'image', 'likes', 'comments', 'no_of_like', 'no_of_comment', 'date', 'poster_email', 'poster_id', 'poster_full_name']
+        fields = ['id', 'body', 'image', 'likes', 'comments', 'no_of_like', 'no_of_comment', 'date', 'poster_email', 'poster_id', 'poster_full_name', 'is_liked']
 
     def get_no_of_like(self, obj):
         return obj.no_of_like()
@@ -39,3 +55,7 @@ class PostSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         post = Post.objects.create(user=user, **validated_data)
         return post
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        return obj.likes.filter(user=user).exists()

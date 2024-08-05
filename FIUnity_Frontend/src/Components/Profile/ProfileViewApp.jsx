@@ -1,166 +1,121 @@
 import ProfileViewPage from "./ProfileViewPage";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import defaultProfilePicture from "../../assets/Default_pfp.png";
+import ClockLoader from "react-spinners/ClockLoader";
+import "./ProfileView.css";
 
-const exampleExperiences = [
-  {
-    jobTitle: "Software Engineer",
-    companyName: "Capital One",
-    location: "San Francisco, CA",
-    startDate: "Jan 2020",
-    endDate: "- Present",
-    jobType: "Part-time",
-    description:
-      "Worked on developing web applications using React and Node.js. Assisted in developing mobile applications and performing code reviews. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    jobTitle: "Junior Developer",
-    companyName: "Google",
-    location: "New York, NY",
-    startDate: "Jun 2018",
-    endDate: "- Aug 2019",
-    jobType: "Internship",
-    description:
-      "As a Software Engineer, I thrive in designing and developing robust software solutions that drive business efficiency and user satisfaction. I am skilled in analyzing user requirements, architecting scalable systems, and implementing clean, maintainable code in languages like Java and Python. Collaborating with cross-functional teams, I translate complex technical requirements into elegant software designs, ensuring seamless integration with existing systems and adherence to industry best practices. My role involves conducting rigorous testing, debugging issues, and optimizing performance to deliver reliable software solutions. I am passionate about continuous learning, staying abreast of emerging technologies, and mentoring junior engineers to foster a culture of innovation and excellence.", //discuss how size increases and boxes look weird
-  },
-];
+const mapExperienceData = (data) => {
+  return data.map((exp) => ({
+    jobTitle: exp.job_position,
+    jobType: exp.job_type,
+    companyName: exp.company_data.name,
+    location: exp.location,
+    startDate: exp.start_date,
+    endDate: exp.end_date || "Present",
+    description: exp.description,
+  }));
+};
 
-const exampleProjects = [
-  {
-    name: "Project 1",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-    skills: ["Java", "Django", "Python"],
-  },
-  {
-    name: "Project 2",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-    skills: ["Java", "Django", "Python"],
-  },
-  {
-    name: "Project 3",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-    skills: ["Java", "Django", "Python"],
-  },
-  {
-    name: "Project 4",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-    skills: ["Java", "Django", "Python"],
-  },
-];
+const mapProjectData = (data) => {
+  return data.map((project) => ({
+    name: project.project_data.name || "",
+    description: project.description,
+    skills: project.skills || [],
+  }));
+};
 
-const extracurriculars = [
-  {
-    name: "Women in Computer Science",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  },
-  {
-    name: "INIT",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-  },
-  {
-    name: "SWE",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  },
-  {
-    name: "INIT",
-    description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-  },
-];
+const mapExtracurrData = (data) => {
+  return data.map((extracurr) => ({
+    extracurricular: extracurr.extracurricular_data.name || "",
+    description: extracurr.description || "",
+  }));
+};
 
-const skills = [
-  {
-    name: "Java",
-  },
-  {
-    name: "Django",
-  },
-  {
-    name: "Python",
-  },
-  {
-    name: "React",
-  },
-  {
-    name: "JavaScript",
-  },
-  {
-    name: "Node.js",
-  },
-  {
-    name: "C++",
-  },
-  {
-    name: "Ruby on Rails",
-  },
-  {
-    name: "SQL",
-  },
-  {
-    name: "Angular",
-  },
-  {
-    name: "Swift",
-  },
-  {
-    name: "Spring",
-  },
-  {
-    name: "Kotlin",
-  },
-  {
-    name: "Vue.js",
-  },
-  {
-    name: "PHP",
-  },
-  {
-    name: "ASP.NET",
-  },
-  {
-    name: "Go",
-  },
-  {
-    name: "Flask",
-  },
-];
+const mapSkillData = (data) => {
+  console.log("skill data", data);
+  return data.map((skill) => ({
+    skillName: skill.skill_name,
+  }));
+};
 
-function ProfileViewApp() {
+const ProfileViewApp = () => {
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [forcedLoading, setForcedLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/profile/mainpage/",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        console.log("response", response.data);
+
+        setProfileData({
+          ...response.data,
+          experience_data: mapExperienceData(response.data.experience_data),
+          project_data: mapProjectData(response.data.project_data),
+          extra_data: mapExtracurrData(response.data.extra_data),
+          skill_data: mapSkillData(response.data.skill_data),
+        });
+        setLoading(false);
+      } catch (err) {
+        setError(err);
+        setLoading(false);
+      }
+    };
+
+    fetchProfileData();
+
+    const timer = setTimeout(() => {
+      setForcedLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+
+  }, []);
+
+  if (loading || forcedLoading) {
+    return (
+      <div className="loader-container">
+        <ClockLoader loading={loading || forcedLoading} size={100} color="#081e3f" />
+      </div>
+    );
+  }
+
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <>
       <ProfileViewPage
-        firstName="Roary"
-        middleName="Shay"
-        lastName="Royce"
-        classification="Student"
-        gradTerm="Fall"
-        gradDate="2020"
-        network="OPEN TO CONNECT"
-        major="Computer Science"
-        minor="Math"
-        currJobPosition="Senior Developer" //set character limit
-        careerInterest="Full-Stack Development"
-        aboutMe="Hello! My name is Alex, and I’m a passionate and curious individual with a profound love for technology and continuous learning. Ever since I can remember, I've been fascinated by how things work and how to make them better. This curiosity led me to pursue a degree in Computer Science, where I delved into the world of programming, algorithms, and software development. My journey has been a thrilling adventure of discovering new technologies, solving complex problems, and creating innovative solutions that make a difference.
-
-Outside the realm of coding, I am an avid reader and an enthusiastic writer. I find solace in the pages of a good book, whether it's a gripping thriller, an inspiring biography, or a thought-provoking piece of science fiction. Writing allows me to articulate my thoughts and share my ideas with others, fostering connections and sparking conversations.
-
-When I’m not immersed in the digital world, I love to explore the great outdoors. Hiking through lush forests, scaling mountain peaks, and camping under the stars are some of my favorite ways to unwind and reconnect with nature. I believe that the natural world offers a wealth of inspiration and perspective that is invaluable in our fast-paced, tech-driven lives.
-
-" //max char count: 850
-        resumeURL={"https://google.com/"}
-        profilePic="/images/roary-profile-pic.jpg"
-        experiences={exampleExperiences}
-        projects={exampleProjects}
-        skills={skills}
-        extracurriculars={extracurriculars}
+        firstName={profileData.profile.first_name}
+        middleName={profileData.profile.middle_name}
+        lastName={profileData.profile.last_name}
+        classification={profileData.profile.check_graduation_status}
+        gradTerm={profileData.profile.grad_term}
+        gradDate={profileData.profile.graduation_year}
+        network={profileData.profile.network}
+        major={profileData.profile.major}
+        minor={profileData.profile.minor}
+        currJobPosition={profileData.profile.current_job_title}
+        careerInterest={profileData.profile.career_interest}
+        aboutMe={profileData.profile.about}
+        resumeURL={profileData.profile.resume}
+        companyURL = {profileData.profile.company_url}
+        profilePic={profileData.profile.picture || defaultProfilePicture}
+        experiences={profileData.experience_data}
+        projects={profileData.project_data}
+        skills={profileData.skill_data}
+        extracurriculars={profileData.extra_data}
       />
     </>
   );
-}
+};
 export default ProfileViewApp;

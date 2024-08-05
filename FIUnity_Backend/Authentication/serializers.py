@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
+
 # Creating a new user
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, min_length=8, write_only=True)
@@ -13,7 +14,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppUser
-        fields = ['email', 'first_name', 'last_name', 'PID', 'password', 'graduation_year', 'grad_term']
+        fields = ['email', 'first_name', 'last_name', 'PID', 'password', 'graduation_year', 'grad_term', 'status']
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         user = AppUser.objects.create_user(
@@ -25,40 +27,24 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             graduation_year=validated_data['graduation_year'],
             grad_term=validated_data['grad_term']
         )
-        # Profile.objects.create(
-        #     user=user,
-        #     first_name=user.first_name,
-        #     last_name=user.last_name,
-        #     graduation_year=validated_data['graduation_year'],
-        #     grad_term=validated_data['grad_term'],
-        #     major='',
-        #     career_interest='',
-        #     about=''
-        # )
-        # Experience.objects.create(
-        #     user=user, 
-        #     job_position='', 
-        #     job_type='', 
-        #     start_date=None, 
-        #     end_date=None, 
-        #     company='', 
-        #     description='', 
-        # )
-        # Project.objects.create(
-        #     user=user, 
-        #     name='', 
-        #     description=''
-        # )
-        # Extracurricular.objects.create(
-        #     user=user, 
-        #     name='', 
-        #     description=''
-        # )
-        # Skill.objects.create(
-        #     user=user, 
-        #     name='', 
-        #     proficiency=''
-        # )
+        user.save()
+
+        # Create the profile
+        profile = Profile.objects.create(
+            user=user,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email=user.email,
+            grad_term=user.grad_term,
+            graduation_year=user.graduation_year,
+            status=user.status
+        )
+
+        # Create the main profile
+        MainProfile.objects.create(
+            profile=profile
+        )
+
         return user
 
 # Logging in the user and refresh the token
@@ -79,19 +65,22 @@ class UserLoginSerializer(serializers.Serializer):
         password = attrs.get('password')
         PID = attrs.get('PID')
         request = self.context.get('request')
-        user = authenticate(request, email=email, password=password, PID=PID)
 
-        if not user:
+        try:
+            user = authenticate(request, email=email, password=password, PID=PID)
+            if not user:
+                raise AuthenticationFailed("Invalid credentials")
+
+            tokens = user.tokens()
+
+            return {
+                'email': user.email,
+                'full_name': user.get_full_name,
+                'access_token': str(tokens.get('access')),
+                'refresh_token': str(tokens.get('refresh'))
+            }
+        except AuthenticationFailed:
             raise AuthenticationFailed("Invalid credentials")
-
-        tokens = user.tokens()
-
-        return {
-            'email': user.email,
-            'full_name': user.get_full_name,
-            'access_token': str(tokens.get('access')),
-            'refresh_token': str(tokens.get('refresh'))
-        }
     
 # Logout user and expire the token
 class UserLogoutSerializer(serializers.Serializer):

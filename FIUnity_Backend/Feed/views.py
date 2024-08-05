@@ -1,5 +1,5 @@
 from rest_framework import viewsets, status
-from .models import Post, Like, Comment
+from .models import Post, Like, Comment, CommentLike
 from .serializers import PostSerializer, LikeSerializer, CommentSerializer
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
@@ -28,23 +28,32 @@ class PostViewSet(viewsets.ModelViewSet):
     def likePost(self, request, pk=None):
         post = self.get_object()
         user = request.user
-        if post.likes.filter(user=user).exists():
-            return Response({'message': 'You have already liked the post'}, status=status.HTTP_400_BAD_REQUEST)
+        existing_like = post.likes.filter(user=user).first()
 
-        like = Like.objects.create(user=user, post=post)
-        serializer = LikeSerializer(like)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if existing_like:
+            # User has already liked the post, so remove the like
+            existing_like.delete()
+            return Response({'message': 'Like removed', 'likes_count': post.likes.count()}, status=status.HTTP_200_OK)
+        
+        # Add a new like
+        Like.objects.create(user=user, post=post)
+        return Response({'message': 'Post liked', 'likes_count': post.likes.count()}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['DELETE'])
+
+    @action(detail=True, methods=['POST'])
     def dislikePost(self, request, pk=None):
         post = self.get_object()
         user = request.user
-        like = post.likes.filter(user=user).first()
-        if not like:
-            return Response({'message': "You haven't liked the post yet."}, status=status.HTTP_400_BAD_REQUEST)
+        existing_dislike = post.dislikes.filter(user=user).first()
 
-        like.delete()
-        return Response({'message': 'Disliked Post so deleted'}, status=status.HTTP_204_NO_CONTENT)
+        if existing_dislike:
+            # User has already disliked the post, so remove the dislike
+            existing_dislike.delete()
+            return Response({'message': 'Dislike removed', 'dislikes_count': post.dislikes.count()}, status=status.HTTP_200_OK)
+
+        # Add a new dislike
+        Dislike.objects.create(user=user, post=post)
+        return Response({'message': 'Post disliked', 'dislikes_count': post.dislikes.count()}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['POST'])
     def comment(self, request, pk=None):
@@ -64,6 +73,8 @@ class PostViewSet(viewsets.ModelViewSet):
 
         comment.delete()
         return Response({'message': 'Comment deleted'}, status=status.HTTP_204_NO_CONTENT)
+    
+    
 
     
 # Class that retrieves the likes
@@ -77,5 +88,41 @@ class LikeViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    http_method_names = ['get', 'delete']
+    http_method_names = ['get', 'post', 'delete']
     authentication_classes = [JWTAuthentication]
+
+    @action(detail=True, methods=['POST'])
+    def likeComment(self, request, pk=None):
+        comment = Comment.objects.get(pk=pk)
+        user = request.user
+        existing_like = CommentLike.objects.filter(comment=comment, user=user).first()
+
+        if existing_like:
+            if existing_like.is_like:
+                existing_like.delete()
+                return Response({'message': 'Like removed', 'likes_count': comment.likes.filter(is_like=True).count()}, status=status.HTTP_200_OK)
+            else:
+                existing_like.is_like = True
+                existing_like.save()
+                return Response({'message': 'Changed dislike to like', 'likes_count': comment.likes.filter(is_like=True).count()}, status=status.HTTP_200_OK)
+        else:
+            CommentLike.objects.create(user=user, comment=comment, is_like=True)
+            return Response({'message': 'Comment liked', 'likes_count': comment.likes.filter(is_like=True).count()}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['POST'])
+    def dislikeComment(self, request, pk=None):
+        comment = Comment.objects.get(pk=pk)
+        user = request.user
+        existing_like = CommentLike.objects.filter(comment=comment, user=user).first()
+
+        if existing_like:
+            if not existing_like.is_like:
+                existing_like.delete()
+                return Response({'message': 'Dislike removed', 'dislikes_count': comment.likes.filter(is_like=False).count()}, status=status.HTTP_200_OK)
+            else:
+                existing_like.is_like = False
+                existing_like.save()
+                return Response({'message': 'Changed like to dislike', 'dislikes_count': comment.likes.filter(is_like=False).count()}, status=status.HTTP_200_OK)
+        else:
+            CommentLike.objects.create(user=user, comment=comment, is_like=False)
+            return Response({'message': 'Comment disliked', 'dislikes_count': comment.likes.filter(is_like=False).count()}, status=status.HTTP_200_OK)

@@ -46,7 +46,7 @@ const ProfileDropdown = ({ isOpen, toggleDropdown }) => {
       {isOpen && (
         <div className="profile-dropdown-content">
           <Link to="/view-profile">View Profile</Link>
-          <Link to="/profile-edit">Edit Profile</Link>
+          {/* <Link to="/profile-edit">Edit Profile</Link> */}
         </div>
       )}
     </div>

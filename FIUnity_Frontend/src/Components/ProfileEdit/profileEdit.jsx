@@ -1,11 +1,26 @@
 import React, { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
+import axiosInstance from "../api/profileApi.js";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import {
+  createExtracurricular,
+  updateExtracurricular,
+  deleteExtracurricular,
+  createProject,
+  updateProject,
+  deleteProject,
+  createSkill,
+  deleteSkill,
+  createExperience,
+  updateExperience,
+  deleteExperience,
+} from "../api/profileApi.js";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
-import { Link } from "react-router-dom";
+import Search from "./search";
+import axios from "axios";
 
-const ProfileEdit = ({ classification = "Alum" }) => {
+const ProfileEdit = ({ classification }) => {
   const [profile, setProfile] = useState({
     firstName: "",
     lastName: "",
@@ -16,47 +31,144 @@ const ProfileEdit = ({ classification = "Alum" }) => {
     minor: "",
     careerInterest: "",
     aboutMe: "",
-    profilePicture: null,
+    profilePicture: defaultProfilePicture,
     resume: null,
     url: "",
     resumeURL: "",
     network: "",
   });
 
-  const [experiences, setExperiences] = useState([
-    {
-      jobTitle: "",
-      companyName: "",
-      type: "",
-      location: "",
-      startDate: "",
-      endDate: "",
-      current: false,
-      description: "",
-    },
-  ]);
+  const defaultExperience = {
+    id: uuidv4(),
+    jobTitle: "",
+    companyName: "",
+    type: "",
+    location: "",
+    startDate: "",
+    endDate: "",
+    current: false,
+    description: "",
+  };
 
-  const [projects, setProjects] = useState([
-    { projectName: "", description: "", projectSkills: [], skillsInput: "" },
-  ]);
+  const defaultProject = {
+    id: uuidv4(),
+    projectName: "",
+    description: "",
+    projectSkills: [],
+    skillsInput: "",
+  };
 
-  const [extracurr, setExtracurr] = useState([
-    { extracurrName: "", description: "" },
-  ]);
+  const defaultExtracurr = {
+    id: uuidv4(),
+    extracurrName: "",
+    description: "",
+  };
+
+  const [extracurr, setExtracurr] = useState([]);
+  const [projects, setProjects] = useState([defaultProject]);
+  const [experiences, setExperiences] = useState([defaultExperience]);
+  const [skills, setSkills] = useState([]);
 
   const [selectedMajor, setSelectedMajor] = useState(profile.major);
-
-  const [skills, setSkills] = useState([]);
   const [skillsError, setSkillsError] = useState(false);
-
   const [url, setUrl] = useState(profile.url);
   const [urlError, setUrlError] = useState("");
-
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const profile = await axiosInstance.get("/userprofile/");
+        const experience = await axiosInstance.get("/experiences/");
+        const project = await axiosInstance.get("/projects/");
+        const extracurr = await axiosInstance.get("/extracurriculars/");
+        const skills = await axiosInstance.get("/skills/");
+
+        const data = profile.data;
+        const expData = experience.data;
+        const projData = project.data;
+        const skillsData = skills.data;
+        const extracurrData = extracurr.data;
+        console.log('skill', skillsData)
+        const fetchBlob = async (url) => {
+          const profile = await fetch(url);
+          const blob = await profile.blob();
+          return blob;
+        };
+
+        const profilePictureBlob = data.picture
+          ? await fetchBlob(data.picture)
+          : null;
+        const resumeBlob = data.resume ? await fetchBlob(data.resume) : null;
+        setProfile({
+          firstName: data.first_name || "",
+          lastName: data.last_name || "",
+          middleName: data.middle_name || "",
+          graduationYear: data.graduation_year || "",
+          gradTerm: data.grad_term || "",
+          major: data.major || "",
+          minor: data.minor || "",
+          careerInterest: data.career_interest || "",
+          aboutMe: data.about || "",
+          profilePicture: profilePictureBlob
+            ? URL.createObjectURL(profilePictureBlob)
+            : null,
+          resumeURL: resumeBlob ? URL.createObjectURL(resumeBlob) : "",
+          url: data.company_url || "",
+          network: data.network || "",
+        });
+        setExperiences(
+          expData.length > 0
+            ? expData.map((experience) => ({
+                id: experience.id || uuidv4(),
+                jobTitle: experience.job_position || "",
+                companyName: experience.company_data.name || "",
+                type: experience.job_type || "",
+                location: experience.location || "",
+                startDate: experience.start_date || "",
+                endDate: experience.end_date || "",
+                current: experience.currently_working || false,
+                description: experience.description || "",
+              }))
+            : [defaultExperience]
+        );
+        setProjects(
+          (projData.length > 0 ? projData : [defaultProject]).map(
+            (project) => ({
+              id: project.id || uuidv4(),
+              projectName: project.project_data.name || "",
+              description: project.description || "",
+              projectSkills: project.skills || [],
+            })
+          )
+        );
+        setExtracurr(
+          (extracurrData.length > 0 ? extracurrData : [defaultExtracurr]).map(
+            (extracurr) => ({
+              id: extracurr.id || uuidv4(),
+              extracurrName: extracurr.extracurricular_data.name || "",
+              description: extracurr.description || "",
+            })
+          )
+        );
+        setSkills(
+          skillsData.map((skill) => ({
+            id: skill.id,
+            skillName: skill.skill_name || "",
+          }))
+        );
+
+      } catch (error) {
+        console.error("Failed to fetch profile data:", error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
-    setProfile({ ...profile, [name]: value });
+    setProfile((prevProfile) => ({ ...prevProfile, [name]: value }));
   };
 
   const handleGradBlur = (e) => {
@@ -79,10 +191,14 @@ const ProfileEdit = ({ classification = "Alum" }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setSelectedMajor(profile.major);
+  }, [profile.major]);
+
   const handleMajorChange = (event) => {
     const value = event.target.value;
     setSelectedMajor(value);
-    handleProfileChange(event);
+    setProfile((prevProfile) => ({ ...prevProfile, major: value }));
   };
 
   const handleExperienceChange = (index, e) => {
@@ -94,22 +210,18 @@ const ProfileEdit = ({ classification = "Alum" }) => {
 
   const handleProjectChange = (index, e) => {
     const { name, value } = e.target;
-    const newProjects = projects.slice();
-    newProjects[index][name] = value;
-    setProjects(newProjects);
+    const updatedProjects = projects.map((item, idx) =>
+      idx === index ? { ...item, [name]: value } : item
+    );
+    setProjects(updatedProjects);
   };
 
   const handleExtracurrChange = (index, e) => {
     const { name, value } = e.target;
-    const newExtracurr = extracurr.slice();
-    newExtracurr[index][name] = value;
-    setExtracurr(newExtracurr);
-  };
-
-  const handleSkillChange = (e) => {
-    const { value } = e.target;
-    setSkills([...skills, value]);
-    e.target.value = "";
+    const updatedExtracurr = extracurr.map((item, idx) =>
+      idx === index ? { ...item, [name]: value } : item
+    );
+    setExtracurr(updatedExtracurr);
   };
 
   const handleProjectSkillChange = (e, index) => {
@@ -122,35 +234,97 @@ const ProfileEdit = ({ classification = "Alum" }) => {
         newProjects[index].projectSkills = newSkills;
         newProjects[index].skillsInput = "";
         setProjects(newProjects);
-        setSkillsError(false); // Reset skills error state
+        setSkillsError(false);
       } else {
-        setSkillsError(true); // Set skills error state if trimmed value is empty
+        setSkillsError(true);
       }
     }
   };
-  const handleKeyDown = (e, index) => {
+
+  const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       const trimmedValue = e.target.value.trim();
       if (trimmedValue !== "") {
-        const newSkills = [...skills, trimmedValue];
-        setSkills(newSkills);
+        const newSkill = { id: uuidv4(), skillName: trimmedValue };
+        setSkills((prevSkills) => [...prevSkills, newSkill]);
         e.target.value = "";
       }
     }
   };
 
+  const handleRemoveExperience = async (id) => {
+    try {
+      setExperiences((prevExperiences) =>
+        prevExperiences.filter((experience) => experience.id !== id)
+      );
+      console.log(id);
+      await deleteExperience(id);
+    } catch (error) {
+      console.error("Failed to delete experience:", error);
+    }
+  };
+
+  const handleRemoveExtracurricular = async (id) => {
+    try {
+      console.log(id);
+      setExtracurr((prevExtracurriculars) =>
+        prevExtracurriculars.filter(
+          (extracurricular) => extracurricular.id !== id
+        )
+      );
+      await deleteExtracurricular(id);
+    } catch (error) {
+      console.error("Failed to delete extracurricular activity:", error);
+    }
+  };
+
+  const handleRemoveSkill = async (id) => {
+    try {
+      console.log(id);
+      setSkills((prevSkills) => prevSkills.filter((skill) => skill.id !== id));
+      await deleteSkill(id);
+    } catch (error) {
+      console.error("Failed to delete skill:", error);
+    }
+  };
+
+  const handleRemoveProject = async (id) => {
+    try {
+      console.log(id);
+      setProjects((prevProjects) =>
+        prevProjects.filter((project) => project.id !== id)
+      );
+      await deleteProject(id);
+    } catch (error) {
+      console.error("Failed to delete project:", error);
+    }
+  };
+
   const removeSkill = (projectIndex, skillIndex) => {
-    const newSkills = [...projects[projectIndex].projectSkills];
-    newSkills.splice(skillIndex, 1);
-    const newProjects = [...projects];
-    newProjects[projectIndex].projectSkills = newSkills;
-    setProjects(newProjects);
+    setProjects((prevProjects) => {
+      const updatedProjects = prevProjects.map((project, pIndex) => {
+        if (pIndex === projectIndex) {
+          const updatedSkills = project.projectSkills.filter(
+            (_, sIndex) => sIndex !== skillIndex
+          );
+          return { ...project, projectSkills: updatedSkills };
+        }
+        return project;
+      });
+      return updatedProjects;
+    });
   };
 
   const handleProfilePictureChange = (e) => {
-    // Update the profile picture state when a new file is selected
-    setProfile({ ...profile, profilePicture: e.target.files[0] });
+    const file = e.target.files[0];
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      setProfile((prevProfile) => ({
+        ...prevProfile,
+        profilePicture: fileUrl,
+      }));
+    }
   };
 
   const handleUrlChange = (e) => {
@@ -170,21 +344,35 @@ const ProfileEdit = ({ classification = "Alum" }) => {
 
   const handleResumeChange = (e) => {
     const file = e.target.files[0];
-    const fileURL = URL.createObjectURL(file);
-    setProfile({ ...profile, resume: file, resumeURL: fileURL });
+    if (file) {
+      const fileURL = URL.createObjectURL(file);
+      setProfile({ ...profile, resume: file, resumeURL: fileURL });
+    }
+  };
+
+  const convertBlobUrlToFile = async (blobUrl, fileName) => {
+    try {
+      const response = await fetch(blobUrl);
+      const blob = await response.blob();
+      return new File([blob], fileName, { type: blob.type });
+    } catch (error) {
+      console.error("Failed to convert Blob URL to File:", error);
+      return null;
+    }
   };
 
   const addExperience = () => {
     setExperiences([
       ...experiences,
       {
+        id: uuidv4(),
         jobTitle: "",
         companyName: "",
         type: "",
         location: "",
         startDate: "",
         endDate: "",
-        current: "",
+        current: false,
         description: "",
       },
     ]);
@@ -193,16 +381,30 @@ const ProfileEdit = ({ classification = "Alum" }) => {
   const addProject = () => {
     setProjects([
       ...projects,
-      { projectName: "", description: "", projectSkills: [], skillsInput: "" },
+      {
+        id: uuidv4(),
+        projectName: "",
+        description: "",
+        projectSkills: [],
+        skillsInput: "",
+      },
     ]);
   };
 
   const addExtracurr = () => {
-    setExtracurr([...extracurr, { extracurrName: "", description: "" }]);
+    const newExtracurricular = {
+      id: uuidv4(),
+      extracurrName: "",
+      description: "",
+    };
+    setExtracurr([...extracurr, newExtracurricular]);
   };
 
-  const addSkill = () => {
-    setSkills([...skills, { skillName: "" }]);
+  const handleOnSearchChange = (index, searchData) => {
+    console.log("searchData:", searchData);
+    const newExperiences = [...experiences];
+    newExperiences[index].location = searchData.label;
+    setExperiences(newExperiences);
   };
 
   const nextStep = () => {
@@ -227,31 +429,298 @@ const ProfileEdit = ({ classification = "Alum" }) => {
       form.reportValidity();
       return;
     }
+    console.log("profile", profile);
 
-    const profileData = {
-      profile,
-      experiences: experiences.map((exp) => ({
-        ...exp,
-        endDate: exp.current ? null : exp.endDate,
-      })),
-      projects,
-      skills,
-    };
+    const formData = new FormData();
 
-    console.log("It got here too");
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/profile/profile-edit/",
-        profileData
+    if (profile.firstName) formData.append("first_name", profile.firstName);
+    if (profile.lastName) formData.append("last_name", profile.lastName);
+    if (profile.middleName) formData.append("middle_name", profile.middleName);
+    if (profile.gradTerm) formData.append("grad_term", profile.gradTerm);
+    if (profile.aboutMe) formData.append("about", profile.aboutMe);
+    if (profile.graduationYfear)
+      formData.append("graduation_year", profile.graduationYear);
+    if (profile.major) formData.append("major", profile.major);
+    if (profile.minor) formData.append("minor", profile.minor);
+    if (profile.careerInterest)
+      formData.append("career_interest", profile.careerInterest);
+    if (profile.network) formData.append("network", profile.network);
+
+    if (profile.profilePicture) {
+      const profilePictureFile = await convertBlobUrlToFile(
+        profile.profilePicture,
+        "profile-picture.jpg"
       );
-      if (response.status === 201) {
-        console.log("Profile edit successful");
-        navigate("/view-profile");
-      } else {
-        console.error("Profile edit failed");
+      if (profilePictureFile) {
+        formData.append("picture", profilePictureFile);
       }
+    }
+
+    if (classification === "Alumni") {
+      formData.append("company_url", profile.url);
+    }
+
+    if (profile.resumeURL) {
+      const resumeFile = await convertBlobUrlToFile(
+        profile.resumeURL,
+        "resume.pdf"
+      );
+      if (resumeFile) {
+        formData.append("resume", resumeFile);
+      }
+    }
+
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+    try {
+      // Update profile information
+      const response = await axios.patch(
+        "http://localhost:8000/profile/userprofile/",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+
+      console.log("Profile updated successfully:", response.data);
+
+      // Fetch existing data once
+      const [
+        existingExtracurriculars,
+        existingProjects,
+        existingExperiences,
+        existingSkills,
+      ] = await Promise.all([
+        axiosInstance.get("/extracurriculars/"),
+        axiosInstance.get("/projects/"),
+        axiosInstance.get("/experiences/"),
+        axiosInstance.get("/skills/"),
+      ]);
+
+      // Convert existing data to maps
+      const extracurricularMap = new Map(
+        existingExtracurriculars.data.map((e) => [e.id, e])
+      );
+      const projectMap = new Map(existingProjects.data.map((p) => [p.id, p]));
+      const experienceMap = new Map(
+        existingExperiences.data.map((e) => [e.id, e])
+      );
+      const skillMap = new Map(
+        existingSkills.data.map((s) => [s.skill_name, s])
+      );
+
+      if (classification === "Student") {
+        for (const extracurrData of extracurr) {
+          console.log("Extracurr Data:", extracurrData);
+
+          if (
+            extracurrData.extracurrName.trim() === "" &&
+            extracurrData.description.trim() === ""
+          ) {
+            // Skip this entry if blank entry
+            continue;
+          }
+
+          if (extracurrData.id === defaultExtracurr.id) {
+            // Skip the default entry during the update loop
+            continue;
+          }
+
+          const existingExtracurricular = extracurricularMap.get(
+            extracurrData.id
+          );
+
+          if (existingExtracurricular) {
+            // Update existing extracurricular
+            await updateExtracurricular(extracurrData.id, {
+              extracurricular: extracurrData.extracurrName,
+              description: extracurrData.description,
+            });
+          } else {
+            // Create new extracurricular
+            await createExtracurricular({
+              extracurricular: extracurrData.extracurrName,
+              description: extracurrData.description,
+            });
+          }
+        }
+
+        // Handle extracurricular default entry specifically
+        const defaultEntry = extracurr.find(
+          (e) => e.id === defaultExtracurr.id
+        );
+        if (defaultEntry) {
+          if (!extracurricularMap.has(defaultEntry.id)) {
+            await createExtracurricular({
+              extracurricular: defaultEntry.extracurrName,
+              description: defaultEntry.description,
+            });
+          } else {
+            await updateExtracurricular(defaultEntry.id, {
+              extracurricular: defaultEntry.extracurrName,
+              description: defaultEntry.description,
+            });
+          }
+        }
+      }
+      console.log("projectMap:", projectMap);
+      console.log("projects:", projects);
+
+      // Handle projects
+      for (const projectData of projects) {
+        if (
+          projectData.projectName.trim() === "" &&
+          projectData.description.trim() === ""
+        ) {
+          continue;
+        }
+
+        const existingProject = projectMap.get(projectData.id);
+        console.log("prjdata", projectData);
+        console.log("prjdata", projectData.id);
+
+        if (existingProject) {
+          // Update existing project
+          await updateProject(existingProject.id, {
+            project: projectData.projectName,
+            description: projectData.description,
+            skills: projectData.projectSkills,
+          });
+        } else {
+          // Create new project
+          await createProject({
+            project: projectData.projectName,
+            description: projectData.description,
+            skills: projectData.projectSkills,
+          });
+        }
+      }
+
+      // Handle project default entry specifically
+      const defaultProjectEntry = projects.find(
+        (p) => p.id === defaultProject.id
+      );
+
+      if (defaultProjectEntry) {
+        if (!projectMap.has(defaultProjectEntry.id)) {
+          await createProject({
+            project: defaultProjectEntry.projectName,
+            description: defaultProjectEntry.description,
+            skills: defaultProjectEntry.projectSkills,
+          });
+        } else {
+          await updateProject(defaultProjectEntry.id, {
+            project: defaultProjectEntry.projectName,
+            description: defaultProjectEntry.description,
+            skills: defaultProjectEntry.projectSkills,
+          });
+        }
+      }
+
+      // Handle experiences
+      for (const experienceData of experiences) {
+        const existingExperience = experienceMap.get(experienceData.id);
+
+        if (existingExperience) {
+          // Update existing experience
+          await updateExperience(existingExperience.id, {
+            job_position: experienceData.jobTitle,
+            company: experienceData.companyName,
+            job_type: experienceData.type,
+            location: experienceData.location,
+            start_date: experienceData.startDate,
+            end_date: experienceData.current
+              ? null
+              : experienceData.endDate || "",
+            currently_working: experienceData.current,
+            description: experienceData.description,
+            tagline: "",
+          });
+        } else {
+          // Create new experience
+          await createExperience({
+            job_position: experienceData.jobTitle,
+            company: experienceData.companyName,
+            job_type: experienceData.type,
+            location: experienceData.location,
+            start_date: experienceData.startDate,
+            end_date: experienceData.current
+              ? null
+              : experienceData.endDate || "",
+            currently_working: experienceData.current,
+            description: experienceData.description,
+            tagline: "",
+          });
+        }
+      }
+
+      // Handle experience default entry specifically
+      const defaultExperienceEntry = experiences.find(
+        (e) => e.id === defaultExperience.id
+      );
+
+      if (defaultExperienceEntry) {
+        if (!experienceMap.has(defaultExperienceEntry.id)) {
+          // Create default entry if it doesn't exist in the map
+          await createExperience({
+            job_position: defaultExperienceEntry.jobTitle,
+            company: defaultExperienceEntry.companyName,
+            job_type: defaultExperienceEntry.type,
+            location: defaultExperienceEntry.location,
+            start_date: defaultExperienceEntry.startDate,
+            end_date: defaultExperienceEntry.current
+              ? null
+              : defaultExperienceEntry.endDate || "",
+            currently_working: defaultExperienceEntry.current,
+            description: defaultExperienceEntry.description,
+            tagline: "",
+          });
+        } else {
+          // Update the default entry
+          await updateExperience(defaultExperienceEntry.id, {
+            job_position: defaultExperienceEntry.jobTitle,
+            company: defaultExperienceEntry.companyName,
+            job_type: defaultExperienceEntry.type,
+            location: defaultExperienceEntry.location,
+            start_date: defaultExperienceEntry.startDate,
+            end_date: defaultExperienceEntry.current
+              ? null
+              : defaultExperienceEntry.endDate || "",
+            currently_working: defaultExperienceEntry.current,
+            description: defaultExperienceEntry.description,
+            tagline: "",
+          });
+        }
+      }
+
+      if (skills && skills.length > 0) {
+        for (const skill of skills) {
+          if (skill.skillName.trim() !== "") {
+            const existingSkill = skillMap.get(skill.skillName);
+            if (!existingSkill) {
+              await createSkill({ skill_name: skill.skillName });
+            }
+          }
+        }
+      }
+
+      console.log("SUCCESS :)");
+      navigate("/view-profile");
     } catch (error) {
-      console.error("Error sending profile edit request:", error);
+      console.error("Error updating profile:", error);
+      if (error.response) {
+        console.error("Error response data:", error.response.data);
+        console.error("Error response status:", error.response.status);
+        console.error("Error response headers:", error.response.headers);
+      } else if (error.request) {
+        console.error("Error request data:", error.request);
+      } else {
+        console.error("Error message:", error.message);
+      }
     }
   };
 
@@ -272,7 +741,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
                 <img
                   src={
                     profile.profilePicture
-                      ? URL.createObjectURL(profile.profilePicture)
+                      ? profile.profilePicture
                       : defaultProfilePicture
                   }
                   alt="Profile"
@@ -319,20 +788,23 @@ const ProfileEdit = ({ classification = "Alum" }) => {
                   </>
                 ) : (
                   <>
-                    <div className="url-box">
-                      <input
-                        type="url"
-                        id="url"
-                        name="url"
-                        value={profile.url}
-                        onChange={handleUrlChange}
-                        onBlur={handleBlur}
-                        placeholder="Company URL"
-                        required
-                      />
-                      {urlError && (
-                        <div className="url-message">{urlError}</div>
-                      )}
+                    <div className="url-req-container">
+                      <div className="required-fields-company">*</div>
+                      <div className="url-box">
+                        <input
+                          type="url"
+                          id="url"
+                          name="url"
+                          value={profile.url}
+                          onChange={handleUrlChange}
+                          onBlur={handleBlur}
+                          placeholder="Company URL"
+                          required
+                        />
+                        {urlError && (
+                          <div className="url-message">{urlError}</div>
+                        )}
+                      </div>
                     </div>
                   </>
                 )}
@@ -349,9 +821,6 @@ const ProfileEdit = ({ classification = "Alum" }) => {
                   onChange={handleProfileChange}
                   required
                 />
-                {/* {formErrors.firstNameError && (
-                  <span className="error">{formErrors.firstNameError}</span>
-                )} */}
 
                 <label htmlFor="middleName">Middle Name </label>
                 <input
@@ -379,6 +848,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
               About Me <div className="required-fields">*</div>
             </label>
             <textarea
+              className="about-me-scroll"
               id="aboutMe"
               placeholder="You can write about your years of experience, industry, or skills. People also talk about their achievements or previous job experiences."
               name="aboutMe"
@@ -414,9 +884,9 @@ const ProfileEdit = ({ classification = "Alum" }) => {
               required
             >
               <option value="">Choose one</option>
-              <option value="option1">Spring</option>
-              <option value="option2">Summer</option>
-              <option value="option3">Fall</option>
+              <option value="Spring">Spring</option>
+              <option value="Summer">Summer</option>
+              <option value="Fall">Fall</option>
             </select>
 
             {classification === "Student" && (
@@ -547,7 +1017,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
           <>
             <h3>Experiences</h3>
             {experiences.map((experience, index) => (
-              <div key={index} className="experience-section">
+              <div key={experience.id} className="experience-section">
                 <label htmlFor={`jobTitle-${index}`}>
                   Job Title <div className="required-fields">*</div>{" "}
                 </label>
@@ -608,12 +1078,14 @@ const ProfileEdit = ({ classification = "Alum" }) => {
                 )}
 
                 <label htmlFor={`location-${index}`}>Location</label>
-                <input
-                  type="text"
-                  id={`location-${index}`}
-                  name="location"
-                  value={experience.location}
-                  onChange={(e) => handleExperienceChange(index, e)}
+                <Search
+                  value={{
+                    value: experience.location,
+                    label: experience.location,
+                  }}
+                  onSearchChange={(searchData) =>
+                    handleOnSearchChange(index, searchData)
+                  }
                 />
 
                 <label htmlFor={`startDate-${index}`}>
@@ -636,6 +1108,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
                   name="endDate"
                   value={experience.endDate}
                   onChange={(e) => handleExperienceChange(index, e)}
+                  max={new Date().toISOString().split("T")[0]}
                   disabled={experience.current} // Disable end date if current is checked
                 />
 
@@ -644,26 +1117,33 @@ const ProfileEdit = ({ classification = "Alum" }) => {
                     type="checkbox"
                     name="current"
                     checked={experience.current}
-                    onChange={() =>
+                    onChange={(e) =>
                       handleExperienceChange(index, {
-                        target: { name: "current", value: !experience.current },
+                        target: { name: "current", value: e.target.checked },
                       })
                     }
                   />
 
                   <label className="checkbox-label">
-                    {" "}
                     I'm currently in this position
                   </label>
                 </div>
-
                 <label htmlFor={`description-${index}`}>Description </label>
                 <textarea
+                  className="experience-scroll"
                   id={`description-${index}`}
                   name="description"
                   value={experience.description}
                   onChange={(e) => handleExperienceChange(index, e)}
                 />
+                {index > 0 && (
+                  <button
+                    className="remove-item"
+                    onClick={() => handleRemoveExperience(experience.id)}
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
             ))}
             <button
@@ -678,7 +1158,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
               <>
                 <h3>Projects</h3>
                 {projects.map((project, index) => (
-                  <div key={index} className="project-section">
+                  <div key={project.id} className="project-section">
                     <label htmlFor={`projectName-${index}`}>
                       Project Name <div className="required-fields">*</div>
                     </label>
@@ -695,6 +1175,7 @@ const ProfileEdit = ({ classification = "Alum" }) => {
                       Description <div className="required-fields">*</div>
                     </label>
                     <textarea
+                      className="project-scroll"
                       id={`description-${index}`}
                       name="description"
                       value={project.description}
@@ -729,6 +1210,15 @@ const ProfileEdit = ({ classification = "Alum" }) => {
                         </li>
                       ))}
                     </ul>
+                    {index > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveProject(project.id)}
+                        className="remove-item"
+                      >
+                        Remove
+                      </button>
+                    )}
                   </div>
                 ))}
                 <button
@@ -748,28 +1238,44 @@ const ProfileEdit = ({ classification = "Alum" }) => {
             {classification === "Student" && (
               <>
                 <h3>Extracurricular Activities</h3>
-                {extracurr.map((extracurrs, index) => (
-                  <div key={index} className="extracurr-section">
-                    <label htmlFor={`extracurrName-${index}`}>
-                      Extracurricular Name{" "}
-                    </label>
-                    <input
-                      type="text"
-                      id={`extracurrName-${index}`}
-                      name="extracurrName"
-                      value={extracurrs.extracurrName}
-                      onChange={(e) => handleExtracurrChange(index, e)}
-                    />
+                {extracurr.length > 0 && (
+                  <>
+                    {extracurr.map((extracurrs, index) => (
+                      <div key={extracurrs.id} className="extracurr-section">
+                        <label htmlFor={`extracurrName-${index}`}>
+                          Extracurricular Name
+                        </label>
+                        <input
+                          type="text"
+                          id={`extracurrName-${index}`}
+                          name="extracurrName"
+                          value={extracurrs.extracurrName}
+                          onChange={(e) => handleExtracurrChange(index, e)}
+                        />
 
-                    <label htmlFor={`description-${index}`}>Description </label>
-                    <textarea
-                      id={`description-${index}`}
-                      name="description"
-                      value={extracurrs.description}
-                      onChange={(e) => handleExtracurrChange(index, e)}
-                    />
-                  </div>
-                ))}
+                        <label htmlFor={`description-${index}`}>
+                          Description{" "}
+                        </label>
+                        <textarea
+                          className="extra-descript-scroll"
+                          id={`description-${index}`}
+                          name="description"
+                          value={extracurrs.description}
+                          onChange={(e) => handleExtracurrChange(index, e)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleRemoveExtracurricular(extracurrs.id)
+                          }
+                          className="remove-item"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </>
+                )}
                 <button
                   type="button"
                   onClick={addExtracurr}
@@ -789,18 +1295,20 @@ const ProfileEdit = ({ classification = "Alum" }) => {
                 onKeyDown={handleKeyDown}
               />
               <ul className="skills-list">
-                {skills.map((skill, index) => (
-                  <li key={index} className="skills-item">
-                    {skill}
-                    <button
-                      type="button"
-                      className="remove-skill-button"
-                      onClick={() => removeSkill(index)}
-                    >
-                      &times;
-                    </button>
-                  </li>
-                ))}
+                {skills
+                  .filter((skill) => skill.skillName.trim() !== "")
+                  .map((skill) => (
+                    <li key={skill.id} className="skills-item">
+                      {skill.skillName}
+                      <button
+                        type="button"
+                        className="remove-skill-button"
+                        onClick={() => handleRemoveSkill(skill.id)}
+                      >
+                        &times;
+                      </button>
+                    </li>
+                  ))}
               </ul>
             </div>
 
@@ -819,8 +1327,8 @@ const ProfileEdit = ({ classification = "Alum" }) => {
               >
                 <option value="">Choose One</option>
                 <option value="Open to Hire">Open to Hire</option>
-                <option value="Open to Internship">Open to Internship</option>
-                <option value="Open to Job">Open to Job</option>
+                <option value="Seeking Internship">Seeking Internship</option>
+                <option value="Seeking Job">Seeking Job</option>
                 <option value="Open to Connect">Open to Connect</option>
               </select>
             </div>
@@ -855,13 +1363,11 @@ const ProfileEdit = ({ classification = "Alum" }) => {
         {currentStep == 3 && (
           <>
             <div className="Edit-Profile-Button">
-              <button onSubmit={handleSubmit} className="edit-profile-submit">
-                Save{" "}
+              <button onClick={handleSubmit} className="edit-profile-submit">
+                Save
               </button>
-              {/* <Link to="/view-profile" className="edit-profile-button">
-              </Link> */}
             </div>
-          </> // save will only redirect to the view profile page if backend recieved information correctly
+          </>
         )}
       </form>
     </div>
@@ -869,3 +1375,8 @@ const ProfileEdit = ({ classification = "Alum" }) => {
 };
 
 export default ProfileEdit;
+
+/* For ALUM: 
+- skills don't populate in edit profile but is updated and saved in database and profile view page
+- project patch requests are not working
+*/

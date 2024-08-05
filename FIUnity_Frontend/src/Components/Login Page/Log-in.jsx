@@ -1,6 +1,7 @@
 import axios from "./axiosInstance";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Log-in.css";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +11,7 @@ export default function RegistrationLogIn() {
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  // const history = useHistory(); //NEW CODE
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -30,7 +32,7 @@ export default function RegistrationLogIn() {
     };
 
     axios
-      .post("http://localhost:8000/authentication/login/", loginInfo, {
+      .post("/authentication/login/", loginInfo, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -40,18 +42,36 @@ export default function RegistrationLogIn() {
         if (response.status === 200) {
           console.log("Login successful");
           console.log("this is the response:", response);
-          // Store CSRF token and user_id in local storage
-          localStorage.setItem("csrfToken", response.data.token);
-          localStorage.setItem("user_id", response.data.user_id);
-          localStorage.setItem("first_name", response.data.first_name);
-          localStorage.setItem("last_name", response.data.last_name);
-          navigate("/newsfeed");            
-          
-          // Check if data is stored
-          const storedData = localStorage.getItem("csrfToken");
 
-          // Log the stored data
-          console.log("Stored Data:", storedData);
+          // Store CSRF token and user_id in local storage
+          // localStorage.setItem("csrfToken", response.data.csrfToken);
+
+          const { email, full_name, access_token, refresh_token } =
+            response.data;
+          const [first_name, last_name] = full_name.split(" ");
+
+          localStorage.setItem("user_id", email);
+          localStorage.setItem("first_name", first_name || "");
+          localStorage.setItem("last_name", last_name || "");
+          localStorage.setItem("access_token", access_token);
+          localStorage.setItem("refresh_token", refresh_token);
+
+          // history.push("/newsfeed");
+          // window.location.href = "http://localhost:5173/newsfeed";
+          navigate("/newsfeed");
+
+          // Check if data is stored
+          console.log("Stored user_id:", localStorage.getItem("user_id"));
+          console.log("Stored first_name:", localStorage.getItem("first_name"));
+          console.log("Stored last_name:", localStorage.getItem("last_name"));
+          console.log(
+            "Stored access_token:",
+            localStorage.getItem("access_token")
+          );
+          console.log(
+            "Stored refresh_token:",
+            localStorage.getItem("refresh_token")
+          );
         } else {
           console.error("Login failed");
           setErrorMessage("Login failed. Please check your credentials.");
