@@ -64,10 +64,10 @@ const ProfileEdit = ({ classification }) => {
     description: "",
   };
 
-  const [extracurr, setExtracurr] = useState([defaultExtracurr]);
+  const [extracurr, setExtracurr] = useState([]);
   const [projects, setProjects] = useState([defaultProject]);
   const [experiences, setExperiences] = useState([defaultExperience]);
-  const [skills, setSkills] = useState([{ skillName: "" }]);
+  const [skills, setSkills] = useState([]);
 
   const [selectedMajor, setSelectedMajor] = useState(profile.major);
   const [skillsError, setSkillsError] = useState(false);
@@ -89,7 +89,7 @@ const ProfileEdit = ({ classification }) => {
         const projData = project.data;
         const skillsData = skills.data;
         const extracurrData = extracurr.data;
-
+        console.log('skill', skillsData)
         const fetchBlob = async (url) => {
           const profile = await fetch(url);
           const blob = await profile.blob();
@@ -157,6 +157,7 @@ const ProfileEdit = ({ classification }) => {
             skillName: skill.skill_name || "",
           }))
         );
+
       } catch (error) {
         console.error("Failed to fetch profile data:", error);
       }
@@ -223,12 +224,6 @@ const ProfileEdit = ({ classification }) => {
     setExtracurr(updatedExtracurr);
   };
 
-  const handleSkillChange = (e) => {
-    const { value } = e.target;
-    setSkills([...skills, value]);
-    e.target.value = "";
-  };
-
   const handleProjectSkillChange = (e, index) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -251,7 +246,7 @@ const ProfileEdit = ({ classification }) => {
       e.preventDefault();
       const trimmedValue = e.target.value.trim();
       if (trimmedValue !== "") {
-        const newSkill = { skillName: trimmedValue };
+        const newSkill = { id: uuidv4(), skillName: trimmedValue };
         setSkills((prevSkills) => [...prevSkills, newSkill]);
         e.target.value = "";
       }
@@ -577,9 +572,17 @@ const ProfileEdit = ({ classification }) => {
 
       // Handle projects
       for (const projectData of projects) {
+        if (
+          projectData.projectName.trim() === "" &&
+          projectData.description.trim() === ""
+        ) {
+          continue;
+        }
+
         const existingProject = projectMap.get(projectData.id);
         console.log("prjdata", projectData);
         console.log("prjdata", projectData.id);
+
         if (existingProject) {
           // Update existing project
           await updateProject(existingProject.id, {
@@ -601,7 +604,7 @@ const ProfileEdit = ({ classification }) => {
       const defaultProjectEntry = projects.find(
         (p) => p.id === defaultProject.id
       );
-      
+
       if (defaultProjectEntry) {
         if (!projectMap.has(defaultProjectEntry.id)) {
           await createProject({
@@ -1235,36 +1238,44 @@ const ProfileEdit = ({ classification }) => {
             {classification === "Student" && (
               <>
                 <h3>Extracurricular Activities</h3>
-                {extracurr.map((extracurrs, index) => (
-                  <div key={extracurrs.id} className="extracurr-section">
-                    <label htmlFor={`extracurrName-${index}`}>
-                      Extracurricular Name
-                    </label>
-                    <input
-                      type="text"
-                      id={`extracurrName-${index}`}
-                      name="extracurrName"
-                      value={extracurrs.extracurrName}
-                      onChange={(e) => handleExtracurrChange(index, e)}
-                    />
+                {extracurr.length > 0 && (
+                  <>
+                    {extracurr.map((extracurrs, index) => (
+                      <div key={extracurrs.id} className="extracurr-section">
+                        <label htmlFor={`extracurrName-${index}`}>
+                          Extracurricular Name
+                        </label>
+                        <input
+                          type="text"
+                          id={`extracurrName-${index}`}
+                          name="extracurrName"
+                          value={extracurrs.extracurrName}
+                          onChange={(e) => handleExtracurrChange(index, e)}
+                        />
 
-                    <label htmlFor={`description-${index}`}>Description </label>
-                    <textarea
-                      className="extra-descript-scroll"
-                      id={`description-${index}`}
-                      name="description"
-                      value={extracurrs.description}
-                      onChange={(e) => handleExtracurrChange(index, e)}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveExtracurricular(extracurrs.id)}
-                      className="remove-item"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
+                        <label htmlFor={`description-${index}`}>
+                          Description{" "}
+                        </label>
+                        <textarea
+                          className="extra-descript-scroll"
+                          id={`description-${index}`}
+                          name="description"
+                          value={extracurrs.description}
+                          onChange={(e) => handleExtracurrChange(index, e)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleRemoveExtracurricular(extracurrs.id)
+                          }
+                          className="remove-item"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </>
+                )}
                 <button
                   type="button"
                   onClick={addExtracurr}
@@ -1364,3 +1375,8 @@ const ProfileEdit = ({ classification }) => {
 };
 
 export default ProfileEdit;
+
+/* For ALUM: 
+- skills don't populate in edit profile but is updated and saved in database and profile view page
+- project patch requests are not working
+*/

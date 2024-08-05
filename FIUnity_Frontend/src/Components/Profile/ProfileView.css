@@ -80,8 +80,8 @@
 }
 
 .about-us-container {
-  max-height: 145px;
-  min-height: 145px;
+  max-height: 163px;
+  min-height: 163px;
 }
 
 .about-us-alum {
@@ -322,6 +322,11 @@
   max-height: 345px;
 }
 
+.project-tab-skill {
+  min-height: 180px;
+  max-height: 180px;
+}
+
 .project-tab-noskill,
 .experience-tab-noskill {
   padding-bottom: 15px;
@@ -337,6 +342,11 @@
   overflow-y: auto;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+.project-tab-noskill {
+  max-height: 305px;
+  min-height: 405px;
 }
 
 .experience-tab-noskill {

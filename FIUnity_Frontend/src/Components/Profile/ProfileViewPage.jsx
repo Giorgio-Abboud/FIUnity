@@ -449,7 +449,7 @@ export default function ProfileViewPage({
                               )}
                               {experience.endDate.length > 0 && (
                                 <p className="profile-font experience-text profile-gold experience-time-type">
-                                  {experience.startDate} {experience.endDate}
+                                  {experience.startDate} -- {experience.endDate}
                                 </p>
                               )}
                               <p className="profile-font experience-text profile-gold experience-time-type">
