@@ -27,7 +27,7 @@ const Homepage = () => {
             },
           }
         );
-        setProfileData(profileResponse.data.profile.picture);
+        setProfileData(profileResponse.data.profile.picture || defaultProfilePicture);
 
         // Fetch posts data
         const postsResponse = await axios.get("http://127.0.0.1:8000/feed/posts/", {
@@ -78,6 +78,8 @@ const Homepage = () => {
       first_name: firstName,
       last_name: lastName,
       text: newComment.text,
+      profilePicture: profileData || defaultProfilePicture,
+      
     };
     setAllPosts((prevPosts) =>
       prevPosts.map((post) =>
@@ -146,6 +148,7 @@ const Homepage = () => {
               no_of_comment={no_of_comment}
               comments={comments}
               onCommentSubmit={handleCommentSubmit}
+              profilePicture={profileData || defaultProfilePicture}
             />
           )
         )}

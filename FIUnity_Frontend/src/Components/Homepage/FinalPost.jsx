@@ -20,6 +20,7 @@ export default function FinalPost({
   comments,
   onCommentSubmit,
   no_of_comment,
+  profilePicture,
 }) {
   const [userInput, setUserInput] = useState("");
   const [postLikesCount, setPostLikesCount] = useState(0);
@@ -30,8 +31,9 @@ export default function FinalPost({
   );
   const [isLiked, setIsLiked] = useState(false);
   const [commentLikes, setCommentLikes] = useState({});
-  const [profilePicture, setProfilePicture] = useState(defaultProfilePicture);
   const [commentProfiles, setCommentProfiles] = useState({});
+  const [profilePic, setProfilePic] = useState(defaultProfilePicture);
+
 
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function FinalPost({
         setPostLikesCount(response.data.no_of_like);
         setIsLiked(response.data.is_liked);
         const profilePic = response.data.profilePicture || defaultProfilePicture;
-        setProfilePicture(profilePic);
+        setProfilePic(profilePic);
         console.log("Profile Picture URL:", profilePic);
       } catch (error) {
         console.error("Failed to fetch post details:", error);
@@ -74,13 +76,15 @@ export default function FinalPost({
       setCommentLikes(initialCommentLikes);
 
       // Add profile picture to comments
-      const commentProfiles = {};
+      const newCommentProfiles = {};
       comments.forEach((comment) => {
-        commentProfiles[comment.id] = comment.profilePicture || defaultProfilePicture;
+        console.log("Comment profile pic URL", comment.profilePicture);
+        newCommentProfiles[comment.id] = comment.profilePicture || defaultProfilePicture;
       });
-      setCommentProfiles(commentProfiles);
+      setCommentProfiles(newCommentProfiles);
     }
   }, [comments]);
+  
 
   function adjustTimestampToTimeZone(timestamp) {
     const date = new Date(timestamp);
@@ -247,7 +251,11 @@ export default function FinalPost({
         <div className="time-container">
           <div className="profile-pic-flex">
             <div className="profile-pic">
-              <img src={profilePicture} alt="Profile" onError={() => setProfilePicture(defaultProfilePicture)} />
+              <img
+                src={profilePicture}
+                alt="Profile"
+                onError={() => setProfilePic(defaultProfilePicture)}
+              />
             </div>
             <div>
               <div className="name">
@@ -313,7 +321,10 @@ export default function FinalPost({
                           <img
                             src={commentProfiles[comment.id]}
                             alt="Profile"
-                            onError={(e) => (e.target.src = defaultProfilePicture)}
+                            onError={() => setCommentProfiles(prev => ({
+                              ...prev,
+                              [comment.id]: defaultProfilePicture
+                            }))}
                           />
                         </div>
                         <div>
