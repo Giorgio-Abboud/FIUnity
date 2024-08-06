@@ -6,6 +6,8 @@ import { IoShareOutline } from "react-icons/io5";
 import { MdOutlineReportGmailerrorred, MdDelete } from "react-icons/md";
 import { BiRepost } from "react-icons/bi";
 import axios from "axios";
+import defaultProfilePicture from "../../assets/Default_pfp.png"; // Ensure this path is correct
+
 
 export default function FinalPost({
   postId,
@@ -28,6 +30,9 @@ export default function FinalPost({
   );
   const [isLiked, setIsLiked] = useState(false);
   const [commentLikes, setCommentLikes] = useState({});
+  const [profilePicture, setProfilePicture] = useState(defaultProfilePicture);
+  const [commentProfiles, setCommentProfiles] = useState({});
+
 
   useEffect(() => {
     const fetchPostDetails = async () => {
@@ -37,6 +42,9 @@ export default function FinalPost({
         );
         setPostLikesCount(response.data.no_of_like);
         setIsLiked(response.data.is_liked);
+        const profilePic = response.data.profilePicture || defaultProfilePicture;
+        setProfilePicture(profilePic);
+        console.log("Profile Picture URL:", profilePic);
       } catch (error) {
         console.error("Failed to fetch post details:", error);
       }
@@ -54,9 +62,7 @@ export default function FinalPost({
     if (comments && comments.length > 0) {
       const adjustedCommentTimestamps = {};
       comments.forEach((comment, index) => {
-        const adjustedCommentTimestamp = adjustTimestampToTimeZone(
-          comment.date
-        );
+        const adjustedCommentTimestamp = adjustTimestampToTimeZone(comment.date);
         adjustedCommentTimestamps[index] = adjustedCommentTimestamp;
       });
       setAdjustedCommentTimestamps(adjustedCommentTimestamps);
@@ -66,6 +72,13 @@ export default function FinalPost({
         initialCommentLikes[comment.id] = comment.likes_count;
       });
       setCommentLikes(initialCommentLikes);
+
+      // Add profile picture to comments
+      const commentProfiles = {};
+      comments.forEach((comment) => {
+        commentProfiles[comment.id] = comment.profilePicture || defaultProfilePicture;
+      });
+      setCommentProfiles(commentProfiles);
     }
   }, [comments]);
 
@@ -233,7 +246,9 @@ export default function FinalPost({
         </button>
         <div className="time-container">
           <div className="profile-pic-flex">
-            <div className="profile-pic"></div>
+            <div className="profile-pic">
+              <img src={profilePicture} alt="Profile" onError={() => setProfilePicture(defaultProfilePicture)} />
+            </div>
             <div>
               <div className="name">
                 {firstName} {lastName}
@@ -294,7 +309,13 @@ export default function FinalPost({
                   .map((comment, index) => (
                     <div key={index} className="comment-post-box font">
                       <div className="time-container">
-                        <div className="comment-profile-pic"></div>
+                        <div className="comment-profile-pic">
+                          <img
+                            src={commentProfiles[comment.id]}
+                            alt="Profile"
+                            onError={(e) => (e.target.src = defaultProfilePicture)}
+                          />
+                        </div>
                         <div>
                           <p className="comment-name">
                             {comment.commenter_name}
