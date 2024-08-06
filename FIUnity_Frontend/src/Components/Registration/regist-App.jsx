@@ -57,8 +57,10 @@ export default function Registration() {
       email: email,
       password: password,
       grad_term: gradTerm,
-      grad_year: gradYear,
+      graduation_year: gradYear,
     };
+
+    console.log("Register Info:", registerInfo);
 
     try {
       const response = await axios.post(
