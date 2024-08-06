@@ -74,11 +74,10 @@ class Profile(models.Model):
     career_interest = models.CharField(max_length=50, default='')
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     status = models.CharField(max_length=50, default='')
-    network = models.CharField(choices=NETWORK_CHOICES, default='')
-    about = models.TextField(blank = True, null = True, default=None)
+    network = models.CharField(choices=NETWORK_CHOICES, default='Open to Connect')
+    about = models.TextField(blank = True, null = True, default='')
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     company_url = models.URLField(blank=True, null=True, default='')
-    about = models.TextField(max_length=2000, default='')
 
     def full_name(self):
         return f"{self.user.first_name} {self.user.last_name}"
