@@ -2,6 +2,7 @@ from rest_framework import serializers, status
 from .models import *
 from Authentication.utils import CustomValidation
 from django.db.utils import IntegrityError
+from django.urls import reverse
 
 # This is the helper serializer that keeps the models organized
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -283,6 +284,7 @@ class ShortExtracurricularSerializer(serializers.ModelSerializer):
 class ProfileSearchSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
     check_graduation_status = serializers.SerializerMethodField()
+    profile_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
@@ -292,11 +294,12 @@ class ProfileSearchSerializer(serializers.ModelSerializer):
         return f"{obj.user.first_name} {obj.user.last_name}"
     
     def get_check_graduation_status(self, obj):
-        # Retrieve user from context if needed
         user = self.context.get('user')
-        # Perform any additional logic if needed
         obj.check_graduation_status()
         return obj.status
+    
+    def get_profile_url(self, obj):
+        return reverse('profile-detail', args=[obj.pk])
 
 # Serializer used to create the profile
 class ProfileSerializer(serializers.ModelSerializer):
