@@ -72,7 +72,7 @@ class Profile(models.Model):
     major = models.CharField(max_length=50, default='')
     minor = models.CharField(max_length=50, default='')
     career_interest = models.CharField(max_length=50, default='')
-    picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+    picture = models.ImageField(upload_to='profile_pictures/', default='profile_pictures/black_background.jpg')
     status = models.CharField(max_length=50, default='')
     network = models.CharField(choices=NETWORK_CHOICES, default='Open to Connect')
     about = models.TextField(blank = True, null = True, default='')

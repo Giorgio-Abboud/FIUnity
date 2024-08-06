@@ -3,6 +3,7 @@ import datetime
 from django.db import models
 from django.conf import settings
 from Authentication.models import AppUser
+import datetime
 
 # Make the model for the post itself
 class Post(models.Model):
