@@ -75,9 +75,9 @@ class Profile(models.Model):
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     status = models.CharField(max_length=50, default='')
     network = models.CharField(choices=NETWORK_CHOICES, default='Open to Connect')
-    about = models.TextField(blank = True, null = True, default=None)
+    about = models.TextField(blank = True, null = True, default='')
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
-    about = models.TextField(max_length=200, default='')
+    company_url = models.URLField(blank=True, null=True, default='')
 
     def full_name(self):
         return f"{self.user.first_name} {self.user.last_name}"
@@ -131,7 +131,7 @@ class Experience(models.Model):
         ]
 
     def save(self, *args, **kwargs):
-        self.tagline = f"{self.job_position} at {self.company} "
+        self.tagline = f"{self.job_position} at {self.company}"
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -149,7 +149,7 @@ class Skill(models.Model):
 class Project(models.Model):
     user = models.ForeignKey(AppUser, related_name="projects", on_delete=models.CASCADE)
     project = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True, related_name = "project")
-    description = models.TextField(max_length=200, blank=True)
+    description = models.TextField(max_length=1000, blank=True)
     skills = models.ManyToManyField(Skill, related_name="project_skill", blank = True)
     tagline = models.CharField(max_length=200, blank = True, null = True)
 
@@ -164,7 +164,7 @@ class Project(models.Model):
 class Extracurricular(models.Model):
     user = models.ForeignKey(AppUser, related_name="extracurriculars", on_delete=models.CASCADE)
     extracurricular = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True, related_name = "extra")
-    description = models.TextField(max_length=200, blank=True)
+    description = models.TextField(max_length=1000, blank=True)
     tagline = models.CharField(max_length=200, blank = True, null = True)
 
     def save(self, *args, **kwargs):

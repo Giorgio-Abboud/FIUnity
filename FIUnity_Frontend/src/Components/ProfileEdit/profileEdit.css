@@ -9,9 +9,19 @@
   padding: 20px;
 }
 
-.required-fields {
+.required-fields, .required-fields-company {
   display: inline;
   color: red;
+}
+
+.required-fields-company {
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+.url-req-container {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .display-personal-info {
@@ -58,7 +68,6 @@
 
 .resume {
     margin-top: 20px;
- 
   }
 
   .upload-success-message {
@@ -162,7 +171,7 @@
   border: 1px solid #ddd;
 }
 
-.profile-editing-button {
+.profile-editing-button, .remove-item {
   display: inline-block;
   background-color: #081e3f;
   color: #fff;
@@ -171,6 +180,11 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.remove-item {
+  background-color: rgb(168, 29, 29);
   transition: background-color 0.3s;
 }
 
@@ -203,6 +217,10 @@
 
 .profile-editing-button:hover {
   background-color: #0f346b;
+}
+
+.remove-item:hover {
+  background-color: #bd2a2a;
 }
 
 .edit-profile-submit {
@@ -241,7 +259,9 @@
 
 .url-box {
   display: inline-block;
-  padding: 10px 23px;
+  padding-top: 10px;
+  padding-right: 30px;
+  padding-left: 10px;
   border: none;
   border-radius: 5px;
   max-width: 150px;
@@ -266,33 +286,65 @@
 
 .skills-list {
   padding: 0;
+  padding-bottom: 15px;
+  list-style-type: none;
 }
 
 .skills-item {
   background-color: #081e3f;
   color: #fff;
-  padding-right: 30px;
-  padding-left: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  border: none;
-  border-radius: 3px;
   font-size: 13px;
-  display: inline-block;
   max-width: 150px;
   margin-right: 12px;
-  margin-top: 12px;
+  align-items: center;
+  justify-content: space-between;
+  display: inline-block;
+  margin-bottom: 10px;
+  border-radius: 3px;
   position: relative;
-  word-wrap: break-word; 
 }
 
-.remove-skill-button{
+.remove-skill-button {
   border: none;
-  top: 0;
-  right: 0;
+  padding-left: 10px;
   color: white;
   background: none;
-  position:absolute;
   cursor: pointer;
+  margin-left: auto;
+}
 
+.search-container {
+  margin-bottom: 25px; 
+}
+
+.search-input {
+  font-size: 13px;
+}
+
+.async-paginate__input::placeholder {
+  color: #999; 
+}
+
+.about-me-scroll, .extra-descript-scroll, .experience-scroll, .project-scroll {
+  min-height: 55px;
+  max-height: 200px;
+  overflow-y: auto;
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
+.about-me::-webkit-scrollbar {
+  display: none;
+}
+
+.extra-descript-scroll::-webkit-scrollbar { 
+  display: none;
+}
+
+.experience-scroll::-webkit-scrollbar { 
+  display: none;
+}
+
+.project-scroll::-webkit-scrollbar { 
+  display: none;
 }

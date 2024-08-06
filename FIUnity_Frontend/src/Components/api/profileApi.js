@@ -28,9 +28,8 @@ axiosInstance.interceptors.request.use(
 // Create extracurricular
 export const createExtracurricular = async (data) => {
     try {
-      console.log('extracur data', data)
       const response = await axiosInstance.post('/extracurriculars/', data);      
-      console.log('extracurr after request', response)
+      console.log('extracurr created after request', response)
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -50,6 +49,7 @@ export const createExtracurricular = async (data) => {
 export const updateExtracurricular = async (id, data) => {
   try {
     const response = await axiosInstance.patch(`/extracurriculars/${id}/`, data);
+    console.log('Updated extracurr successfully')
     return response.data;
   } catch (error) {
     console.error('Error updating extracurricular:', error);
@@ -61,6 +61,7 @@ export const updateExtracurricular = async (id, data) => {
 export const deleteExtracurricular = async (id) => {
   try {
     const response = await axiosInstance.delete(`/extracurriculars/${id}/`);
+    console.log('extracur was deleted')
     return response.data;
   } catch (error) {
     console.error('Error deleting extracurricular:', error);
@@ -75,7 +76,8 @@ export const createProject = async (data) => {
     console.log('project coming in', data)
 
     const response = await axiosInstance.post('/projects/', data);
-    
+    console.log('project data being created', data)
+
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -94,9 +96,9 @@ export const createProject = async (data) => {
 // Update project
 export const updateProject = async (id, data) => {
   try {
-    console.log('update project data', data)
+    console.log('data and id', data, id)
     const response = await axiosInstance.patch(`/projects/${id}/`, data);
-    console.log('response', response)
+    console.log('updated project successfully')
     return response.data;
   } catch (error) {
     console.error('Error updating project:', error);
@@ -108,6 +110,7 @@ export const updateProject = async (id, data) => {
 export const deleteProject = async (id) => {
   try {
     const response = await axiosInstance.delete(`/projects/${id}/`);
+    console.log('extracur data deleted')
     return response.data;
   } catch (error) {
     console.error('Error deleting project:', error);
@@ -118,9 +121,8 @@ export const deleteProject = async (id) => {
 // Create an experience
 export const createExperience = async (data) => {
   try {
-    console.log('experience data before axios', data)
-
     const response = await axiosInstance.post('/experiences/', data);
+    console.log('experience data created', data)
     return response.data;
   } catch (error) {
     console.error('Error creating experience:', error);
@@ -132,6 +134,7 @@ export const createExperience = async (data) => {
 export const updateExperience = async (id, data) => {
   try {
     const response = await axiosInstance.patch(`/experiences/${id}/`, data);
+    console.log('Updated experience successfully')
     return response.data;
   } catch (error) {
     console.error('Error updating experience:', error);
@@ -143,6 +146,7 @@ export const updateExperience = async (id, data) => {
 export const deleteExperience = async (id) => {
   try {
     const response = await axiosInstance.delete(`/experiences/${id}/`);
+    console.log('experience deleted');
     return response.data;
   } catch (error) {
     console.error('Error deleting project:', error);
@@ -153,10 +157,10 @@ export const deleteExperience = async (id) => {
 // Create a skill
 export const createSkill = async (data) => {
   try {
-    console.log('skill data before axios', data)
 
+    console.log('skills before', data)
     const response = await axiosInstance.post('/skills/', data);
-      console.log('skills after request', response)
+    console.log('skills created', response)
 
     return response.data;
   } catch (error) {
@@ -165,10 +169,23 @@ export const createSkill = async (data) => {
   }
 };
 
+// Update a skill
+// export const updateSkill = async (id, data) => {
+//   try {
+//     const response = await axiosInstance.patch(`/skills/${id}/`, data);
+//     console.log('Updated skill successfully')
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error updating skill:', error);
+//     throw error;
+//   }
+// };
+
 // Delete a skill
 export const deleteSkill = async (id) => {
   try {
     const response = await axiosInstance.delete(`/skills/${id}/`);
+    console.log('skill is deleted')
     return response.data;
   } catch (error) {
     console.error('Error deleting project:', error);

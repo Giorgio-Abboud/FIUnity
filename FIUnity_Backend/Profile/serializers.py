@@ -37,7 +37,7 @@ class ExperienceSerializer(serializers.ModelSerializer):
         except KeyError:
             pass
         return super().validate(attrs)
-    
+        
     def create(self, validated_data):
         experience = super().create(validated_data)
         main_profile = MainProfile.objects.update_or_create(profile = validated_data['user'].profile)
@@ -48,14 +48,14 @@ class ExperienceSerializer(serializers.ModelSerializer):
 
 # Serializer used to update a single instance of an experience model
 class SingleExperienceSerializer(serializers.ModelSerializer):
-    company_data = OrganizationSerializer(source = "company",read_only = True)
+    company_data = OrganizationSerializer(source = "company", read_only = True)
 
     class Meta:
         model = Experience
         exclude = ['tagline']
         extra_kwargs = {'company': {'required': True},
                         'currently_working': {'required': True},}
-        
+
     def update(self, instance, validated_data):
         try:
             return super().update(instance, validated_data)
@@ -129,7 +129,7 @@ class SingleProjectSerializer(serializers.ModelSerializer):
         model = Project
         exclude = ['tagline']
         extra_kwargs = {
-            'project': {'required': True},
+            'project': {'required': False},  # Allow project to be optional
             'description': {'required': True},
         }
 
@@ -151,45 +151,44 @@ class SingleProjectSerializer(serializers.ModelSerializer):
         skill_ids = []
         user = self.context['request'].user
 
-        for skill in skills_data:
-            if isinstance(skill, str):  # If it's a skill name
-                skill_instance, created = Skill.objects.get_or_create(skill_name=skill, user=user)
-                skill_ids.append(skill_instance.pk)
-            elif isinstance(skill, int):  # If it's an ID
-                skill_ids.append(skill)
-            else:
-                raise serializers.ValidationError({"skills": "Invalid skill format"})
-
-        data['skills'] = skill_ids
+        if skills_data:
+            for skill in skills_data:
+                if isinstance(skill, str):  # If it's a skill name
+                    skill_instance, created = Skill.objects.get_or_create(skill_name=skill, user=user)
+                    skill_ids.append(skill_instance.pk)
+                elif isinstance(skill, int):  # If it's an ID
+                    skill_ids.append(skill)
+                else:
+                    raise serializers.ValidationError({"skills": "Invalid skill format"})
+            data['skills'] = skill_ids
 
         # Convert project names to Organization instances
         project = data.get('project')
-        if isinstance(project, str):  # If it's a project name
-            organizations = Organization.objects.filter(name=project, type='Project')
-            if organizations.exists():
-                data['project'] = organizations.first().pk
+        if project:
+            if isinstance(project, str):  # If it's a project name
+                organization, created = Organization.objects.get_or_create(name=project, type='Project')
+                data['project'] = organization.pk
+            elif isinstance(project, int):  # If it's an ID
+                data['project'] = project
             else:
-                raise serializers.ValidationError({"project": "Project not found"})
-        elif isinstance(project, int):  # If it's an ID
-            data['project'] = project
-        else:
-            raise serializers.ValidationError({"project": "Invalid project format"})
+                raise serializers.ValidationError({"project": "Invalid project format"})
 
         return super().to_internal_value(data)
 
     def update(self, instance, validated_data):
-        skill_ids = validated_data.pop('skills', [])
+        skill_ids = validated_data.pop('skills', None)
         instance = super().update(instance, validated_data)
 
-        # Update the skills
-        instance.skills.set(skill_ids)
+        # Update the skills if provided
+        if skill_ids is not None:
+            instance.skills.set(skill_ids)
 
         # Update or create the main profile
         main_profile, created = MainProfile.objects.update_or_create(
             profile=instance.user.profile,
             defaults={'current_project': instance}
         )
-        
+
         return instance
 
 # Serializer used to list project instances
@@ -303,6 +302,7 @@ class ProfileSearchSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
     check_graduation_status = serializers.SerializerMethodField()
+    current_job_title = serializers.SerializerMethodField()  # NEW CODE
 
     class Meta:
         model = Profile
@@ -315,6 +315,11 @@ class ProfileSerializer(serializers.ModelSerializer):
         # Ensure status is updated
         obj.check_graduation_status()
         return obj.status
+    
+    # NEW CODE
+    def get_current_job_title(self, obj):
+        current_experience = Experience.objects.filter(user=obj.user, currently_working=True).order_by('-start_date').first()
+        return current_experience.job_position if current_experience else None
 
 # Serializer used to make the main page for the profile
 class MainPageSerializer(serializers.ModelSerializer):
@@ -323,7 +328,6 @@ class MainPageSerializer(serializers.ModelSerializer):
     # current_extra = ShortExtracurricularSerializer(read_only = True)
     # current_project = ShortProjectSerializer(read_only = True)
     # full_name = serializers.SerializerMethodField()
-    
     class Meta:
         model = MainProfile
         exclude = ['id']
@@ -335,10 +339,10 @@ class MainPageSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         
         # user = instance.profile.user
-        experience_data = Experience.objects.filter(user=instance.profile.user).order_by('-start_date')[:2]
-        extra_data = Extracurricular.objects.filter(user=instance.profile.user).order_by('-id')[:2]
-        project_data = Project.objects.filter(user=instance.profile.user).order_by('-id')[:2]
-        skill_data = StandaloneSkill.objects.filter(user=instance.profile.user).order_by('-id')[:2]
+        experience_data = Experience.objects.filter(user=instance.profile.user).order_by('-start_date')#[:2]
+        extra_data = Extracurricular.objects.filter(user=instance.profile.user).order_by('-id')#[:2]
+        project_data = Project.objects.filter(user=instance.profile.user).order_by('-id')#[:2]
+        skill_data = StandaloneSkill.objects.filter(user=instance.profile.user).order_by('-id')#[:2]
         
         data['experience_data'] = SingleExperienceSerializer(instance=experience_data, many=True).data
         data['extra_data'] = SingleExtracurricularSerializer(instance=extra_data, many=True).data
