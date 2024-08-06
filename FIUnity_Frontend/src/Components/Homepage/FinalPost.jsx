@@ -23,14 +23,18 @@ export default function FinalPost({
   const [postLikesCount, setPostLikesCount] = useState(0);
   const [showCommentSection, setShowCommentSection] = useState(false);
   const [adjustedTimestamp, setAdjustedTimestamp] = useState("");
-  const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState({});
+  const [adjustedCommentTimestamps, setAdjustedCommentTimestamps] = useState(
+    {}
+  );
   const [isLiked, setIsLiked] = useState(false);
   const [commentLikes, setCommentLikes] = useState({});
 
   useEffect(() => {
     const fetchPostDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/feed/posts/${postId}/`);
+        const response = await axios.get(
+          `http://localhost:8000/feed/posts/${postId}/`
+        );
         setPostLikesCount(response.data.no_of_like);
         setIsLiked(response.data.is_liked);
       } catch (error) {
@@ -50,7 +54,9 @@ export default function FinalPost({
     if (comments && comments.length > 0) {
       const adjustedCommentTimestamps = {};
       comments.forEach((comment, index) => {
-        const adjustedCommentTimestamp = adjustTimestampToTimeZone(comment.date);
+        const adjustedCommentTimestamp = adjustTimestampToTimeZone(
+          comment.date
+        );
         adjustedCommentTimestamps[index] = adjustedCommentTimestamp;
       });
       setAdjustedCommentTimestamps(adjustedCommentTimestamps);
@@ -103,7 +109,7 @@ export default function FinalPost({
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8008/feed/posts/${postId}/comment/`,
+        `http://127.0.0.1:8000/feed/posts/${postId}/comment/`,
         commentData,
         {
           headers: {
@@ -203,7 +209,9 @@ export default function FinalPost({
 
       if (response.status === 204) {
         console.log("Comment deleted successfully");
-        setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
+        setComments((prevComments) =>
+          prevComments.filter((comment) => comment.id !== commentId)
+        );
       }
     } catch (error) {
       console.error("Failed to delete comment:", error);
@@ -245,10 +253,7 @@ export default function FinalPost({
             <AiOutlineLike />
             Like
           </div>
-          <div
-            className="Post-icon-color"
-            onClick={handleCommentIconClick}
-          >
+          <div className="Post-icon-color" onClick={handleCommentIconClick}>
             {no_of_comment}
             <FaRegCommentAlt />
             Comment
@@ -260,7 +265,6 @@ export default function FinalPost({
             <BiRepost /> Repost
           </div>
         </div>
-
 
         {showCommentSection && (
           <>
@@ -308,7 +312,7 @@ export default function FinalPost({
                           Posted on: {adjustedCommentTimestamps[index]}
                         </div>
                       </div>
-                      <p className="comment-text">{comment.comment}</p>
+                      <p className="comment-descript">{comment.comment}</p>
                       <div className="delete-comment-container">
                         <div
                           className="Post-icon-color icon-cursor"

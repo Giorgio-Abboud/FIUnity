@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { GEO_API_URL, geoApiOptions } from './api';
+import "./profileEdit.css";
 
-const Search = ({ onSearchChange }) => {
-    const [search, setSearch] = useState(null);
+
+const Search = ({ value, onSearchChange }) => {
+    const [search, setSearch] = useState(value || null);
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        setSearch(value);
+    }, [value]);
 
     const loadOptions = async (inputValue) => {
         try {
@@ -41,17 +47,19 @@ const Search = ({ onSearchChange }) => {
     };
 
     return (
-        <div>
-            <AsyncPaginate
-                placeholder="Location"
-                debounceTimeout={600}
-                value={search}
-                onChange={handleOnChange}
-                loadOptions={loadOptions}
-            />
-            {error && <div className="error">{error}</div>}
+        <div className="search-container">
+            <div className="search-input">
+                <AsyncPaginate
+                    id="location"
+                    placeholder="Search for a location..."
+                    debounceTimeout={600}
+                    value={search}
+                    onChange={handleOnChange}
+                    loadOptions={loadOptions}
+                />
+                {error && <div className="error">{error}</div>}
+            </div>
         </div>
     );
 }
-
 export default Search;

@@ -1,17 +1,36 @@
-import FinalPost from "./FinalPost";
 import React, { useEffect, useState } from "react";
-import CreatePost from "./CreatePost";
 import axios from "axios";
+import { ClockLoader } from "react-spinners";
+import CreatePost from "./CreatePost";
+import FinalPost from "./FinalPost";
+import defaultProfilePicture from "../../assets/Default_pfp.png";
 
-function Homepage() {
-  const [allPosts, setAllPosts] = useState([]);
+const Homepage = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [profileData, setProfileData] = useState(null);
+  const [allPosts, setAllPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [forcedLoading, setForcedLoading] = useState(true);
 
   useEffect(() => {
-    (async function () {
+    const fetchData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8008/feed/posts/", {
+        // Fetch profile data
+        const profileResponse = await axios.get(
+          "http://localhost:8000/profile/mainpage/",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        setProfileData(profileResponse.data.profile.picture);
+
+        // Fetch posts data
+        const postsResponse = await axios.get("http://127.0.0.1:8000/feed/posts/", {
           headers: {
             "Content-Type": "application/json",
             mode: "cors",
@@ -20,16 +39,34 @@ function Homepage() {
 
         const first_name = localStorage.getItem("first_name");
         const last_name = localStorage.getItem("last_name");
-        console.log("response", response);
 
         setFirstName(first_name);
         setLastName(last_name);
-        setAllPosts(response.data);
-      } catch (error) {
-        console.error("Failed to fetch posts:", error);
+        setAllPosts(postsResponse.data);
+
+        setLoading(false);
+      } catch (err) {
+        setError(err);
+        setLoading(false);
       }
-    })();
+    };
+
+    fetchData();
+
+    const timer = setTimeout(() => {
+      setForcedLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
   }, []);
+
+  if (loading || forcedLoading) {
+    return (
+      <div className="loader-container">
+        <ClockLoader loading={loading || forcedLoading} size={100} color="#081e3f" />
+      </div>
+    );
+  }
 
   const handlePostSubmit = (newPost) => {
     setAllPosts((prevPosts) => [newPost, ...prevPosts]);
@@ -42,7 +79,6 @@ function Homepage() {
       last_name: lastName,
       text: newComment.text,
     };
-    console.log("Updated posts:", allPosts);
     setAllPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === postId
@@ -56,30 +92,34 @@ function Homepage() {
     );
   };
 
-   const handleLikeSubmit = async (postId) => {
+  const handleLikeSubmit = async (postId) => {
     try {
-      // Send a POST request to like the post
-      await axios.post(`http://127.0.0.1:8000/feed/posts/${postId}/likePost/`, {}, {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+      await axios.post(
+        `http://127.0.0.1:8000/feed/posts/${postId}/likePost/`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
         }
-      });
+      );
 
-      // Update local state to reflect the new like
       setAllPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === postId
-          ? {
-              ...post,
-              likes_count: (post.likes_count || 0) + 1,
-            }
-          : post
-      ));
+        prevPosts.map((post) =>
+          post.id === postId
+            ? {
+                ...post,
+                likes_count: (post.likes_count || 0) + 1,
+              }
+            : post
+        )
+      );
     } catch (error) {
       console.error("Failed to like the post:", error);
     }
   };
+
   return (
     <>
       <CreatePost
@@ -87,6 +127,7 @@ function Homepage() {
         lastName={lastName}
         classification={"Student"}
         onPostSubmit={handlePostSubmit}
+        profilePic={profileData || defaultProfilePicture}
       />
       {allPosts
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
@@ -110,6 +151,6 @@ function Homepage() {
         )}
     </>
   );
-}
+};
 
 export default Homepage;

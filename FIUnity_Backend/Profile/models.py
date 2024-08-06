@@ -149,7 +149,7 @@ class Skill(models.Model):
 class Project(models.Model):
     user = models.ForeignKey(AppUser, related_name="projects", on_delete=models.CASCADE)
     project = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True, related_name = "project")
-    description = models.TextField(max_length=200, blank=True)
+    description = models.TextField(max_length=1000, blank=True)
     skills = models.ManyToManyField(Skill, related_name="project_skill", blank = True)
     tagline = models.CharField(max_length=200, blank = True, null = True)
 
@@ -164,7 +164,7 @@ class Project(models.Model):
 class Extracurricular(models.Model):
     user = models.ForeignKey(AppUser, related_name="extracurriculars", on_delete=models.CASCADE)
     extracurricular = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank = True, null = True, related_name = "extra")
-    description = models.TextField(max_length=200, blank=True)
+    description = models.TextField(max_length=1000, blank=True)
     tagline = models.CharField(max_length=200, blank = True, null = True)
 
     def save(self, *args, **kwargs):

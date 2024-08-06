@@ -37,7 +37,7 @@ class ExperienceSerializer(serializers.ModelSerializer):
         except KeyError:
             pass
         return super().validate(attrs)
-    
+        
     def create(self, validated_data):
         experience = super().create(validated_data)
         main_profile = MainProfile.objects.update_or_create(profile = validated_data['user'].profile)
@@ -48,14 +48,14 @@ class ExperienceSerializer(serializers.ModelSerializer):
 
 # Serializer used to update a single instance of an experience model
 class SingleExperienceSerializer(serializers.ModelSerializer):
-    company_data = OrganizationSerializer(source = "company",read_only = True)
+    company_data = OrganizationSerializer(source = "company", read_only = True)
 
     class Meta:
         model = Experience
         exclude = ['tagline']
         extra_kwargs = {'company': {'required': True},
                         'currently_working': {'required': True},}
-        
+
     def update(self, instance, validated_data):
         try:
             return super().update(instance, validated_data)
@@ -302,6 +302,7 @@ class ProfileSearchSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
     check_graduation_status = serializers.SerializerMethodField()
+    current_job_title = serializers.SerializerMethodField()  # NEW CODE
 
     class Meta:
         model = Profile
@@ -314,6 +315,11 @@ class ProfileSerializer(serializers.ModelSerializer):
         # Ensure status is updated
         obj.check_graduation_status()
         return obj.status
+    
+    # NEW CODE
+    def get_current_job_title(self, obj):
+        current_experience = Experience.objects.filter(user=obj.user, currently_working=True).order_by('-start_date').first()
+        return current_experience.job_position if current_experience else None
 
 # Serializer used to make the main page for the profile
 class MainPageSerializer(serializers.ModelSerializer):
@@ -322,7 +328,6 @@ class MainPageSerializer(serializers.ModelSerializer):
     # current_extra = ShortExtracurricularSerializer(read_only = True)
     # current_project = ShortProjectSerializer(read_only = True)
     # full_name = serializers.SerializerMethodField()
-    
     class Meta:
         model = MainProfile
         exclude = ['id']
