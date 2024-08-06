@@ -213,7 +213,7 @@ const ProfileEdit = ({ classification }) => {
     const updatedProjects = projects.map((item, idx) =>
       idx === index ? { ...item, [name]: value } : item
     );
-    setProjects(updatedProjects);
+      setProjects(updatedProjects);
   };
 
   const handleExtracurrChange = (index, e) => {
