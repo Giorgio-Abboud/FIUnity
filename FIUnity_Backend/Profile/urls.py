@@ -21,8 +21,9 @@ urlpatterns = [
     path('skills/', UserSkillsView.as_view()), # For retrieving, updating, and deleting user skills (POST, GET)
     path('skills/<int:pk>/', SingleUserSkillsView.as_view()), # For retrieving, and deleting project skills (DELETE, GET)
     
-    # Other URLs
-    path('userprofile/', UserProfileView.as_view()), # For retrieving and updating user profile
+    # Profile URLs
+    path('userprofile/', UserProfileView.as_view()), # For retrieving and updating user profile (GET)
+    path('usermainpage/<int:pk>/', ProfileDetailView.as_view(), name='profile-detail'), # For Retrieving a single profile (GET)
     path('mainpage/', MainPageView.as_view()), # For retrieving main page data
     path('search/', MainProfileSearchView.as_view()), # For search functionality
 ]
