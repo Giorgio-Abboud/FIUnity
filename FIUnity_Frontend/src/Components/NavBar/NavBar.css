@@ -1,61 +1,73 @@
 /* Base styles */
 .NavBar {
-  height: 100px;
   display: flex;
   align-items: center;
   background-color: #081e3f;
   padding: 5px;
   color: white;
- 
+  height: 100px;
 }
 
 .logo {
-  height: auto;
-  width: auto;
   cursor: pointer;
-  padding: 0px 5%;
-  margin: 0px 15px;
+  padding: 0 5%;
+  margin: 0 15px;
 }
 
-/* Search bar */
+.search-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
 .searchBox {
   display: flex;
   align-items: center;
   background-color: aliceblue;
-  padding: 0px 10px;
+  padding: 0 10px;
   border-radius: 50px;
+  height: 50px;
   width: 400px; 
-  height: 50px; 
-  box-sizing: border-box; 
+  box-sizing: border-box;
+  flex-grow: 1;
 }
 
 .searchBox input {
-  padding: 0px 15px; 
-  height: 100%;
-  background: transparent;
-  border: 0;
-  outline: 0;
+  width: 100%;
+  border: none;
+  outline: none;
   color: black;
   font-size: 15px;
-  text-align: left;
-  line-height: 40px; 
-  box-sizing: border-box;
-  margin-bottom: 45px;
+  background: transparent;
 }
 
-.searchInputNavBar{
-  margin-top: 45px;
-  width: 50px;
-}
 
-.bold-search {
+.bold-search input {
   font-weight: bold;
 }
 
-.searchBox.bold-search input {
-  font-weight: bold;
+.navBarSubmit {
+  width: 50px; /* Adjust width to fit the design */
+  height: 50px; /* Match height of search box */
+  border: none; /* Remove border */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  margin-left: 200px;
 }
 
+.navBarSubmit button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.navBarSubmit img {
+  width: 30px; /* Adjust icon size */
+  height: 25px;
+}
 
 /* Icons */
 .NavBar_Icons {
@@ -72,10 +84,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0; /* Adjusted margin for spacing */
+  margin: 0 10px;
   justify-content: space-between;
-  margin-right: 0px;
-  margin-left: 0px;
 }
 
 .icon {
@@ -96,63 +106,30 @@
 }
 
 /* Dropdown */
-
-
-
-.jobs-dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #ffffff;
-  min-width: 150px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
-
-.jobs-dropdown-content a {
-  display: block;
-  padding: 10px;
-  text-decoration: none;
-  color: #000000;
-}
-
-.jobs-dropdown-content a:hover {
-  background-color: #f1f1f1;
-}
-
-.job-dropdown{
-  margin: 40px;
-}
-
-.job-dropdown:hover .jobs-dropdown-content {
-  display: block;
-}
-
+.jobs-dropdown-content,
 .profile-dropdown-content {
   display: none;
   position: absolute;
-  background-color: #ffffff;
+  background-color: #fff;
   min-width: 150px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
 
+.jobs-dropdown-content a,
 .profile-dropdown-content a {
   display: block;
   padding: 10px;
   text-decoration: none;
-  color: #000000;
+  color: #000;
 }
 
+.jobs-dropdown-content a:hover,
 .profile-dropdown-content a:hover {
   background-color: #f1f1f1;
 }
 
-/* .profile-dropdown{
-  margin-right: 50px;
-  margin-left: 0px;
-  width: 10px;
-}
- */
+.job-dropdown:hover .jobs-dropdown-content,
 .profile-dropdown:hover .profile-dropdown-content {
   display: block;
 }
@@ -165,7 +142,7 @@
   cursor: pointer;
   color: white;
   text-decoration: none;
-  margin: 0px 80px; /* Adjusted margin for spacing */
+  margin: 0px 90px; /* Adjusted margin for spacing */
 }
 
 .job-btn:hover {
@@ -234,7 +211,7 @@
   border-radius: 10px;
   height: 40px; /* Adjusted margin for spacing */
   font-size: 14px;
-  margin-left: 80px;
+  margin-left: 100px;
   margin-right: 20px;
   margin-bottom: 0px;
 }
@@ -249,147 +226,97 @@
 }
 
 /* Responsive styles */
-@media (max-width: 768px) {
+
+@media (max-width: 1024px) {
   .NavBar {
     flex-direction: column;
-    height: auto;
     padding: 10px;
+    height: auto;
   }
 
   .searchBox {
-    width: calc(100% - 120px);
-    margin-right: 10px;
+    width: 80%; /* Adjusted width for smaller screens */
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .icon-container {
+    margin: 0 15px; /* Adjust spacing for smaller screens */
   }
 
   .navBarSubmit {
-    margin-left: auto; /* Push button to the right */
-    margin-right: 10px; /* Margin on the right */
-    width: 100px; /* Adjust width */
-    height: 40px; /* Adjust height */
-    font-size: 14px; /* Smaller font size */
-  }
-
-  .NavBar_Icons {
-    justify-content: center;
-    margin-top: 10px;
+    width: 35px;
+    height: 40px;
   }
 
   .job-btn,
   .profile-btn {
-    margin: 0px 20px; /* Reduce margin for smaller screens */
+    margin: 0 15px;
   }
 
-  .job-btn .job-icon,
-  .profile-btn .profile-icon {
-    height: 25px;
-    width: 25px;
+  .Logout {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .job-btn,
+  .profile-btn {
+    margin: 0 10px;
   }
 
-  .job-btn a,
-  .profile-btn a {
-    font-size: 16px; /* Slightly smaller font size */
+  .navBarSubmit {
+    width: 30px;
+    height: 40px;
   }
 
   .Logout {
     font-size: 12px;
     padding: 5px 10px;
-    margin-left: 20px; /* Adjust margin for smaller screens */
-    margin-right: 10px;
   }
 }
 
-  .navBarSubmit{
-    margin-left: 280px;
-  }
-
 @media (max-width: 480px) {
-  .nav-link {
-    font-size: 14px;
-  }
-
   .job-btn,
   .profile-btn {
-    margin: 0px 10px; /* Further reduce margin */
+    margin: 0 5px;
+  }
+
+  .navBarSubmit {
+    width: 30px;
+    height: 40px;
+  }
+
+  .navBarSubmit img {
+    width: 15px; /* Smaller icon size for very small screens */
+    height: 10px;
   }
 
   .job-btn .job-icon,
-  .profile-btn .profile-icon {
+  .profile-btn .profile-icon{
     height: 20px;
     width: 20px;
   }
 
   .job-btn a,
   .profile-btn a {
-    font-size: 14px; /* Smaller font size */
+    font-size: 14px;
   }
 
   .Logout {
-    font-size: 10px;
+    font-size: 14px;
     padding: 5px 8px;
-    margin-left: 10px; /* Adjust margin for mobile screens */
-    margin-right: 5px;
+    margin-left: 5px;
   }
-  
+
   .searchBox {
-    width: calc(100% - 80px); /* Full width minus space for button */
+    width: 80%; 
     margin-right: 5px;
-    padding: 0px 5px; /* Adjust padding */
+    padding: 0 5px;
   }
 
   .searchBox input {
-    font-size: 14px; /* Smaller font size */
+    font-size: 14px;
   }
-
-  .navBarSubmit {
-    margin-left: auto; /* Push button to the right */
-    margin-right: 5px; /* Margin on the right */
-    width: 80px; /* Adjust width */
-    height: 35px; /* Adjust height */
-    font-size: 12px; /* Smaller font size */
-  }
-}
-
-.search-dropdown {
-  background-color: aliceblue;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  margin-left: 18.5%;
-  width: 20.5%;
-  max-height: 500px;
-  border-radius: 20px;
-  overflow-y: auto;
-}
-
-.search-dropdown::-webkit-scrollbar {
-  display: none; /*this solution works for WebKit-based browsers like Chrome and Safari*/
-}
-
-.search-result {
-  display: flex;
-  align-items: center;
-  padding: 2px 70px;
-  cursor: pointer;
-}
-
-.search-result:hover {
-  background-color: #b2c1d1b6;
-}
-
-.search-result-text {
-  flex-grow: 1;
-}
-
-.search-result-status {
-  font-size: 0.9em;
-  color: #d9a31e;
-}
-
-.search-result-pic {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-
-.search-button {
-  cursor: pointer;
-  border: none;
 }

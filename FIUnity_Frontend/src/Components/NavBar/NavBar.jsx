@@ -171,6 +171,7 @@ const NavBar = () => {
       <div className="NavBar">
         <img src={Logo_icon} alt="FIUnity Logo" className="logo" />
 
+      <div className="search-container">
         <div
           className={`searchBox ${isSearchBold ? "bold-search" : ""}`}
           onClick={handleSearchClick}
@@ -187,6 +188,7 @@ const NavBar = () => {
             <button type="submit">
               <img src={Pawprint_icon} alt="Paw Print Icon" className="pawprint-icon" />
             </button>
+            </div>
             </div>
         </div>
 
