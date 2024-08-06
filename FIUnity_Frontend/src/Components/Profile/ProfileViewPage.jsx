@@ -261,7 +261,7 @@ export default function ProfileViewPage({
                             <p className="profile-descript profile-font">
                               {project.description}
                             </p>
-                            <div className="skills-item-container">
+                            <div className="skills-item-project-container">
                               {project.skills.map((skill, index) => (
                                 <div key={index}>
                                   <p className="skills-item">{skill}</p>
