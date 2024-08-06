@@ -258,9 +258,7 @@ class MainPageView(RetrieveUpdateAPIView):
         main_profile, created = MainProfile.objects.get_or_create(profile=profile)
         return main_profile
 
-        
 class MainProfileSearchView(ListAPIView):
-    
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileSearchSerializer
@@ -275,3 +273,15 @@ class MainProfileSearchView(ListAPIView):
         context = super().get_serializer_context()
         context['user'] = self.request.user  # Pass user in context
         return context
+    
+class ProfileDetailView(RetrieveAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = Profile.objects.all()
+    serializer_class = MainPageSerializer
+    
+    def get_object(self):
+        profile_id = self.kwargs['pk']
+        profile = get_object_or_404(Profile, pk=profile_id)
+        main_profile = get_object_or_404(MainProfile, profile=profile)
+        return main_profile
