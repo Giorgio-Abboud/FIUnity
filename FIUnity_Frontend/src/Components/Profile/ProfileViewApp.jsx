@@ -2,7 +2,7 @@ import ProfileViewPage from "./ProfileViewPage";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
-import ClockLoader from "react-spinners/ClockLoader";
+import ClockLoader from 'react-spinners/ClockLoader';
 import "./ProfileView.css";
 
 const mapExperienceData = (data) => {
