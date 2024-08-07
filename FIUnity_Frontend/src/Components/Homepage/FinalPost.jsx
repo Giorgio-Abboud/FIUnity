@@ -11,6 +11,8 @@ import defaultProfilePicture from "../../assets/Default_pfp.png"; // Ensure this
 
 export default function FinalPost({
   postId,
+  firstName,
+  lastName,
   posterFullName,
   classification,
   description,
@@ -32,6 +34,8 @@ export default function FinalPost({
   const [commentLikes, setCommentLikes] = useState({});
   const [commentProfiles, setCommentProfiles] = useState({});
   const [profilePic, setProfilePic] = useState(defaultProfilePicture);
+  const [userName, setUserName] = useState('');
+
   
 
   useEffect(() => {
@@ -49,9 +53,19 @@ export default function FinalPost({
         console.error("Failed to fetch post details:", error);
       }
     };
-
+    
     fetchPostDetails();
   }, [postId]);
+
+  
+
+  useEffect(() => {
+    const firstName = localStorage.getItem("first_name");
+    const lastName = localStorage.getItem("last_name");
+    const fullName = `${firstName} ${lastName}`.trim();
+
+    setUserName(fullName);
+  }, []);
 
   useEffect(() => {
     const adjustedTimestamp = adjustTimestampToTimeZone(timestamp);
@@ -61,6 +75,7 @@ export default function FinalPost({
   useEffect(() => {
     if (comments && comments.length > 0) {
       console.log("Comments data:", comments);
+      
       const adjustedCommentTimestamps = {};
       comments.forEach((comment, index) => {
         const adjustedCommentTimestamp = adjustTimestampToTimeZone(comment.date);
@@ -75,12 +90,19 @@ export default function FinalPost({
       setCommentLikes(initialCommentLikes);
 
       // Add profile picture to comments
-      const newCommentProfiles = {};
+      const baseURL = "http://localhost:8000"; // Adjust as needed
+      const updatedCommentProfiles = {};
       comments.forEach((comment) => {
-        const profilePic = comment.profilePicture || defaultProfilePicture;
-        newCommentProfiles[comment.id] = profilePic;
+        const profilePic = comment.commenter_profile_picture
+          ? `${baseURL}${comment.commenter_profile_picture}`
+          : defaultProfilePicture;
+        updatedCommentProfiles[comment.id] = profilePic;
+  
+        // Log the profile picture URL for debugging
+        console.log("Profile picture URL:", updatedCommentProfiles[comment.id]);
       });
-      setCommentProfiles(newCommentProfiles);
+  
+      setCommentProfiles(updatedCommentProfiles);
     }
   }, [comments]);
 
@@ -293,7 +315,7 @@ export default function FinalPost({
             <div className="comment-flex">
               <div>
                 <div className="comment-name">
-                  {posterFullName}
+                  {userName}
                 </div>
                 <div className="classification-comment">{classification}</div>
               </div>
@@ -318,12 +340,9 @@ export default function FinalPost({
                       <div className="time-container">
                         <div className="comment-profile-pic">
                           <img
-                            src={profilePicture}
+                            src={commentProfiles[comment.id] || defaultProfilePicture}
                             alt="Profile"
-                            onError={() => setCommentProfiles(prev => ({
-                              ...prev,
-                              [comment.id]: defaultProfilePicture
-                            }))}
+                            onError={(e) => e.target.src = defaultProfilePicture}
                           />
                         </div>
                         <div>
