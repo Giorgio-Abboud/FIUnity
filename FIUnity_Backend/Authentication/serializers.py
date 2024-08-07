@@ -55,10 +55,11 @@ class UserLoginSerializer(serializers.Serializer):
     full_name = serializers.CharField(max_length=255, read_only=True)
     access_token = serializers.CharField(max_length=255, read_only=True)
     refresh_token = serializers.CharField(max_length=255, read_only=True)
+    id = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = AppUser
-        fields = ['email', 'PID', 'password', 'full_name', 'access_token', 'refresh_token']
+        fields = ['user_id', 'email', 'PID', 'password', 'full_name', 'access_token', 'refresh_token']
 
     def validate(self, attrs):
         email = attrs.get('email')
@@ -74,11 +75,13 @@ class UserLoginSerializer(serializers.Serializer):
             tokens = user.tokens()
 
             return {
+                'id': user.id,
                 'email': user.email,
                 'full_name': user.get_full_name,
                 'access_token': str(tokens.get('access')),
                 'refresh_token': str(tokens.get('refresh'))
             }
+        
         except AuthenticationFailed:
             raise AuthenticationFailed("Invalid credentials")
     
