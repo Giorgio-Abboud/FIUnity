@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Post, Like, Comment, CommentLike
+from Profile.models import Profile
 
 class LikeSerializer(serializers.ModelSerializer):
     like_email = serializers.EmailField(read_only=True, source='user.email')
@@ -40,10 +41,11 @@ class PostSerializer(serializers.ModelSerializer):
     poster_id = serializers.IntegerField(read_only=True, source='user.id')
     poster_full_name = serializers.CharField(read_only=True, source='user.get_full_name')
     is_liked = serializers.SerializerMethodField()
+    poster_picture = serializers.ImageField(read_only=True, source='user.profile.picture')
 
     class Meta:
         model = Post
-        fields = ['id', 'body', 'image', 'likes', 'comments', 'no_of_like', 'no_of_comment', 'date', 'poster_email', 'poster_id', 'poster_full_name', 'is_liked']
+        fields = ['id', 'body', 'image', 'likes', 'comments', 'no_of_like', 'no_of_comment', 'date', 'poster_email', 'poster_id', 'poster_full_name', 'is_liked', 'poster_picture']
 
     def get_no_of_like(self, obj):
         return obj.no_of_like()
