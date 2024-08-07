@@ -27,8 +27,8 @@ const Homepage = () => {
             },
           }
         );
-        setProfileData(profileResponse.data.profile.picture || defaultProfilePicture);
-
+        const profilePic = profileResponse.data.profile.picture || defaultProfilePicture;
+        setProfileData(profilePic);
         // Fetch posts data
         const postsResponse = await axios.get("http://127.0.0.1:8000/feed/posts/", {
           headers: {
@@ -134,12 +134,11 @@ const Homepage = () => {
       {allPosts
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .map(
-          ({ id, body, date, comments, likes_count, no_of_comment, image }) => (
+          ({ id, body, date, comments, likes_count, no_of_comment, image, poster_full_name }) => (
             <FinalPost
               key={id}
               postId={id}
-              firstName={firstName}
-              lastName={lastName}
+              posterFullName={poster_full_name}
               description={body}
               classification={"Student"}
               image={image || ""}

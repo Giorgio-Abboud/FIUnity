@@ -11,8 +11,7 @@ import defaultProfilePicture from "../../assets/Default_pfp.png"; // Ensure this
 
 export default function FinalPost({
   postId,
-  firstName,
-  lastName,
+  posterFullName,
   classification,
   description,
   image,
@@ -33,8 +32,7 @@ export default function FinalPost({
   const [commentLikes, setCommentLikes] = useState({});
   const [commentProfiles, setCommentProfiles] = useState({});
   const [profilePic, setProfilePic] = useState(defaultProfilePicture);
-
-
+  
 
   useEffect(() => {
     const fetchPostDetails = async () => {
@@ -44,9 +42,9 @@ export default function FinalPost({
         );
         setPostLikesCount(response.data.no_of_like);
         setIsLiked(response.data.is_liked);
-        const profilePic = response.data.profilePicture || defaultProfilePicture;
+        const profilePic = response.data.profile_picture || defaultProfilePicture;
         setProfilePic(profilePic);
-        console.log("Profile Picture URL:", profilePic);
+        console.log("Post details fetched:", response.data);
       } catch (error) {
         console.error("Failed to fetch post details:", error);
       }
@@ -62,6 +60,7 @@ export default function FinalPost({
 
   useEffect(() => {
     if (comments && comments.length > 0) {
+      console.log("Comments data:", comments);
       const adjustedCommentTimestamps = {};
       comments.forEach((comment, index) => {
         const adjustedCommentTimestamp = adjustTimestampToTimeZone(comment.date);
@@ -78,13 +77,13 @@ export default function FinalPost({
       // Add profile picture to comments
       const newCommentProfiles = {};
       comments.forEach((comment) => {
-        console.log("Comment profile pic URL", comment.profilePicture);
-        newCommentProfiles[comment.id] = comment.profilePicture || defaultProfilePicture;
+        const profilePic = comment.profilePicture || defaultProfilePicture;
+        newCommentProfiles[comment.id] = profilePic;
       });
       setCommentProfiles(newCommentProfiles);
     }
   }, [comments]);
-  
+
 
   function adjustTimestampToTimeZone(timestamp) {
     const date = new Date(timestamp);
@@ -259,7 +258,7 @@ export default function FinalPost({
             </div>
             <div>
               <div className="name">
-                {firstName} {lastName}
+                {posterFullName}
               </div>
               <div className="classification">{classification}</div>
             </div>
@@ -294,7 +293,7 @@ export default function FinalPost({
             <div className="comment-flex">
               <div>
                 <div className="comment-name">
-                  {firstName} {lastName}
+                  {posterFullName}
                 </div>
                 <div className="classification-comment">{classification}</div>
               </div>
@@ -319,7 +318,7 @@ export default function FinalPost({
                       <div className="time-container">
                         <div className="comment-profile-pic">
                           <img
-                            src={commentProfiles[comment.id]}
+                            src={profilePicture}
                             alt="Profile"
                             onError={() => setCommentProfiles(prev => ({
                               ...prev,
