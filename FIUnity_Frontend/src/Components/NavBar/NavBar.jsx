@@ -5,6 +5,7 @@ import Pawprint_icon from "../../assets/paw print.png";
 import Newsfeed_icon from "../../assets/Newsfeed icon.png";
 import Jobs_icon from "../../assets/Jobs icon.png";
 import Profile_icon from "../../assets/Profile icon.png";
+import axios from "./axiosInstance";
 import { Link } from "react-router-dom";
 import defaultProfilePicture from "../../assets/Default_pfp.png";
 import axios from 'axios';
@@ -98,12 +99,63 @@ const ProfileDropdown = ({ isOpen, toggleDropdown }) => {
   );
 };
 
+const dummySearchData = [
+  {
+    firstName: "Roary",
+    lastName: "Royce",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Mathers",
+    classification: "Alumni",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Smith",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Smith",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Smith",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Smith",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Marshall",
+    lastName: "Smith",
+    classification: "Student",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+  {
+    firstName: "Chris",
+    lastName: "Hemsworth",
+    classification: "Alumni",
+    profilePic: "/images/roary-profile-pic.jpg",
+  },
+];
 
 const NavBar = () => {
   const [isSearchBold, setIsSearchBold] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [searchInput, setSearchInput] = useState(""); //NEW CODE
-  const [searchResults, setSearchResults] = useState([]); //NEW CODE
+  const [searchInput, setSearchInput] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSearchClick = () => {
     setIsSearchBold(true);
@@ -126,6 +178,37 @@ const NavBar = () => {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const searchBarInfo = {
+      searchBarInput: searchInput,
+    };
+
+    axios
+      .post("http://localhost:8000/authentication/user/", searchBarInfo, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("User found");
+          console.log("this is the response:", response);
+          window.location.href = `http://localhost:5173/view-profile/${response.data.user_id}`;
+        } else {
+          console.error("User cannot be found");
+          setErrorMessage("User cannot be found.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error sending search for user request:", error);
+        setErrorMessage(
+          "An error occurred while searching for user. Please try again later."
+        );
+      });
+  };
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -135,20 +218,28 @@ const NavBar = () => {
       <div className="NavBar">
         <img src={Logo_icon} alt="FIUnity Logo" className="logo" />
 
+      <div className="search-container">
         <div
           className={`searchBox ${isSearchBold ? "bold-search" : ""}`}
           onClick={handleSearchClick}
         >
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchInput} //NEW CODE
-            onChange={handleSearchChange} //NEW CODE
-          />
-          <button className="search-button">
-            <img src={Pawprint_icon} alt="Paw Print Icon" />
-          </button>
+          <form onSubmit={handleSubmit} className= "searchInputNavBar">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchInput}
+              onChange={handleSearchChange}
+            />
+          </form>
+          <div className="navBarSubmit">
+            <button type="submit">
+              <img src={Pawprint_icon} alt="Paw Print Icon" className="pawprint-icon" />
+            </button>
+            </div>
+            </div>
         </div>
+
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
 
         <div className="NavBar_Icons">
           <div className="icon-container">
@@ -185,7 +276,7 @@ const NavBar = () => {
               />
             </div>
           ))}
-        </div> //NEW CODE FROM SEARCH RESULTS...
+        </div>
       )}
     </>
   );
