@@ -6,7 +6,7 @@ import Newsfeed_icon from "../../assets/Newsfeed icon.png";
 import Jobs_icon from "../../assets/Jobs icon.png";
 import Profile_icon from "../../assets/Profile icon.png";
 import { Link } from "react-router-dom";
-import defaultProfilePicture from "../../assets/Default_pfp.png";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 const axiosInstance = axios.create({
@@ -29,7 +29,8 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-const fetchProfiles = async (searchTerm) => {
+const fetchProfiles = async (searchTerm) => {    
+  console.log('Fetching profiles with search term:', searchTerm);
   try {
     const response = await axiosInstance.get('/search/', {
       params: { search: searchTerm } 
@@ -40,7 +41,9 @@ const fetchProfiles = async (searchTerm) => {
     const mappedResults = response.data.map(profile => ({
       fullName: profile.full_name, 
       classification: profile.check_graduation_status,
-      profilePic: profile.picture || defaultProfilePicture
+      profilePic: profile.picture,
+      profileUrl: profile.profile_url,
+      email: profile.email
     }));
 
     console.log('Mapped search results:', mappedResults);
@@ -75,6 +78,7 @@ const JobDropdown = ({ isOpen, toggleDropdown }) => {
 };
 
 const ProfileDropdown = ({ isOpen, toggleDropdown }) => {
+  const loggedInUserEmail = localStorage.getItem("user_id"); 
   return (
     <div
       className="profile-dropdown"
@@ -83,8 +87,7 @@ const ProfileDropdown = ({ isOpen, toggleDropdown }) => {
     >
       <div className="profile-btn" onClick={toggleDropdown}>
         <img src={Profile_icon} alt="Profile Icon" className="profile-icon" />
-        <Link to="/view-profile" className="nav-link">
-          Profile
+        <Link to={loggedInUserEmail ? "/view-profile" : "/profile/usermainpage/:userId"} className="nav-link">          Profile
         </Link>
       </div>
       {isOpen && (
@@ -100,9 +103,10 @@ const ProfileDropdown = ({ isOpen, toggleDropdown }) => {
 const NavBar = () => {
   const [isSearchBold, setIsSearchBold] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [searchInput, setSearchInput] = useState(""); // Updated
-  const [searchResults, setSearchResults] = useState([]); // Updated
+  const [searchInput, setSearchInput] = useState(""); 
+  const [searchResults, setSearchResults] = useState([]); 
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSearchClick = () => {
     setIsSearchBold(true);
@@ -122,6 +126,10 @@ const NavBar = () => {
     } else {
       setSearchResults([]);
     }
+  };
+
+  const handleUserClick = (profileUrl) => {
+    navigate(profileUrl);
   };
 
   const toggleDropdown = () => {
@@ -171,7 +179,7 @@ const NavBar = () => {
       {searchResults.length > 0 && (
         <div className="search-dropdown">
           {searchResults.map((user, index) => (
-            <div key={index} className="search-result">
+            <div key={index} className="search-result" onClick={() => handleUserClick(user.profileUrl)}>
               <div className="search-result-text">
                 <div className="bold-search">{`${user.fullName}`}</div>
                 <div className="search-result-status">

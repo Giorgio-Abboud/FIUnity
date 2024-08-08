@@ -313,8 +313,9 @@
   margin-left: auto;
 }
 
-.search-container {
-  margin-bottom: 25px; 
+.search-profile-container {
+  margin-bottom: 25px;
+  width: 100%; 
 }
 
 .search-input {

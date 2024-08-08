@@ -313,8 +313,8 @@
   }
 
   .search-dropdown {
-    width: 40%; /* Adjust width for tablets */
-    margin-left: 10%; /* Center it better */
+    width: 80%; /* Adjust width for tablets */
+    margin-left: 11%; /* Center it better */
   }
 }
 
