@@ -23,6 +23,7 @@ export default function FinalPost({
   no_of_comment,
   profilePicture,
 }) {
+  console.log("Received Classification:", classification);
   const [userInput, setUserInput] = useState("");
   const [postLikesCount, setPostLikesCount] = useState(0);
   const [showCommentSection, setShowCommentSection] = useState(false);
@@ -350,7 +351,7 @@ export default function FinalPost({
                             {comment.commenter_name}
                           </p>
                           <div className="classification-comment">
-                            {classification}
+                            {comment.commenter_status}
                           </div>
                         </div>
                         <button className="icon-button">

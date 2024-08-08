@@ -22,6 +22,7 @@ class CommentSerializer(serializers.ModelSerializer):
     likes_count = serializers.SerializerMethodField()
     dislikes_count = serializers.SerializerMethodField()
     commenter_profile_picture = serializers.SerializerMethodField()
+    commenter_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
@@ -39,6 +40,13 @@ class CommentSerializer(serializers.ModelSerializer):
             return user_profile.picture.url if user_profile.picture else None
         except Profile.DoesNotExist:
             return None
+    
+    def get_commenter_status(self, obj):
+        try:
+            user_profile = Profile.objects.get(user=obj.user)
+            return user_profile.status if user_profile.status else None
+        except Profile.DoesNotExist:
+            return None
 
 class PostSerializer(serializers.ModelSerializer):
     likes = LikeSerializer(read_only=True, many=True)
@@ -50,10 +58,11 @@ class PostSerializer(serializers.ModelSerializer):
     poster_full_name = serializers.CharField(read_only=True, source='user.get_full_name')
     is_liked = serializers.SerializerMethodField()
     poster_picture = serializers.ImageField(read_only=True, source='user.profile.picture')
+    poster_status = serializers.SerializerMethodField(read_only=True, source='user.profile.status')
 
     class Meta:
         model = Post
-        fields = ['id', 'body', 'image', 'likes', 'comments', 'no_of_like', 'no_of_comment', 'date', 'poster_email', 'poster_id', 'poster_full_name', 'is_liked', 'poster_picture']
+        fields = ['id', 'body', 'image', 'likes', 'comments', 'no_of_like', 'no_of_comment', 'date', 'poster_email', 'poster_id', 'poster_full_name', 'is_liked', 'poster_picture', 'poster_status']
 
     def get_no_of_like(self, obj):
         return obj.no_of_like()
@@ -69,3 +78,9 @@ class PostSerializer(serializers.ModelSerializer):
     def get_is_liked(self, obj):
         user = self.context['request'].user
         return obj.likes.filter(user=user).exists()
+
+    def get_poster_status(self, obj):
+        try:
+            return obj.user.profile.status
+        except Profile.DoesNotExist:
+            return None

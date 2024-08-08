@@ -9,6 +9,7 @@ const Homepage = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [profileData, setProfileData] = useState(null);
+  const [classification, setClassification] = useState("");
   const [allPosts, setAllPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,6 +30,10 @@ const Homepage = () => {
         );
         const profilePic = profileResponse.data.profile.picture || defaultProfilePicture;
         setProfileData(profilePic);
+
+        setClassification(profileResponse.data.profile.status);
+        console.log("Status:", profileResponse.data.profile.status)
+
         // Fetch posts data
         const postsResponse = await axios.get("http://127.0.0.1:8000/feed/posts/", {
           headers: {
@@ -39,9 +44,11 @@ const Homepage = () => {
 
         const first_name = localStorage.getItem("first_name");
         const last_name = localStorage.getItem("last_name");
+        
 
         setFirstName(first_name);
         setLastName(last_name);
+        
         setAllPosts(postsResponse.data);
 
         setLoading(false);
@@ -127,7 +134,7 @@ const Homepage = () => {
       <CreatePost
         firstName={firstName}
         lastName={lastName}
-        classification={"Student"}
+        classification={classification}
         onPostSubmit={handlePostSubmit}
         profilePic={profileData || defaultProfilePicture}
       />
@@ -140,7 +147,7 @@ const Homepage = () => {
               postId={id}
               posterFullName={poster_full_name}
               description={body}
-              classification={"Student"}
+              classification={classification}
               image={image || ""}
               likesCount={likes_count}
               timestamp={date}
