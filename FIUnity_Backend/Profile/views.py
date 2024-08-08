@@ -167,6 +167,11 @@ class SingleProjectView(RetrieveUpdateDestroyAPIView):
         except Exception as e:
             return Response({"detail": f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
     
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
 class UserSkillsView(ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
