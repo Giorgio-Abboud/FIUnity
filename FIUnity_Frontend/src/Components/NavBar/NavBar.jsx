@@ -43,7 +43,9 @@ const fetchProfiles = async (searchTerm) => {
       classification: profile.check_graduation_status,
       profilePic: profile.picture,
       profileUrl: profile.profile_url,
-      email: profile.email
+      gradTerm: profile.grad_term,
+      gradYear: profile.graduation_year,
+      major: profile.major
     }));
 
     console.log('Mapped search results:', mappedResults);
@@ -132,6 +134,7 @@ const NavBar = () => {
     if (searchInput) {
       try {
         const results = await fetchProfiles(searchInput);
+        console.log('result', results)
         // Navigate to search-result page with the search results as state
         navigate('/search-result', { state: { searchResults: results, searchTerm: searchInput } });
       } catch (error) {
