@@ -285,6 +285,7 @@ class ProfileSearchSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
     check_graduation_status = serializers.SerializerMethodField()
     profile_url = serializers.SerializerMethodField()
+    current_job_title = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
@@ -300,6 +301,10 @@ class ProfileSearchSerializer(serializers.ModelSerializer):
     
     def get_profile_url(self, obj):
         return reverse('profile-detail', args=[obj.pk])
+    
+    def get_current_job_title(self, obj):
+        current_experience = Experience.objects.filter(user=obj.user, currently_working=True).order_by('-start_date').first()
+        return current_experience.job_position if current_experience else None
 
 # Serializer used to create the profile
 class ProfileSerializer(serializers.ModelSerializer):
