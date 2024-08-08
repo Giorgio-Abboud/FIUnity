@@ -45,7 +45,7 @@ export default function RegistrationLogIn() {
           // Store CSRF token and user_id in local storage
           // localStorage.setItem("csrfToken", response.data.csrfToken);
 
-          const { email, full_name, access_token, refresh_token } =
+          const { email, full_name, access_token, refresh_token, id } =
             response.data;
           const [first_name, last_name] = full_name.split(" ");
 
@@ -54,6 +54,7 @@ export default function RegistrationLogIn() {
           localStorage.setItem("last_name", last_name || "");
           localStorage.setItem("access_token", access_token);
           localStorage.setItem("refresh_token", refresh_token);
+          localStorage.setItem("id", id);
 
           // history.push("/newsfeed");
           // window.location.href = "http://localhost:5173/newsfeed";
@@ -63,6 +64,7 @@ export default function RegistrationLogIn() {
           console.log("Stored user_id:", localStorage.getItem("user_id"));
           console.log("Stored first_name:", localStorage.getItem("first_name"));
           console.log("Stored last_name:", localStorage.getItem("last_name"));
+          console.log("Stored id:", localStorage.getItem("id"));
           console.log(
             "Stored access_token:",
             localStorage.getItem("access_token")

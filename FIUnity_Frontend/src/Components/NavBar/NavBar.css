@@ -41,6 +41,9 @@
   background: transparent;
 }
 
+.searchBox.bold-search input {
+  font-weight: bold;
+}
 
 .bold-search input {
   font-weight: bold;
@@ -225,6 +228,56 @@
   text-decoration: none;
 }
 
+/* Searchbar dropdown */
+
+.search-dropdown {
+  position: absolute; 
+  background-color: aliceblue;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin-left: 18.5%; 
+  width: 32%;
+  max-height: 500px;
+  border-radius: 20px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+.search-dropdown::-webkit-scrollbar {
+  display: none; 
+}
+.search-result {
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  padding: 2px 7px;
+  cursor: pointer;
+}
+
+.search-result:last-child {
+  border-bottom: none; 
+}
+
+.search-result:hover {
+  background-color: #b2c1d1b6;
+}
+
+.search-result-text {
+  flex-grow: 1;
+}
+.search-result-status {
+  font-size: 0.9em;
+  color: #d9a31e;
+}
+.search-result-pic {
+  margin: 7px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.search-button {
+  cursor: pointer;
+  border: none;
+}
+
 /* Responsive styles */
 
 @media (max-width: 1024px) {
@@ -258,6 +311,11 @@
     font-size: 14px;
     padding: 6px 12px;
   }
+
+  .search-dropdown {
+    width: 80%; /* Adjust width for tablets */
+    margin-left: 11%; /* Center it better */
+  }
 }
 
 @media (max-width: 768px) {
@@ -274,6 +332,11 @@
   .Logout {
     font-size: 12px;
     padding: 5px 10px;
+  }
+
+  .search-dropdown {
+    width: 50%; /* Adjust width for smaller tablets */
+    margin-left: 5%; /* Center it better */
   }
 }
 
@@ -318,5 +381,24 @@
 
   .searchBox input {
     font-size: 14px;
+  }
+
+  .search-dropdown {
+    width: 80%; /* Full width for very small screens */
+    margin-left: 10%; /* Center it better */
+    left: 10%; /* Centering the dropdown */
+  }
+
+  .search-result-pic {
+    width: 40px; /* Smaller profile picture */
+    height: 40px;
+  }
+
+  .search-result-status {
+    font-size: 0.8em; /* Adjust font size for smaller screens */
+  }
+
+  .search-result-text {
+    font-size: 0.9em; /* Adjust font size for smaller screens */
   }
 }

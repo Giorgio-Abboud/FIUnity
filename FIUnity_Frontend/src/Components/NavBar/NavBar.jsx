@@ -5,9 +5,8 @@ import Pawprint_icon from "../../assets/paw print.png";
 import Newsfeed_icon from "../../assets/Newsfeed icon.png";
 import Jobs_icon from "../../assets/Jobs icon.png";
 import Profile_icon from "../../assets/Profile icon.png";
-import axios from "./axiosInstance";
 import { Link } from "react-router-dom";
-import defaultProfilePicture from "../../assets/Default_pfp.png";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 const axiosInstance = axios.create({
@@ -30,7 +29,8 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-const fetchProfiles = async (searchTerm) => {
+const fetchProfiles = async (searchTerm) => {    
+  console.log('Fetching profiles with search term:', searchTerm);
   try {
     const response = await axiosInstance.get('/search/', {
       params: { search: searchTerm } 
@@ -41,7 +41,9 @@ const fetchProfiles = async (searchTerm) => {
     const mappedResults = response.data.map(profile => ({
       fullName: profile.full_name, 
       classification: profile.check_graduation_status,
-      profilePic: profile.picture || defaultProfilePicture
+      profilePic: profile.picture,
+      profileUrl: profile.profile_url,
+      email: profile.email
     }));
 
     console.log('Mapped search results:', mappedResults);
@@ -51,7 +53,6 @@ const fetchProfiles = async (searchTerm) => {
     throw error;
   }
 };
-
 
 const JobDropdown = ({ isOpen, toggleDropdown }) => {
   return (
@@ -77,6 +78,7 @@ const JobDropdown = ({ isOpen, toggleDropdown }) => {
 };
 
 const ProfileDropdown = ({ isOpen, toggleDropdown }) => {
+  const loggedInUserEmail = localStorage.getItem("user_id"); 
   return (
     <div
       className="profile-dropdown"
@@ -85,8 +87,7 @@ const ProfileDropdown = ({ isOpen, toggleDropdown }) => {
     >
       <div className="profile-btn" onClick={toggleDropdown}>
         <img src={Profile_icon} alt="Profile Icon" className="profile-icon" />
-        <Link to="/view-profile" className="nav-link">
-          Profile
+        <Link to={loggedInUserEmail ? "/view-profile" : "/profile/usermainpage/:userId"} className="nav-link">          Profile
         </Link>
       </div>
       {isOpen && (
@@ -99,69 +100,18 @@ const ProfileDropdown = ({ isOpen, toggleDropdown }) => {
   );
 };
 
-const dummySearchData = [
-  {
-    firstName: "Roary",
-    lastName: "Royce",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Mathers",
-    classification: "Alumni",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Smith",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Smith",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Smith",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Smith",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Marshall",
-    lastName: "Smith",
-    classification: "Student",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-  {
-    firstName: "Chris",
-    lastName: "Hemsworth",
-    classification: "Alumni",
-    profilePic: "/images/roary-profile-pic.jpg",
-  },
-];
-
 const NavBar = () => {
   const [isSearchBold, setIsSearchBold] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchInput, setSearchInput] = useState(""); 
+  const [searchResults, setSearchResults] = useState([]); 
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSearchClick = () => {
     setIsSearchBold(true);
   };
 
-  
   const handleSearchChange = async (e) => {
     const value = e.target.value;
     setSearchInput(value);
@@ -178,35 +128,8 @@ const NavBar = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const searchBarInfo = {
-      searchBarInput: searchInput,
-    };
-
-    axios
-      .post("http://localhost:8000/authentication/user/", searchBarInfo, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("User found");
-          console.log("this is the response:", response);
-          window.location.href = `http://localhost:5173/view-profile/${response.data.user_id}`;
-        } else {
-          console.error("User cannot be found");
-          setErrorMessage("User cannot be found.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error sending search for user request:", error);
-        setErrorMessage(
-          "An error occurred while searching for user. Please try again later."
-        );
-      });
+  const handleUserClick = (profileUrl) => {
+    navigate(profileUrl);
   };
 
   const toggleDropdown = () => {
@@ -218,25 +141,19 @@ const NavBar = () => {
       <div className="NavBar">
         <img src={Logo_icon} alt="FIUnity Logo" className="logo" />
 
-      <div className="search-container">
         <div
           className={`searchBox ${isSearchBold ? "bold-search" : ""}`}
           onClick={handleSearchClick}
         >
-          <form onSubmit={handleSubmit} className= "searchInputNavBar">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchInput}
-              onChange={handleSearchChange}
-            />
-          </form>
-          <div className="navBarSubmit">
-            <button type="submit">
-              <img src={Pawprint_icon} alt="Paw Print Icon" className="pawprint-icon" />
-            </button>
-            </div>
-            </div>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchInput} // Updated
+            onChange={handleSearchChange} // Updated
+          />
+          <button className="search-button">
+            <img src={Pawprint_icon} alt="Paw Print Icon" />
+          </button>
         </div>
 
         {errorMessage && <div className="error-message">{errorMessage}</div>}
@@ -262,7 +179,7 @@ const NavBar = () => {
       {searchResults.length > 0 && (
         <div className="search-dropdown">
           {searchResults.map((user, index) => (
-            <div key={index} className="search-result">
+            <div key={index} className="search-result" onClick={() => handleUserClick(user.profileUrl)}>
               <div className="search-result-text">
                 <div className="bold-search">{`${user.fullName}`}</div>
                 <div className="search-result-status">
