@@ -80,8 +80,8 @@
 }
 
 .about-us-container {
-  max-height: 163px;
-  min-height: 163px;
+  max-height: 175px;
+  min-height: 175px;
 }
 
 .about-us-alum {
@@ -323,8 +323,8 @@
 }
 
 .project-tab-skill {
-  min-height: 180px;
-  max-height: 180px;
+  min-height: 173px;
+  max-height: 173px;
 }
 
 .project-tab-noskill,

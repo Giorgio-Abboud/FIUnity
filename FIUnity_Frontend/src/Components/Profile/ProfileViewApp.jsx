@@ -1,8 +1,8 @@
 import ProfileViewPage from "./ProfileViewPage";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import defaultProfilePicture from "../../assets/Default_pfp.png";
-import ClockLoader from 'react-spinners/ClockLoader';
+import { useParams, useLocation } from "react-router-dom";
+import ClockLoader from "react-spinners/ClockLoader";
 import "./ProfileView.css";
 
 const mapExperienceData = (data) => {
@@ -45,19 +45,33 @@ const ProfileViewApp = () => {
   const [error, setError] = useState(null);
   const [forcedLoading, setForcedLoading] = useState(true);
 
+  const { userId } = useParams();
+  const location = useLocation();
+  const isOwnProfile = location.pathname === "/view-profile";
+
+  console.log("User ID:", userId);
+  console.log("Location Pathname:", location.pathname);
+  console.log("IsOwnProfile:", isOwnProfile);
+
+
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/profile/mainpage/",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-          }
-        );
-        console.log("response", response.data);
+        console.log('got here')
+        const url = isOwnProfile 
+          ? "http://localhost:8000/profile/mainpage/"
+          : `http://localhost:8000/profile/usermainpage/${userId}/`;
+
+          console.log("Fetching URL:", url);
+
+        const response = await axios.get(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+
+        console.log('response', response)
 
         setProfileData({
           ...response.data,
@@ -80,7 +94,7 @@ const ProfileViewApp = () => {
     }, 3000);
     return () => clearTimeout(timer);
 
-  }, []);
+  }, [userId, isOwnProfile]);
 
   if (loading || forcedLoading) {
     return (
@@ -109,11 +123,12 @@ const ProfileViewApp = () => {
         aboutMe={profileData.profile.about}
         resumeURL={profileData.profile.resume}
         companyURL = {profileData.profile.company_url}
-        profilePic={profileData.profile.picture || defaultProfilePicture}
+        profilePic={profileData.profile.picture}
         experiences={profileData.experience_data}
         projects={profileData.project_data}
         skills={profileData.skill_data}
         extracurriculars={profileData.extra_data}
+        isOwnProfile={isOwnProfile}
       />
     </>
   );

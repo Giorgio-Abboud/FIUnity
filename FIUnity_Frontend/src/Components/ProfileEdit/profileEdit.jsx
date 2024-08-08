@@ -15,7 +15,6 @@ import {
   updateExperience,
   deleteExperience,
 } from "../api/profileApi.js";
-import defaultProfilePicture from "../../assets/Default_pfp.png";
 import "./profileEdit.css";
 import Search from "./search";
 import axios from "axios";
@@ -31,7 +30,7 @@ const ProfileEdit = ({ classification }) => {
     minor: "",
     careerInterest: "",
     aboutMe: "",
-    profilePicture: defaultProfilePicture,
+    profilePicture: null,
     resume: null,
     url: "",
     resumeURL: "",
@@ -82,14 +81,12 @@ const ProfileEdit = ({ classification }) => {
         const experience = await axiosInstance.get("/experiences/");
         const project = await axiosInstance.get("/projects/");
         const extracurr = await axiosInstance.get("/extracurriculars/");
-        const skills = await axiosInstance.get("/skills/");
 
         const data = profile.data;
         const expData = experience.data;
         const projData = project.data;
-        const skillsData = skills.data;
         const extracurrData = extracurr.data;
-        console.log('skill', skillsData)
+
         const fetchBlob = async (url) => {
           const profile = await fetch(url);
           const blob = await profile.blob();
@@ -151,12 +148,6 @@ const ProfileEdit = ({ classification }) => {
             })
           )
         );
-        setSkills(
-          skillsData.map((skill) => ({
-            id: skill.id,
-            skillName: skill.skill_name || "",
-          }))
-        );
 
       } catch (error) {
         console.error("Failed to fetch profile data:", error);
@@ -166,6 +157,36 @@ const ProfileEdit = ({ classification }) => {
     fetchProfileData();
   }, []);
 
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await axiosInstance.get("/skills/");
+        const skillsData = response.data;
+
+        console.log('Fetched skills data:', skillsData);
+
+        if (Array.isArray(skillsData) && skillsData.length > 0) {
+          const mappedSkills = skillsData.map((skill) => ({
+            id: skill.id || uuidv4(),
+            skillName: skill.skill_name || "",
+          }));
+          console.log('Mapped skills data:', mappedSkills);
+          setSkills(mappedSkills);
+        } else {
+          console.error('Fetched skills data is not an array or is empty');
+        }
+      } catch (error) {
+        console.error("Failed to fetch skills data:", error);
+      }
+    };
+
+    fetchSkills();
+  }, []);
+
+  useEffect(() => {
+    console.log('rendered skills', skills);
+  }, [skills]);
+  
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile((prevProfile) => ({ ...prevProfile, [name]: value }));
@@ -741,8 +762,6 @@ const ProfileEdit = ({ classification }) => {
                 <img
                   src={
                     profile.profilePicture
-                      ? profile.profilePicture
-                      : defaultProfilePicture
                   }
                   alt="Profile"
                   className="profile-picture"

@@ -1,7 +1,6 @@
 import "./ProfileView.css";
 import React, { useState, useEffect, useRef } from "react";
 import Carousel from "react-elastic-carousel";
-import defaultProfilePicture from "../../assets/Default_pfp.png";
 import { CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 
@@ -25,6 +24,7 @@ export default function ProfileViewPage({
   skills = [],
   extracurriculars = [],
   network = "",
+  isOwnProfile,
 }) {
   const [currentProjectSlide, setProjectCurrentSlide] = useState(0);
   const [currentExtracurricularSlide, setCurrentExtracurricularSlide] =
@@ -33,12 +33,25 @@ export default function ProfileViewPage({
   const projectCarouselRef = useRef(null);
   const extracurricularsCarouselRef = useRef(null);
   const experiencesCarouselRef = useRef(null);
-  const profilePictureUrl = profilePic ? profilePic : defaultProfilePicture;
+  const profilePictureUrl = profilePic;
   const navigate = useNavigate();
+  const [sortedExperiences, setSortedExperiences] = useState([]);
 
   const handleEditClick = () => {
     navigate("/profile-edit");
   };
+
+  const compareDates = (a, b) => {
+    if (a.endDate === "Present") return -1;
+    if (b.endDate === "Present") return 1;
+    const dateA = new Date(a.endDate);
+    const dateB = new Date(b.endDate);
+    return dateB - dateA;
+  };
+
+  useEffect(() => {
+    setSortedExperiences([...experiences].sort(compareDates));
+  }, [experiences]); 
 
   useEffect(() => {
     const projectInterval = setInterval(() => {
@@ -88,7 +101,7 @@ export default function ProfileViewPage({
       clearInterval(experiencesInterval);
       clearInterval(extracurricularsInterval);
     };
-  }, [projects.length, extracurriculars.length, experiences.length]);
+  }, [projects.length, extracurriculars.length, sortedExperiences.length]);
 
   if (
     !aboutMe // check if profile edit was completed, since this is a required field
@@ -96,11 +109,13 @@ export default function ProfileViewPage({
     return (
       <div className="empty-profile-message">
         It's really quiet over here...
+        {isOwnProfile && (
         <div className="edit-container-empty">
           <button className="edit-button" onClick={handleEditClick}>
             <CiEdit />
           </button>
         </div>
+        )}
       </div>
     );
   }
@@ -322,7 +337,7 @@ export default function ProfileViewPage({
                         </div>
                       )}
                     >
-                      {experiences.map((experience, index) => (
+                      {sortedExperiences.map((experience, index) => (
                         <div
                           key={index}
                           className={
@@ -432,7 +447,7 @@ export default function ProfileViewPage({
                         </div>
                       )}
                     >
-                      {experiences.map((experience, index) => (
+                      {sortedExperiences.map((experience, index) => (
                         <div key={index}>
                           <div className="experience-tab-container">
                             <div>

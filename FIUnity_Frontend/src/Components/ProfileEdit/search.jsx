@@ -47,7 +47,7 @@ const Search = ({ value, onSearchChange }) => {
     };
 
     return (
-        <div className="search-container">
+        <div className="search-profile-container">
             <div className="search-input">
                 <AsyncPaginate
                     id="location"
