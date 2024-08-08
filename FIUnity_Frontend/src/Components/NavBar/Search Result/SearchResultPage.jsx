@@ -14,13 +14,14 @@ const SearchResultPage = () => {
     navigate(profileUrl);
   };
 
-  console.log('search results', searchResults)
+  console.log("search results", searchResults);
 
   return (
     <div>
       <h1 className="search-result-name">Search Results for "{searchTerm}":</h1>
       <p className="result-found">
-        {searchResults.length} result{searchResults.length !== 1 ? "s" : ""} found
+        {searchResults.length} result{searchResults.length !== 1 ? "s" : ""}{" "}
+        found
       </p>
       <div className="search-division"></div>
       {searchResults && searchResults.length > 0 ? (
@@ -29,18 +30,17 @@ const SearchResultPage = () => {
             <div
               className="search-item-container"
               key={index}
-              onClick={() => handleUserClick(user.profileUrl)} 
+              onClick={() => handleUserClick(user.profileUrl)}
             >
-              <img
-                src={user.profilePic}
-                alt="Profile"
-                className="search-pic"
-              />
+              <img src={user.profilePic} alt="Profile" className="search-pic" />
               <div>
                 <h2>{user.fullName}</h2>
                 <p className="search-class">{user.classification}</p>
-                <p>{user.gradTerm} {user.gradYear}</p> 
-                <p>{user.major}</p> 
+                {user.classification === "Student" ? (
+                  <p>{user.major}</p> 
+                ) : (
+                  <p>{user.currJob}</p> 
+                )}
               </div>
             </div>
           ))}

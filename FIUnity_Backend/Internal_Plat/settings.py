@@ -143,7 +143,7 @@ DATABASES = {
          'ENGINE': 'django.db.backends.postgresql', 
          'NAME': 'fiunity', 
          'USER': 'postgres', 
-         'PASSWORD': 'root', 
+         'PASSWORD': 'P0$tgr3$q1', 
          'HOST': 'localhost', 
          'PORT': '5432', } 
          }
