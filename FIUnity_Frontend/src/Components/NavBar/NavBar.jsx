@@ -128,6 +128,18 @@ const NavBar = () => {
     }
   };
 
+  const handleSearchSubmit = async () => {
+    if (searchInput) {
+      try {
+        const results = await fetchProfiles(searchInput);
+        // Navigate to search-result page with the search results as state
+        navigate('/search-result', { state: { searchResults: results, searchTerm: searchInput } });
+      } catch (error) {
+        console.error('Error fetching search results:', error);
+      }
+    }
+  };
+
   const handleUserClick = (profileUrl) => {
     navigate(profileUrl);
   };
@@ -151,7 +163,7 @@ const NavBar = () => {
             value={searchInput} // Updated
             onChange={handleSearchChange} // Updated
           />
-          <button className="search-button">
+          <button className="search-button" onClick={handleSearchSubmit}>
             <img src={Pawprint_icon} alt="Paw Print Icon" />
           </button>
         </div>

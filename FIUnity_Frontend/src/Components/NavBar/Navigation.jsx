@@ -9,7 +9,7 @@ import RegistrationLogIn from "../Login Page/Log-in";
 import Registration from "../Registration/regist-App";
 import ProfileEditApp from "../ProfileEdit/profileEditApp";
 import ProfileViewApp from "../Profile/ProfileViewApp";
-// import SearchPageApp from "../Search Page/SearchPageApp";
+import SearchResultApp from "../NavBar/Search Result/SearchResultApp";
 import { Route, Routes, useLocation } from "react-router-dom";
 
 const Navigation = () => {
@@ -41,7 +41,7 @@ const Navigation = () => {
           <Route path="/profile-edit" element={<ProfileEditApp />} />
           <Route path="/view-profile" element={<ProfileViewApp />} />
           <Route path="/profile/usermainpage/:userId" element={<ProfileViewApp />} />
-          {/* <Route path="/search-page" element={<SearchPageApp />} /> */}
+          <Route path="/search-result" element={<SearchResultApp />} />
           <Route path="/" element={<RegistrationLogIn />} />
           <Route path="/post-job" element={<ViewJobs />} />
         </Routes>
