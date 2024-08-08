@@ -10,11 +10,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # migrations.AddField(
-        #     model_name='profile',
-        #     name='company_url',
-        #     field=models.URLField(blank=True, default='', null=True),
-        # ),
+        migrations.AddField(
+            model_name='profile',
+            name='company_url',
+            field=models.URLField(blank=True, default='', null=True),
+        ),
         migrations.AlterField(
             model_name='profile',
             name='about',
