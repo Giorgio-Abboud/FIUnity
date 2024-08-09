@@ -37,8 +37,9 @@ export default function FinalPost({
   const [commentProfiles, setCommentProfiles] = useState({});
   const [profilePic, setProfilePic] = useState(defaultProfilePicture);
   const [userName, setUserName] = useState('');
-
-
+  const [isPostAuthor, setIsPostAuthor] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState("");
+  const [commentAuthors, setCommentAuthors] = useState({});
 
   useEffect(() => {
     const fetchPostDetails = async () => {
@@ -65,14 +66,25 @@ export default function FinalPost({
     const firstName = localStorage.getItem("first_name");
     const lastName = localStorage.getItem("last_name");
     const fullName = `${firstName} ${lastName}`.trim();
+    const userId = localStorage.getItem("user_id");
 
     setUserName(fullName);
+    setCurrentUserId(userId);
   }, []);
 
   useEffect(() => {
     const adjustedTimestamp = adjustTimestampToTimeZone(timestamp);
     setAdjustedTimestamp(adjustedTimestamp);
   }, [timestamp]);
+
+  useEffect(() => {
+    // Check if the logged-in user is the author of each comment
+    const commentAuthorsStatus = {};
+    comments.forEach((comment) => {
+      commentAuthorsStatus[comment.id] = comment.commenter_full_name === userName;
+    });
+    setCommentAuthors(commentAuthorsStatus);
+  }, [comments, userName]);
 
   useEffect(() => {
     if (comments && comments.length > 0) {
@@ -107,6 +119,12 @@ export default function FinalPost({
       setCommentProfiles(updatedCommentProfiles);
     }
   }, [comments]);
+
+  useEffect(() => {
+    // Check if the logged-in user is the author of the post
+    setIsPostAuthor(userName === posterFullName);
+  }, [userName, posterFullName]);
+
 
 
   function adjustTimestampToTimeZone(timestamp) {
@@ -262,9 +280,11 @@ export default function FinalPost({
     <>
       <div className="final-post-box font">
         <div className="delete-post-container">
-          <button className="icon-button" onClick={handleDeletePost}>
-            <MdDelete />
-          </button>
+          {isPostAuthor && (
+            <button className="icon-button" onClick={handleDeletePost}>
+              <MdDelete />
+            </button>
+          )}
         </div>
         <button className="icon-button">
           <div className="report-final">
@@ -374,12 +394,14 @@ export default function FinalPost({
                           <AiOutlineLike />
                           Like
                         </div>
-                        <button
-                          className="icon-button"
-                          onClick={() => handleDeleteComment(comment.id)}
-                        >
-                          <MdDelete />
-                        </button>
+                        {commentAuthors[comment.id] && (
+                          <div
+                            className="icon-box"
+                            onClick={() => handleDeleteComment(comment.id)}
+                          >
+                            <MdDelete />
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))
