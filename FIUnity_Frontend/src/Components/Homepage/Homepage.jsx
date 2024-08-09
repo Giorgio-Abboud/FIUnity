@@ -134,20 +134,21 @@ const Homepage = () => {
       <CreatePost
         firstName={firstName}
         lastName={lastName}
-        classification={classification}
+        classification={`${classification === "Alumni" ? "Alum" : classification}`}
         onPostSubmit={handlePostSubmit}
         profilePic={profileData || defaultProfilePicture}
       />
       {allPosts
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .map(
-          ({ id, body, date, comments, likes_count, no_of_comment, image, poster_full_name, poster_picture }) => (
+          ({ id, body, date, comments, likes_count, no_of_comment, image, poster_full_name, poster_picture, poster_status, status }) => (
             <FinalPost
               key={id}
               postId={id}
               posterFullName={poster_full_name}
               description={body}
-              classification={classification}
+              posterClassification={poster_status} 
+              userClassification={classification}
               image={image || ""}
               likesCount={likes_count}
               timestamp={date}

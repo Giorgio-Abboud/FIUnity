@@ -14,7 +14,8 @@ export default function FinalPost({
   firstName,
   lastName,
   posterFullName,
-  classification,
+  posterClassification,
+  userClassification,
   description,
   image,
   timestamp,
@@ -23,7 +24,7 @@ export default function FinalPost({
   no_of_comment,
   profilePicture,
 }) {
-  console.log("Received Classification:", classification);
+  console.log("Received Classification:", userClassification);
   const [userInput, setUserInput] = useState("");
   const [postLikesCount, setPostLikesCount] = useState(0);
   const [showCommentSection, setShowCommentSection] = useState(false);
@@ -37,7 +38,7 @@ export default function FinalPost({
   const [profilePic, setProfilePic] = useState(defaultProfilePicture);
   const [userName, setUserName] = useState('');
 
-  
+
 
   useEffect(() => {
     const fetchPostDetails = async () => {
@@ -54,11 +55,11 @@ export default function FinalPost({
         console.error("Failed to fetch post details:", error);
       }
     };
-    
+
     fetchPostDetails();
   }, [postId]);
 
-  
+
 
   useEffect(() => {
     const firstName = localStorage.getItem("first_name");
@@ -76,7 +77,7 @@ export default function FinalPost({
   useEffect(() => {
     if (comments && comments.length > 0) {
       console.log("Comments data:", comments);
-      
+
       const adjustedCommentTimestamps = {};
       comments.forEach((comment, index) => {
         const adjustedCommentTimestamp = adjustTimestampToTimeZone(comment.date);
@@ -98,11 +99,11 @@ export default function FinalPost({
           ? `${baseURL}${comment.commenter_profile_picture}`
           : defaultProfilePicture;
         updatedCommentProfiles[comment.id] = profilePic;
-  
+
         // Log the profile picture URL for debugging
         console.log("Profile picture URL:", updatedCommentProfiles[comment.id]);
       });
-  
+
       setCommentProfiles(updatedCommentProfiles);
     }
   }, [comments]);
@@ -283,7 +284,7 @@ export default function FinalPost({
               <div className="name">
                 {posterFullName}
               </div>
-              <div className="classification">{classification}</div>
+              <div className="classification">{`${posterClassification === "Alumni" ? "Alum" : posterClassification}`}{" "}</div>
             </div>
           </div>
           <div className="homepage-time-font">
@@ -318,7 +319,7 @@ export default function FinalPost({
                 <div className="comment-name">
                   {userName}
                 </div>
-                <div className="classification-comment">{classification}</div>
+                <div className="classification-comment">{`${userClassification === "Alumni" ? "Alum" : userClassification}`}{" "}</div>
               </div>
               <textarea
                 className="comment scrollbar"
@@ -351,7 +352,7 @@ export default function FinalPost({
                             {comment.commenter_name}
                           </p>
                           <div className="classification-comment">
-                            {comment.commenter_status}
+                            {`${comment.commenter_status === "Alumni" ? "Alum" : comment.commenter_status}`}{" "}
                           </div>
                         </div>
                         <button className="icon-button">
