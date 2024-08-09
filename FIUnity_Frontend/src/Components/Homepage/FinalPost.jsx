@@ -81,7 +81,7 @@ export default function FinalPost({
     // Check if the logged-in user is the author of each comment
     const commentAuthorsStatus = {};
     comments.forEach((comment) => {
-      commentAuthorsStatus[comment.id] = comment.commenter_full_name === userName;
+      commentAuthorsStatus[comment.id] = comment.commenter_name === userName;
     });
     setCommentAuthors(commentAuthorsStatus);
   }, [comments, userName]);
