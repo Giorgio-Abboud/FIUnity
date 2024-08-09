@@ -4,5 +4,5 @@ from .views import JobPostingView
 
 urlpatterns = [
     path('job-posting/', JobPostingView.as_view(), name='job-posting'),
-    path('job-list/', JobPostingView.as_view(), name='job-list')
+    path('job-delete/<int:pk>/', JobPostingView.as_view(), name='job-delete'),  # For delete operation (DELETE)
 ]
