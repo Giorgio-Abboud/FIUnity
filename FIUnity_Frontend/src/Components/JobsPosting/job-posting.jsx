@@ -13,14 +13,13 @@ const JobAddingPosting = () => {
   const [mode, setMode] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const today = new Date().toISOString().split("T")[0];
   const [otherRequirements, setOtherRequirements] = useState("");
   const [usWorkAuthorization, setUsWorkAuthorization] = useState(false);
   const [usCitizenship, setUsCitizenship] = useState(false);
   const [usResidency, setUsResidency] = useState(false);
   const [applicationLink, setApplicationLink] = useState("");
-  //const [isPosted, setIsPosted] = useState(false);
-  //const [redirectUrl, setRedirectUrl] = useState('');
-  //const [isError, setIsError] = useState(false);
+  const formattedEndDate = endDate.trim() === "" ? null : endDate;
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
@@ -29,20 +28,6 @@ const JobAddingPosting = () => {
     console.log("Form submitted");
     e.preventDefault();
 
-    console.log("All fields:", {
-      jobPosition,
-      companyName,
-      salary,
-      type,
-      mode,
-      startDate,
-      usWorkAuthorization,
-      usCitizenship,
-      usResidency,
-      applicationLink,
-    });
-
-    console.log("Hello");
     // Create an object with the job posting information
     const jobPostingData = {
       jobPosition,
@@ -53,7 +38,7 @@ const JobAddingPosting = () => {
       type,
       mode,
       startDate,
-      endDate,
+      endDate: formattedEndDate,
       otherRequirements,
       usWorkAuthorization,
       usCitizenship,
@@ -61,24 +46,31 @@ const JobAddingPosting = () => {
       applicationLink,
     };
 
-    console.log("hello");
+    console.log("job posting data", jobPostingData);
     // Send a POST request to the backend with the job posting information as JSON
     try {
       const response = await axios.post(
         "http://localhost:8000/jobs/job-posting/",
-        jobPostingData
+        jobPostingData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            "Content-Type": "application/json",
+            // Add any other headers you might need
+          },
+        }
       );
+    
       if (response.status === 201) {
         console.log("Job posting successful");
         navigate("/jobs-list");
-        //setIsPosted(true);
-        //setRedirectUrl('http://localhost:5173/jobs-list/');
+        console.log("response", response);
       } else {
         console.error("Job posting failed");
       }
     } catch (error) {
       console.error("Error sending job posting request:", error);
-    }
+    }    
   };
 
   return (
@@ -117,10 +109,12 @@ const JobAddingPosting = () => {
           />
 
           <label htmlFor="jobDescription">Description:</label>
-          <input
+          <textarea
+          className="description-job"
             type="text"
             id="jobDescription"
             value={jobDescription}
+            placeholder="Type here..."
             onChange={(e) => setJobDescription(e.target.value)}
           />
 
@@ -145,9 +139,9 @@ const JobAddingPosting = () => {
             required
           >
             <option value="">Choose one</option>
-            <option value="option1">Internship</option>
-            <option value="option2">Part-Time</option>
-            <option value="option3">Full-Time</option>
+            <option value="Internship">Internship</option>
+            <option value="Part-Time">Part-Time</option>
+            <option value="Full-Time">Full-Time</option>
           </select>
 
           <label htmlFor="mode">
@@ -160,9 +154,9 @@ const JobAddingPosting = () => {
             required
           >
             <option value="">Choose one</option>
-            <option value="option1">In-Person</option>
-            <option value="option2">Hybrid</option>
-            <option value="option3">Remote</option>
+            <option value="In-Person">In-Person</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Remote">Remote</option>
           </select>
 
           <div className="date-picker">
@@ -174,6 +168,7 @@ const JobAddingPosting = () => {
               id="startDate"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
+              min={today}
               required
             />
             <label htmlFor="endDate">End Date:</label>
@@ -181,12 +176,14 @@ const JobAddingPosting = () => {
               type="date"
               id="endDate"
               value={endDate}
+              min={today}
               onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
 
           <label htmlFor="otherRequirements">Other requirements:</label>
           <textarea
+          className="requirements-job"
             id="otherRequirements"
             value={otherRequirements}
             placeholder="Type here..."
