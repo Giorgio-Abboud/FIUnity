@@ -1,7 +1,10 @@
 # jobs/models.py
 from django.db import models
+from Authentication.models import AppUser
 
 class JobPosting(models.Model):
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='job_postings')
+
     jobPosition = models.CharField(max_length=100, default='')
     jobID = models.CharField(max_length=100)
     companyName = models.CharField(max_length=100)
@@ -33,3 +36,6 @@ class JobPosting(models.Model):
 
     def __str__(self):  # Corrected method name
         return self.jobPosition  # Use correct field name
+    
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"

@@ -75,7 +75,7 @@ class UserLoginSerializer(serializers.Serializer):
             tokens = user.tokens()
 
             return {
-                'status': user.status,
+                # 'status': user.status,
                 'id': user.id,
                 'email': user.email,
                 'full_name': user.get_full_name,
