@@ -1,118 +1,154 @@
 * {
-    color: #081e3f;
+  color: #081e3f;
 }
 
 svg {
-    margin-right: 10px;
-} 
+  margin-right: 10px;
+}
+
+.post-button-container {
+    display: flex;
+    justify-content: flex-end; 
+    padding-right: 4rem; 
+  }
 
 .post-job-button {
-    position: absolute;
-    top: 150px;
-    right: 80px;
-    z-index: 999;
-
-    background-color: #ffcc00b0;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    width: 120px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-
+  margin-top: 40px;
+  margin-left: 650px;
+  background-color: #ffcc00b0;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  width: 120px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .post-job-button:hover {
-    background-color: #b6862c;
+  background-color: #b6862c;
 }
 
-
 .job-list-container {
-    display: flex;
-
+  display: flex;
 }
 
 .job-list {
-   
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 100px;
-    flex: 1;
-    padding-left: 0;
-    padding-right: 0;
-    background-color: #fff;
-    box-shadow: 0 2px 5px hsla(0, 0%, 35%, 0.603);
-    border-radius: 4px;
-    width: 100vh;
-    height: auto;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 70px;
+  flex: 1;
+  padding-left: 0;
+  padding-right: 0;
+  background-color: #fff;
+  box-shadow: 0 2px 5px hsla(0, 0%, 35%, 0.603);
+  border-radius: 4px;
+  width: 100vh;
+  height: auto;
 }
 
 .job-list h2 {
-    font-size: 1.5rem;
-    margin-top: 10px;;
-    margin-bottom: 1rem;
-    text-align: center;
+  font-size: 1.5rem;
+  margin-top: 10px;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 .job-list h4 {
-    font-size: 0.5rem;
-    margin-bottom: 0;
-    padding-bottom: 0;
+  font-size: 0.5rem;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .job-list ul {
-
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 .job-list li {
-
-    background-color: #ffcc00b0;
-    cursor: pointer;
-    padding: 1rem;
-    border-bottom: 1px solid #ffffff;
-    background-color: (91.16, 134.1, 181.32, 0.5);
-    transition: background-color 0.3s ease;
+  background-color: #ffcc00b0;
+  cursor: pointer;
+  padding: 1rem;
+  border-bottom: 1px solid #ffffff;
+  background-color: (91.16, 134.1, 181.32, 0.5);
+  transition: background-color 0.3s ease;
 }
 
 .job-list li:hover {
-    background-color: #b6862c;
+  background-color: #b6862c;
 }
 
 .job-details {
-    
-    margin-top: 100px;
-    flex: 2;
-    padding: 2rem;
-    background-color: #fff;
-    box-shadow: 0 2px 5px hsla(0, 0%, 35%, 0.603);
-    border-radius: 4px;
-    margin-left: 2rem;
+  margin-top: 70px;
+  flex: 2;
+  padding: 2rem;
+  background-color: #fff;
+  box-shadow: 0 2px 5px hsla(0, 0%, 35%, 0.603);
+  border-radius: 4px;
+  margin-left: 2rem;
 }
 
 .job-details h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+  font-size: 1.5rem;
+  margin-bottom: 0.2rem;
 }
 
 .job-details p {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .job-details button {
-    background-color: #ffcc00b0;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  background-color: #ffcc00b0;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 13px 0px;
+  transition: background-color 0.3s ease;
 }
 
 .job-details button:hover {
-    background-color: #b6862c;
+  background-color: #b6862c;
+}
+
+.flex-job {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.posted-on {
+  font-weight: bold;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.job-gold {
+  font-weight: bold;
+  margin-left: 5px;
+  color: #ffcc00b0;
+}
+
+.requirements-job, .description-job {
+    max-width: 600px;
+    min-width: 600px;
+    min-height: 100px;
+    max-height: 250px;
+}
+
+.text-margin {
+    margin: 10px
+}
+
+.separation-margin {
+    margin-top: 25px;
+}
+
+.company-name-heading {
+    font-weight: bold;
+    font-size: 20px;
+    padding-bottom: 20px;
 }

@@ -34,9 +34,13 @@ const JobsList = () => {
   const [selectedJob, setSelectedJob] = useState(null);
 
   useEffect(() => {
-    // Fetch job posting data from your backend
+    // Fetch job posting data from your backend with authorization header
     axios
-      .get("http://localhost:8008/jobs/job-posting/")
+      .get("http://localhost:8000/jobs/job-posting/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`, // Replace `accessToken` with your actual token variable
+        },
+      })
       .then((response) => {
         setJobs(response.data);
       })
@@ -46,11 +50,15 @@ const JobsList = () => {
   }, []);
 
   const handleJobClick = (jobPosition) => {
-    // Fetch job posting details for the selected job
+    // Fetch job posting details for the selected job with authorization header
     axios
-      .get(`http://localhost:8008/jobs/job-posting/`)
+      .get(`http://localhost:8000/jobs/job-posting/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`, // Replace `accessToken` with your actual token variable
+        },
+      })
       .then((response) => {
-        console.log(response.data);
+        console.log("response data", response.data);
         const selectedJobIndex = jobs.findIndex(
           (job) => job.jobPosition === jobPosition
         );
@@ -68,10 +76,12 @@ const JobsList = () => {
 
   return (
     <>
-      <div className="job-list-container">
+      <div className="post-button-container">
         <Link to="/job-posting">
           <button className="post-job-button">Post a Job</button>
         </Link>
+      </div>
+      <div className="job-list-container">
         <div className="job-list">
           <h2>Job Postings</h2>
           <ul>
@@ -90,14 +100,13 @@ const JobsList = () => {
             <div>
               <h3>{selectedJob.jobPosition}</h3>
               {selectedJob.jobId && <p>Job ID: {selectedJob.jobId}</p>}
-              <p>{selectedJob.companyName}</p>
-              {selectedJob.description && (
-                <div>
+              <p className="company-name-heading">{selectedJob.companyName}</p>
+              {selectedJob.jobDescription && (
+                <div text-m>
                   <h4>Description</h4>
-                  <p>{selectedJob.description}</p>
+                  <p className="text-margin">{selectedJob.jobDescription}</p>
                 </div>
               )}
-
               <div style={{ display: "flex", alignItems: "center" }}>
                 <svg
                   width="24"
@@ -232,7 +241,6 @@ const JobsList = () => {
                 </svg>
                 <p>{getModeLabel(selectedJob.mode)}</p>
               </div>
-
               <div style={{ display: "flex", alignItems: "center" }}>
                 <svg
                   width="24"
@@ -284,14 +292,12 @@ const JobsList = () => {
                   </p>
                 )}
               </div>
-
               {selectedJob.otherRequirements && (
-                <div>
+                <div className="separation-margin">
                   <h4>Other Requirements</h4>
-                  <p>{selectedJob.otherRequirements}</p>
+                  <p className="text-margin">{selectedJob.otherRequirements}</p>
                 </div>
               )}
-
               <div>
                 <div
                   style={{
@@ -336,34 +342,40 @@ const JobsList = () => {
                       stroke-linecap="round"
                     />
                   </svg>
-                  <p>
+                  <p style={{ marginTop: "2rem" }}>
                     US Work Authorization Required:{" "}
                     {selectedJob.usWorkAuthorization ? "Yes" : "No"}
                   </p>
                 </div>
 
-                <p style={{ marginLeft: "2.2rem", marginTop: "0" }}>
+                <p style={{ marginLeft: "2.2rem" }}>
                   US Citizenship Required:{" "}
                   {selectedJob.usCitizenship ? "Yes" : "No"}
                 </p>
-                <p style={{ marginLeft: "2.2rem", marginTop: "0" }}>
+                <p style={{ marginLeft: "2.2rem", marginBottom: "1.7rem" }}>
                   US Residency Required:{" "}
                   {selectedJob.usResidency ? "Yes" : "No"}
                 </p>
               </div>
-
-              <p>
-                <a href={selectedJob.applicationLink}>
-                  <button>Apply</button>
-                </a>
-              </p>
-              <p>
-                Posted:{" "}
+              <div className="flex-job">
+                <p>Posted by:</p>
+                <p className="posted-on">{selectedJob.full_name},</p>
+                <p className="job-gold">{selectedJob.status}</p>
+              </div>
+            </div>
+            <div className="flex-job">
+              <p>Created on:</p>
+              <p className="posted-on">
                 {selectedJob.created_at
                   ? new Date(selectedJob.created_at).toLocaleDateString()
                   : "Unknown"}
               </p>
             </div>
+            <p className="separation-margin">
+              <a href={selectedJob.applicationLink}>
+                <button>Apply</button>
+              </a>
+            </p>
           </div>
         )}
       </div>

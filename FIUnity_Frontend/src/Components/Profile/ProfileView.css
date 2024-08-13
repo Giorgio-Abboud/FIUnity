@@ -20,11 +20,17 @@
   padding-top: 20px;
 }
 
-.profile-large-container {
+.profile-large-container, .profile-large-container-alum {
   width: 800px;
   height: 800px;
   margin-left: auto;
   margin-right: auto;
+  padding-bottom: 150px;
+}
+
+.profile-large-container-alum {
+padding-bottom: 0px;
+height: 770px;
 }
 
 .profile-white-block, .info-block, .info-block-alum {
@@ -323,8 +329,8 @@
 }
 
 .project-tab-skill {
-  min-height: 173px;
-  max-height: 173px;
+  min-height: 190px;
+  max-height: 190px;
 }
 
 .project-tab-noskill,
@@ -345,8 +351,8 @@
 }
 
 .project-tab-noskill {
-  max-height: 305px;
-  min-height: 405px;
+  max-height: 418px;
+  min-height: 418px;
 }
 
 .experience-tab-noskill {
@@ -408,17 +414,24 @@
   justify-content: center;
 }
 
-.edit-container, .edit-container-empty {
+.edit-container, .edit-container-empty, .edit-container-alum {
   display: flex;
   justify-content: flex-end;
-  padding-top: 24px;
+  padding-top: 180px;
   padding-right: 34px;
   padding-bottom: 30px;
 }
 
+
 .edit-container-empty {
   padding-right: 0px;
+  padding-top: 50px;
   padding-left: 20px;
+}
+
+.edit-container-alum {
+  padding-top: 0px;
+  padding-bottom: 30px;
 }
 
 .edit-button {

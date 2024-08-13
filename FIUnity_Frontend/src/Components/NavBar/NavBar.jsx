@@ -29,7 +29,7 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-const fetchProfiles = async (searchTerm) => {    
+const fetchProfiles = async (searchTerm, loggedInUserEmail) => {    
   console.log('Fetching profiles with search term:', searchTerm);
   try {
     const response = await axiosInstance.get('/search/', {
@@ -38,14 +38,18 @@ const fetchProfiles = async (searchTerm) => {
 
     console.log('response:', response.data);
 
-    const mappedResults = response.data.map(profile => ({
+    const mappedResults = response.data
+    .filter(profile => profile.email !== loggedInUserEmail) 
+    .map(profile => ({
       fullName: profile.full_name, 
       classification: profile.check_graduation_status,
       profilePic: profile.picture,
       profileUrl: profile.profile_url,
-      email: profile.email
+      gradTerm: profile.grad_term,
+      gradYear: profile.graduation_year,
+      major: profile.major,
+      currJob: profile.current_job_title
     }));
-
     console.log('Mapped search results:', mappedResults);
     return mappedResults;
   } catch (error) {
@@ -106,6 +110,7 @@ const NavBar = () => {
   const [searchInput, setSearchInput] = useState(""); 
   const [searchResults, setSearchResults] = useState([]); 
   const [errorMessage, setErrorMessage] = useState("");
+  const loggedInUserEmail = localStorage.getItem("user_id"); 
   const navigate = useNavigate();
 
   const handleSearchClick = () => {
@@ -117,7 +122,7 @@ const NavBar = () => {
     setSearchInput(value);
     if (value) {
       try {
-        const results = await fetchProfiles(value);
+        const results = await fetchProfiles(value, loggedInUserEmail);
         setSearchResults(results);
       } catch (error) {
         console.error('Error fetching search results:', error);
@@ -125,6 +130,18 @@ const NavBar = () => {
       }
     } else {
       setSearchResults([]);
+    }
+  };
+
+  const handleSearchSubmit = async () => {
+    if (searchInput) {
+      try {
+        const results = await fetchProfiles(searchInput, loggedInUserEmail);
+        console.log('result', results)
+        navigate('/search-result', { state: { searchResults: results, searchTerm: searchInput } });
+      } catch (error) {
+        console.error('Error fetching search results:', error);
+      }
     }
   };
 
@@ -151,7 +168,7 @@ const NavBar = () => {
             value={searchInput} // Updated
             onChange={handleSearchChange} // Updated
           />
-          <button className="search-button">
+          <button className="search-button" onClick={handleSearchSubmit}>
             <img src={Pawprint_icon} alt="Paw Print Icon" />
           </button>
         </div>
