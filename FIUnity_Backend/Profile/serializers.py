@@ -30,11 +30,11 @@ class ExperienceSerializer(serializers.ModelSerializer):
                 except:
                     raise CustomValidation(detail="If currently_working is False, please provide end date",
                                                 field= "error",
-                                                status_code=status.HTTP_406_NOT_ACCEPTABLE)
+                                                status_code=status.HTTP_400_BAD_REQUEST)
                 if attrs[('start_date')] > end_date:
                     raise CustomValidation(detail="End date should be greater than starting date",
                                             field= "error",
-                                            status_code=status.HTTP_406_NOT_ACCEPTABLE)
+                                            status_code=status.HTTP_400_BAD_REQUEST)
         except KeyError:
             pass
         return super().validate(attrs)
@@ -117,7 +117,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         
         main_profile, created = MainProfile.objects.update_or_create(
             profile=user.profile,
-            defaults={'current_project': project}
+            # defaults={'current_project': project}
         )
         
         return project
@@ -187,7 +187,7 @@ class SingleProjectSerializer(serializers.ModelSerializer):
         # Update or create the main profile
         main_profile, created = MainProfile.objects.update_or_create(
             profile=instance.user.profile,
-            defaults={'current_project': instance}
+            # defaults={'current_project': instance}
         )
 
         return instance
@@ -210,7 +210,7 @@ class SkillSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Skill
-        fields = ['id', 'skill_name']
+        fields = ['user', 'id', 'skill_name']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -219,10 +219,11 @@ class SkillSerializer(serializers.ModelSerializer):
 
 # This serializer is to handle the standalone skill model  
 class StandaloneSkillSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.id')
 
     class Meta:
         model = StandaloneSkill
-        fields = ['id', 'skill_name', 'is_standalone']
+        fields = ['user', 'id', 'skill_name']
 
 # This serializer is for the creation and validation of the extracurricular model
 class ExtracurricularSerializer(serializers.ModelSerializer):
@@ -338,7 +339,7 @@ class MainPageSerializer(serializers.ModelSerializer):
     # full_name = serializers.SerializerMethodField()
     class Meta:
         model = MainProfile
-        exclude = ['id']
+        fields = '__all__'
 
     def get_full_name(self, obj):
         return obj.profile.full_name()

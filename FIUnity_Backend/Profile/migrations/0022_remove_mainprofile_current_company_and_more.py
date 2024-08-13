@@ -18,10 +18,10 @@ class Migration(migrations.Migration):
             model_name='mainprofile',
             name='current_extracurricular',
         ),
-        migrations.RemoveField(
-            model_name='mainprofile',
-            name='current_project',
-        ),
+        # migrations.RemoveField(
+        #     model_name='mainprofile',
+        #     name='current_project',
+        # ),
         migrations.AddField(
             model_name='profile',
             name='minor',

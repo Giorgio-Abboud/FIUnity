@@ -3,12 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import JobPosting
 from .serializers import JobPostingSerializer
-from rest_framework.permissions import AllowAny 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import get_object_or_404
 
 class JobPostingView(APIView):
-    
-    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         job_postings = JobPosting.objects.all()

@@ -33,7 +33,7 @@ export default function FinalPost({
     const fetchPostDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/feed/posts/${postId}/`
+          `http://localhost:8008/feed/posts/${postId}/`
         );
         setPostLikesCount(response.data.no_of_like);
         setIsLiked(response.data.is_liked);
@@ -109,7 +109,7 @@ export default function FinalPost({
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/feed/posts/${postId}/comment/`,
+        `http://127.0.0.1:8008/feed/posts/${postId}/comment/`,
         commentData,
         {
           headers: {
@@ -131,7 +131,7 @@ export default function FinalPost({
   const handleLikeClick = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/feed/posts/${postId}/likePost/`,
+        `http://localhost:8008/feed/posts/${postId}/likePost/`,
         null,
         {
           headers: {
@@ -154,7 +154,7 @@ export default function FinalPost({
   const handleCommentLikeClick = async (commentId) => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/feed/comments/${commentId}/likeComment/`,
+        `http://localhost:8008/feed/comments/${commentId}/likeComment/`,
         null,
         {
           headers: {
@@ -179,7 +179,7 @@ export default function FinalPost({
   const handleDeletePost = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:8000/feed/posts/${postId}/`,
+        `http://localhost:8008/feed/posts/${postId}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -199,7 +199,7 @@ export default function FinalPost({
   const handleDeleteComment = async (commentId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8000/feed/comments/${commentId}/`,
+        `http://localhost:8008/feed/comments/${commentId}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,

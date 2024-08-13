@@ -19,7 +19,7 @@ const Homepage = () => {
       try {
         // Fetch profile data
         const profileResponse = await axios.get(
-          "http://localhost:8000/profile/mainpage/",
+          "http://localhost:8008/profile/mainpage/",
           {
             headers: {
               "Content-Type": "application/json",
@@ -30,7 +30,7 @@ const Homepage = () => {
         setProfileData(profileResponse.data.profile.picture);
 
         // Fetch posts data
-        const postsResponse = await axios.get("http://127.0.0.1:8000/feed/posts/", {
+        const postsResponse = await axios.get("http://127.0.0.1:8008/feed/posts/", {
           headers: {
             "Content-Type": "application/json",
             mode: "cors",
@@ -95,7 +95,7 @@ const Homepage = () => {
   const handleLikeSubmit = async (postId) => {
     try {
       await axios.post(
-        `http://127.0.0.1:8000/feed/posts/${postId}/likePost/`,
+        `http://127.0.0.1:8008/feed/posts/${postId}/likePost/`,
         {},
         {
           headers: {

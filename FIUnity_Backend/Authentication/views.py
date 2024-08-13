@@ -62,13 +62,13 @@ class TestingAuthenticationReq(GenericAPIView):
 # =================================================================================================================== #
 
 # Login curl command
-# curl -X POST http://localhost:8000/authentication/login/ -H "Content-Type: application/json" -d '{
+# curl -X POST http://localhost:8008/authentication/login/ -H "Content-Type: application/json" -d '{
 #     "email": "jone@example.com",
 #     "password": "password123"
 # }'
 
 # Register curl command
-# curl -X POST http://localhost:8000/authentication/register/ -H "Content-Type: application/json" -d '{
+# curl -X POST http://localhost:8008/authentication/register/ -H "Content-Type: application/json" -d '{
 #     "first_name": "John",
 #     "last_name": "Doe",
 #     "email": "jone@example.com",
@@ -78,7 +78,7 @@ class TestingAuthenticationReq(GenericAPIView):
 
 # Logout curl command
 # curl -v -X POST \
-#   http://127.0.0.1:8000/authentication/logout/ \
+#   http://127.0.0.1:8008/authentication/logout/ \
 #   -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE3NTI5NzQzLCJpYXQiOjE3MTc1MjkxNDMsImp0aSI6IjcyN2I1MWZhZGM5OTQ1YTBiOTcyNGY1Y2M3MTIwMzVlIiwidXNlcl9pZCI6MTV9.Bh-pma9BQ2NVkC9QQtm91dc4nA8SBFPSy39TK8tKcuY' \
 #   -H 'Content-Type: application/json' \
 #   -d '{"refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNzYxNTU0MywiaWF0IjoxNzE3NTI5MTQzLCJqdGkiOiIzODcyYjNkMGJjNjQ0MzI2YjE3Y2Q5ODY1ODE4MDcwMCIsInVzZXJfaWQiOjE1fQ.-Swb8M36B5xPWYNyB5utb9UQD7XoyGPXrfHJtkhexMM"}'
