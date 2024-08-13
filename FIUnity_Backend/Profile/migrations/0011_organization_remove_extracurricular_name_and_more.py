@@ -104,7 +104,7 @@ class Migration(migrations.Migration):
                 ('about', models.TextField(default='', max_length=200)),
                 ('current_company', models.OneToOneField(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, to='Profile.experience')),
                 ('current_extra', models.OneToOneField(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, to='Profile.extracurricular')),
-                ('current_project', models.OneToOneField(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, to='Profile.project')),
+                # ('current_project', models.OneToOneField(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, to='Profile.project')),
                 ('current_skill', models.OneToOneField(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, to='Profile.skill')),
                 ('profile', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='Main_Profile', to='Profile.profile')),
             ],

@@ -498,7 +498,7 @@ const ProfileEdit = ({ classification }) => {
     try {
       // Update profile information
       const response = await axios.patch(
-        "http://localhost:8000/profile/userprofile/",
+        "http://localhost:8008/profile/userprofile/",
         formData,
         {
           headers: {

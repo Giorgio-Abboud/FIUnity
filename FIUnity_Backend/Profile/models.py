@@ -154,7 +154,7 @@ class Project(models.Model):
     tagline = models.CharField(max_length=200, blank = True, null = True)
 
     def save(self, *args, **kwargs):
-        self.tagline = f"Project: {self.project.name} "
+        self.tagline = f"Project: {self.project.name}"
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -168,7 +168,7 @@ class Extracurricular(models.Model):
     tagline = models.CharField(max_length=200, blank = True, null = True)
 
     def save(self, *args, **kwargs):
-        self.tagline = f"Extracurricular: {self.extracurricular.name} "
+        self.tagline = f"Extracurricular: {self.extracurricular.name}"
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -192,4 +192,3 @@ class MainProfile(models.Model):
     
     def __str__(self):
         return f'{self.profile.full_name()} --> {self.id}'
-    
