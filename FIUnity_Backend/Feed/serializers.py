@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Post, Like, Comment, CommentLike
+from .models import Post, Like, Comment, CommentLike, Repost
+from Profile.serializers import UserProfileSerializer
 
 class LikeSerializer(serializers.ModelSerializer):
     like_email = serializers.EmailField(read_only=True, source='user.email')
@@ -34,28 +35,51 @@ class CommentSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     likes = LikeSerializer(read_only=True, many=True)
     comments = CommentSerializer(read_only=True, many=True)
-    no_of_like = serializers.SerializerMethodField()
-    no_of_comment = serializers.SerializerMethodField()
-    poster_email = serializers.EmailField(read_only=True, source='user.email')
-    poster_id = serializers.IntegerField(read_only=True, source='user.id')
-    poster_full_name = serializers.CharField(read_only=True, source='user.get_full_name')
-    is_liked = serializers.SerializerMethodField()
+    no_of_likes = serializers.SerializerMethodField()
+    no_of_comments = serializers.SerializerMethodField()
+    poster_profile = UserProfileSerializer(source='user.profile', read_only=True)
+    reposts_count = serializers.SerializerMethodField()
+    is_reposted = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ['id', 'body', 'image', 'likes', 'comments', 'no_of_like', 'no_of_comment', 'date', 'poster_email', 'poster_id', 'poster_full_name', 'is_liked']
+        fields = ['id', 'body', 'image', 'likes', 'comments', 'no_of_likes', 'no_of_comments',
+                   'date', 'poster_profile', 'reposts_count', 'is_reposted']
 
-    def get_no_of_like(self, obj):
-        return obj.no_of_like()
+    def get_no_of_likes(self, obj):
+        return obj.no_of_likes()
 
-    def get_no_of_comment(self, obj):
-        return obj.no_of_comment()
+    def get_no_of_comments(self, obj):
+        return obj.no_of_comments()
+    
+    def get_reposts_count(self, obj):
+        return obj.reposts.count()
 
+    def get_is_reposted(self, obj):
+        user = self.context['request'].user
+        return obj.reposts.filter(user=user).exists()
+
+    # def get_is_liked(self, obj):
+    #     user = self.context['request'].user
+    #     return obj.likes.filter(user=user).exists()
+    
     def create(self, validated_data):
         user = self.context['request'].user
         post = Post.objects.create(user=user, **validated_data)
         return post
 
-    def get_is_liked(self, obj):
-        user = self.context['request'].user
-        return obj.likes.filter(user=user).exists()
+class RepostSerializer(serializers.ModelSerializer):
+    original_post = PostSerializer(read_only=True)  # Includes original post data
+    poster_profile = UserProfileSerializer(source='user.profile', read_only=True)
+    no_of_likes = serializers.SerializerMethodField()
+    no_of_comments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Repost
+        fields = ['id', 'original_post', 'date', 'no_of_likes', 'no_of_comments', 'poster_profile']
+
+    def get_no_of_likes(self, obj):
+        return obj.no_of_likes()
+
+    def get_no_of_comments(self, obj):
+        return obj.no_of_comments()

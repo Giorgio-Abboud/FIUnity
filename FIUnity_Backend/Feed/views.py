@@ -1,19 +1,9 @@
 from rest_framework import viewsets, status
-from .models import Post, Like, Comment, CommentLike
-from .serializers import PostSerializer, LikeSerializer, CommentSerializer
-from rest_framework.decorators import action, api_view
+from .models import Post, Like, Comment, CommentLike, Repost
+from .serializers import PostSerializer, LikeSerializer, CommentSerializer, RepostSerializer
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
-# # Creating the post
-# @api_view(['POST'])
-# def create_post(request):
-#     data = request.data.copy()
-#     serializer = PostSerializer(data=data, context={'request': request})
-#     if serializer.is_valid():
-#         serializer.save()
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Creating the view set for the posts
 class PostViewSet(viewsets.ModelViewSet):
@@ -23,6 +13,36 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save()
+
+    @action(detail=True, methods=['POST'])
+    def repost(self, request, pk=None):
+        post = self.get_object()
+        user = request.user
+        existing_repost = post.reposts.filter(user=user).first()
+
+        if existing_repost:
+            return Response({'message': 'You have already reposted this post'}, status=status.HTTP_400_BAD_REQUEST)
+
+        Repost.objects.create(user=user, original_post=post)
+        return Response({'message': 'Post reposted', 'reposts_count': post.reposts.count()}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['POST'])
+    def unrepost(self, request, pk=None):
+        post = self.get_object()
+        user = request.user
+        existing_repost = post.reposts.filter(user=user).first()
+
+        if not existing_repost:
+            return Response({'message': "You haven't reposted this post yet."}, status=status.HTTP_400_BAD_REQUEST)
+
+        existing_repost.delete()
+        return Response({'message': 'Repost removed', 'reposts_count': post.reposts.count()}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['GET'])
+    def get_reposts(self, request, pk=None):
+        reposts = Repost.objects.filter(original_post_id=pk)
+        serializer = RepostSerializer(reposts, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['POST'])
     def likePost(self, request, pk=None):
@@ -40,20 +60,20 @@ class PostViewSet(viewsets.ModelViewSet):
         return Response({'message': 'Post liked', 'likes_count': post.likes.count()}, status=status.HTTP_200_OK)
 
 
-    @action(detail=True, methods=['POST'])
-    def dislikePost(self, request, pk=None):
-        post = self.get_object()
-        user = request.user
-        existing_dislike = post.dislikes.filter(user=user).first()
+    # @action(detail=True, methods=['POST'])
+    # def dislikePost(self, request, pk=None):
+    #     post = self.get_object()
+    #     user = request.user
+    #     existing_dislike = post.dislikes.filter(user=user).first()
 
-        if existing_dislike:
-            # User has already disliked the post, so remove the dislike
-            existing_dislike.delete()
-            return Response({'message': 'Dislike removed', 'dislikes_count': post.dislikes.count()}, status=status.HTTP_200_OK)
+    #     if existing_dislike:
+    #         # User has already disliked the post, so remove the dislike
+    #         existing_dislike.delete()
+    #         return Response({'message': 'Dislike removed', 'dislikes_count': post.dislikes.count()}, status=status.HTTP_200_OK)
 
-        # Add a new dislike
-        Dislike.objects.create(user=user, post=post)
-        return Response({'message': 'Post disliked', 'dislikes_count': post.dislikes.count()}, status=status.HTTP_200_OK)
+    #     # Add a new dislike
+    #     Dislike.objects.create(user=user, post=post)
+    #     return Response({'message': 'Post disliked', 'dislikes_count': post.dislikes.count()}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['POST'])
     def comment(self, request, pk=None):
