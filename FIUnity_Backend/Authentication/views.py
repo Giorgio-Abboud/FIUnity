@@ -32,7 +32,13 @@ class UserLogin(GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
+        
+        if not serializer.is_valid():
+            return Response(
+                {'detail': 'Invalid email or password. Please try again.'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 # User logout view that recieves a request from the frontend

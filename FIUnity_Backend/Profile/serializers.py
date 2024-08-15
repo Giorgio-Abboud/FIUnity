@@ -310,6 +310,8 @@ class ProfileSearchSerializer(serializers.ModelSerializer):
 # Serializer used to create the profile
 class ProfileSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
+    picture = serializers.ImageField(read_only=True)
+    status = serializers.CharField(read_only=True)
     check_graduation_status = serializers.SerializerMethodField()
     current_job_title = serializers.SerializerMethodField()  # NEW CODE
 
@@ -329,6 +331,16 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_current_job_title(self, obj):
         current_experience = Experience.objects.filter(user=obj.user, currently_working=True).order_by('-start_date').first()
         return current_experience.job_position if current_experience else None
+    
+class UserProfileSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Profile
+        fields = ['full_name', 'picture', 'status']
+
+    def get_full_name(self, obj):
+        return f"{obj.user.first_name} {obj.user.last_name}"
 
 # Serializer used to make the main page for the profile
 class MainPageSerializer(serializers.ModelSerializer):
