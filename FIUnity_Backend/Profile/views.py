@@ -265,7 +265,7 @@ class MainProfileSearchView(ListAPIView):
     
     queryset = Profile.objects.all()
     filter_backends = [filters.SearchFilter] 
-    search_fields = ['first_name', 'last_name', 'email', 'grad_term',
+    search_fields = ['first_name', 'last_name', 'grad_term',
                     'graduation_year', 'major', 'career_interest']
     
     

@@ -74,7 +74,7 @@ class Profile(models.Model):
     career_interest = models.CharField(max_length=50, default='')
     picture = models.ImageField(upload_to='profile_pictures/', default='profile_pictures/black_background.jpg')
     status = models.CharField(max_length=50, default='')
-    network = models.CharField(choices=NETWORK_CHOICES, default='Open to Connect')
+    network = models.CharField(choices=NETWORK_CHOICES, default='')
     about = models.TextField(blank = True, null = True, default='')
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     company_url = models.URLField(blank=True, null=True, default='')

@@ -4,7 +4,7 @@ import random
 import string
 
 class LoadTestUser(HttpUser):
-    host = "http://127.0.0.1:8008/"
+    host = "http://127.0.0.1:8000/"
     wait_time = between(1, 5)
 
     @task
