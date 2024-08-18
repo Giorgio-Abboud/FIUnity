@@ -1,9 +1,12 @@
 # jobs/models.py
 from django.db import models
+from Authentication.models import AppUser
 
 class JobPosting(models.Model):
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='job_postings')
+
     jobPosition = models.CharField(max_length=100, default='')
-    jobID = models.CharField(max_length=100)
+    jobID = models.CharField(max_length=100, blank=True, null=True)
     companyName = models.CharField(max_length=100)
     jobDescription = models.TextField(blank=True, null=True)
     salary = models.CharField(max_length=50)
@@ -30,6 +33,10 @@ class JobPosting(models.Model):
     usCitizenship = models.BooleanField()
     usResidency = models.BooleanField()
     applicationLink = models.URLField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):  # Corrected method name
         return self.jobPosition  # Use correct field name
+    
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"

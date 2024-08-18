@@ -59,8 +59,8 @@ const ProfileViewApp = () => {
       try {
         console.log('got here')
         const url = isOwnProfile 
-          ? "http://localhost:8000/profile/mainpage/"
-          : `http://localhost:8000/profile/usermainpage/${userId}/`;
+          ? "http://localhost:8008/profile/mainpage/"
+          : `http://localhost:8008/profile/usermainpage/${userId}/`;
 
           console.log("Fetching URL:", url);
 

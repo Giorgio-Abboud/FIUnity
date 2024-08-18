@@ -274,8 +274,16 @@
   border-radius: 50%;
 }
 .search-button {
+  border-radius: 100%;
+  border: 5px solid #081e3f;
   cursor: pointer;
   border: none;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+}
+
+.search-button:hover {
+box-shadow: 0 0 15px #094ac2;
 }
 
 /* Responsive styles */

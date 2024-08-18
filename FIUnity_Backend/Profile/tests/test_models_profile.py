@@ -162,7 +162,7 @@ class TestProjectModel:
         )
 
         assert project.user == user
-        assert project.tagline == f"Project: {project_org.name} "
+        assert project.tagline == f"Project: {project_org.name}"
 
 
 @pytest.mark.django_db
@@ -188,7 +188,7 @@ class TestExtracurricularModel:
         )
 
         assert extracurricular.user == user
-        assert extracurricular.tagline == f"Extracurricular: {extra_org.name} "
+        assert extracurricular.tagline == f"Extracurricular: {extra_org.name}"
 
 
 @pytest.mark.django_db
