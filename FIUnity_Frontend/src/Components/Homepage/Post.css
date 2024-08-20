@@ -14,11 +14,11 @@
   flex-direction: column;
 }
 
-.profile-pic {
+.profile-pic img {
   /* margin-bottom: 10px; */
   width: 55px;
   height: 55px;
-  background-color: red;
+  background-color: #ffcc00;
   border-radius: 100%;
 }
 
@@ -254,11 +254,11 @@
   color: #0c3d72ab;
 }
 
-.comment-profile-pic {
+.comment-profile-pic img{
   width: 40px;
   margin-right: 13px;
   height: 40px;
-  background-color: red;
+  /* background-color: red; */
   border-radius: 100%;
 }
 

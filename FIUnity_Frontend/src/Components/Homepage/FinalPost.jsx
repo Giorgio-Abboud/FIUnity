@@ -6,19 +6,25 @@ import { IoShareOutline } from "react-icons/io5";
 import { MdOutlineReportGmailerrorred, MdDelete } from "react-icons/md";
 import { BiRepost } from "react-icons/bi";
 import axios from "axios";
+import defaultProfilePicture from "../../assets/Default_pfp.png"; // Ensure this path is correct
+
 
 export default function FinalPost({
   postId,
   firstName,
   lastName,
-  classification,
+  posterFullName,
+  posterClassification,
+  userClassification,
   description,
   image,
   timestamp,
   comments,
   onCommentSubmit,
   no_of_comment,
+  profilePicture,
 }) {
+  console.log("Received Classification:", userClassification);
   const [userInput, setUserInput] = useState("");
   const [postLikesCount, setPostLikesCount] = useState(0);
   const [showCommentSection, setShowCommentSection] = useState(false);
@@ -28,15 +34,24 @@ export default function FinalPost({
   );
   const [isLiked, setIsLiked] = useState(false);
   const [commentLikes, setCommentLikes] = useState({});
+  const [commentProfiles, setCommentProfiles] = useState({});
+  const [profilePic, setProfilePic] = useState(defaultProfilePicture);
+  const [userName, setUserName] = useState('');
+  const [isPostAuthor, setIsPostAuthor] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState("");
+  const [commentAuthors, setCommentAuthors] = useState({});
 
   useEffect(() => {
     const fetchPostDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8008/feed/posts/${postId}/`
+          `http://localhost:8000/feed/posts/${postId}/`
         );
         setPostLikesCount(response.data.no_of_like);
         setIsLiked(response.data.is_liked);
+        const profilePic = response.data.profile_picture || defaultProfilePicture;
+        setProfilePic(profilePic);
+        console.log("Post details fetched:", response.data);
       } catch (error) {
         console.error("Failed to fetch post details:", error);
       }
@@ -45,18 +60,39 @@ export default function FinalPost({
     fetchPostDetails();
   }, [postId]);
 
+
+
+  useEffect(() => {
+    const firstName = localStorage.getItem("first_name");
+    const lastName = localStorage.getItem("last_name");
+    const fullName = `${firstName} ${lastName}`.trim();
+    const userId = localStorage.getItem("user_id");
+
+    setUserName(fullName);
+    setCurrentUserId(userId);
+  }, []);
+
   useEffect(() => {
     const adjustedTimestamp = adjustTimestampToTimeZone(timestamp);
     setAdjustedTimestamp(adjustedTimestamp);
   }, [timestamp]);
 
   useEffect(() => {
+    // Check if the logged-in user is the author of each comment
+    const commentAuthorsStatus = {};
+    comments.forEach((comment) => {
+      commentAuthorsStatus[comment.id] = comment.commenter_name === userName;
+    });
+    setCommentAuthors(commentAuthorsStatus);
+  }, [comments, userName]);
+
+  useEffect(() => {
     if (comments && comments.length > 0) {
+      console.log("Comments data:", comments);
+
       const adjustedCommentTimestamps = {};
       comments.forEach((comment, index) => {
-        const adjustedCommentTimestamp = adjustTimestampToTimeZone(
-          comment.date
-        );
+        const adjustedCommentTimestamp = adjustTimestampToTimeZone(comment.date);
         adjustedCommentTimestamps[index] = adjustedCommentTimestamp;
       });
       setAdjustedCommentTimestamps(adjustedCommentTimestamps);
@@ -66,8 +102,30 @@ export default function FinalPost({
         initialCommentLikes[comment.id] = comment.likes_count;
       });
       setCommentLikes(initialCommentLikes);
+
+      // Add profile picture to comments
+      const baseURL = "http://localhost:8000"; // Adjust as needed
+      const updatedCommentProfiles = {};
+      comments.forEach((comment) => {
+        const profilePic = comment.commenter_profile_picture
+          ? `${baseURL}${comment.commenter_profile_picture}`
+          : defaultProfilePicture;
+        updatedCommentProfiles[comment.id] = profilePic;
+
+        // Log the profile picture URL for debugging
+        console.log("Profile picture URL:", updatedCommentProfiles[comment.id]);
+      });
+
+      setCommentProfiles(updatedCommentProfiles);
     }
   }, [comments]);
+
+  useEffect(() => {
+    // Check if the logged-in user is the author of the post
+    setIsPostAuthor(userName === posterFullName);
+  }, [userName, posterFullName]);
+
+
 
   function adjustTimestampToTimeZone(timestamp) {
     const date = new Date(timestamp);
@@ -109,7 +167,7 @@ export default function FinalPost({
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8008/feed/posts/${postId}/comment/`,
+        `http://127.0.0.1:8000/feed/posts/${postId}/comment/`,
         commentData,
         {
           headers: {
@@ -131,7 +189,7 @@ export default function FinalPost({
   const handleLikeClick = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8008/feed/posts/${postId}/likePost/`,
+        `http://localhost:8000/feed/posts/${postId}/likePost/`,
         null,
         {
           headers: {
@@ -154,7 +212,7 @@ export default function FinalPost({
   const handleCommentLikeClick = async (commentId) => {
     try {
       const response = await axios.post(
-        `http://localhost:8008/feed/comments/${commentId}/likeComment/`,
+        `http://localhost:8000/feed/comments/${commentId}/likeComment/`,
         null,
         {
           headers: {
@@ -179,7 +237,7 @@ export default function FinalPost({
   const handleDeletePost = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:8008/feed/posts/${postId}/`,
+        `http://localhost:8000/feed/posts/${postId}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -199,7 +257,7 @@ export default function FinalPost({
   const handleDeleteComment = async (commentId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8008/feed/comments/${commentId}/`,
+        `http://localhost:8000/feed/comments/${commentId}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -222,9 +280,11 @@ export default function FinalPost({
     <>
       <div className="final-post-box font">
         <div className="delete-post-container">
-          <button className="icon-button" onClick={handleDeletePost}>
-            <MdDelete />
-          </button>
+          {isPostAuthor && (
+            <button className="icon-button" onClick={handleDeletePost}>
+              <MdDelete />
+            </button>
+          )}
         </div>
         <button className="icon-button">
           <div className="report-final">
@@ -233,12 +293,18 @@ export default function FinalPost({
         </button>
         <div className="time-container">
           <div className="profile-pic-flex">
-            <div className="profile-pic"></div>
+            <div className="profile-pic">
+              <img
+                src={profilePicture}
+                alt="Profile"
+                onError={() => setProfilePic(defaultProfilePicture)}
+              />
+            </div>
             <div>
               <div className="name">
-                {firstName} {lastName}
+                {posterFullName}
               </div>
-              <div className="classification">{classification}</div>
+              <div className="classification">{`${posterClassification === "Alumni" ? "Alum" : posterClassification}`}{" "}</div>
             </div>
           </div>
           <div className="homepage-time-font">
@@ -271,9 +337,9 @@ export default function FinalPost({
             <div className="comment-flex">
               <div>
                 <div className="comment-name">
-                  {firstName} {lastName}
+                  {userName}
                 </div>
-                <div className="classification-comment">{classification}</div>
+                <div className="classification-comment">{`${userClassification === "Alumni" ? "Alum" : userClassification}`}{" "}</div>
               </div>
               <textarea
                 className="comment scrollbar"
@@ -294,13 +360,19 @@ export default function FinalPost({
                   .map((comment, index) => (
                     <div key={index} className="comment-post-box font">
                       <div className="time-container">
-                        <div className="comment-profile-pic"></div>
+                        <div className="comment-profile-pic">
+                          <img
+                            src={commentProfiles[comment.id] || defaultProfilePicture}
+                            alt="Profile"
+                            onError={(e) => e.target.src = defaultProfilePicture}
+                          />
+                        </div>
                         <div>
                           <p className="comment-name">
                             {comment.commenter_name}
                           </p>
                           <div className="classification-comment">
-                            {classification}
+                            {`${comment.commenter_status === "Alumni" ? "Alum" : comment.commenter_status}`}{" "}
                           </div>
                         </div>
                         <button className="icon-button">
@@ -322,12 +394,14 @@ export default function FinalPost({
                           <AiOutlineLike />
                           Like
                         </div>
-                        <button
-                          className="icon-button"
-                          onClick={() => handleDeleteComment(comment.id)}
-                        >
-                          <MdDelete />
-                        </button>
+                        {commentAuthors[comment.id] && (
+                          <div
+                            className="icon-box"
+                            onClick={() => handleDeleteComment(comment.id)}
+                          >
+                            <MdDelete />
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))

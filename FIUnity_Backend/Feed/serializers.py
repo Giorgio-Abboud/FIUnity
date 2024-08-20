@@ -21,6 +21,8 @@ class CommentSerializer(serializers.ModelSerializer):
     commenter_name = serializers.CharField(read_only=True, source='user.get_full_name')
     likes_count = serializers.SerializerMethodField()
     dislikes_count = serializers.SerializerMethodField()
+    commenter_profile_picture = serializers.SerializerMethodField()
+    commenter_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
@@ -31,6 +33,20 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_dislikes_count(self, obj):
         return obj.likes.filter(is_like=False).count()
+    
+    def get_commenter_profile_picture(self, obj):
+        try:
+            user_profile = Profile.objects.get(user=obj.user)
+            return user_profile.picture.url if user_profile.picture else None
+        except Profile.DoesNotExist:
+            return None
+    
+    def get_commenter_status(self, obj):
+        try:
+            user_profile = Profile.objects.get(user=obj.user)
+            return user_profile.status if user_profile.status else None
+        except Profile.DoesNotExist:
+            return None
 
 class PostSerializer(serializers.ModelSerializer):
     likes = LikeSerializer(read_only=True, many=True)

@@ -9,6 +9,7 @@ const Homepage = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [profileData, setProfileData] = useState(null);
+  const [classification, setClassification] = useState("");
   const [allPosts, setAllPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,7 +20,7 @@ const Homepage = () => {
       try {
         // Fetch profile data
         const profileResponse = await axios.get(
-          "http://localhost:8008/profile/mainpage/",
+          "http://localhost:8000/profile/mainpage/",
           {
             headers: {
               "Content-Type": "application/json",
@@ -27,10 +28,14 @@ const Homepage = () => {
             },
           }
         );
-        setProfileData(profileResponse.data.profile.picture);
+        const profilePic = profileResponse.data.profile.picture || defaultProfilePicture;
+        setProfileData(profilePic);
+
+        setClassification(profileResponse.data.profile.status);
+        console.log("Status:", profileResponse.data.profile.status)
 
         // Fetch posts data
-        const postsResponse = await axios.get("http://127.0.0.1:8008/feed/posts/", {
+        const postsResponse = await axios.get("http://127.0.0.1:8000/feed/posts/", {
           headers: {
             "Content-Type": "application/json",
             mode: "cors",
@@ -39,9 +44,11 @@ const Homepage = () => {
 
         const first_name = localStorage.getItem("first_name");
         const last_name = localStorage.getItem("last_name");
+        
 
         setFirstName(first_name);
         setLastName(last_name);
+        
         setAllPosts(postsResponse.data);
 
         setLoading(false);
@@ -78,6 +85,8 @@ const Homepage = () => {
       first_name: firstName,
       last_name: lastName,
       text: newComment.text,
+      profilePicture: profileData || defaultProfilePicture,
+      
     };
     setAllPosts((prevPosts) =>
       prevPosts.map((post) =>
@@ -95,7 +104,7 @@ const Homepage = () => {
   const handleLikeSubmit = async (postId) => {
     try {
       await axios.post(
-        `http://127.0.0.1:8008/feed/posts/${postId}/likePost/`,
+        `http://127.0.0.1:8000/feed/posts/${postId}/likePost/`,
         {},
         {
           headers: {
@@ -125,27 +134,28 @@ const Homepage = () => {
       <CreatePost
         firstName={firstName}
         lastName={lastName}
-        classification={"Student"}
+        classification={`${classification === "Alumni" ? "Alum" : classification}`}
         onPostSubmit={handlePostSubmit}
         profilePic={profileData || defaultProfilePicture}
       />
       {allPosts
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .map(
-          ({ id, body, date, comments, likes_count, no_of_comment, image }) => (
+          ({ id, body, date, comments, likes_count, no_of_comment, image, poster_full_name, poster_picture, poster_status, status }) => (
             <FinalPost
               key={id}
               postId={id}
-              firstName={firstName}
-              lastName={lastName}
+              posterFullName={poster_full_name}
               description={body}
-              classification={"Student"}
+              posterClassification={poster_status} 
+              userClassification={classification}
               image={image || ""}
               likesCount={likes_count}
               timestamp={date}
               no_of_comment={no_of_comment}
               comments={comments}
               onCommentSubmit={handleCommentSubmit}
+              profilePicture={poster_picture || defaultProfilePicture}
             />
           )
         )}

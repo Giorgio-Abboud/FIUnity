@@ -1,4 +1,5 @@
 from django.utils import timezone
+import datetime
 from django.db import models
 from django.conf import settings
 from Authentication.models import AppUser
@@ -50,7 +51,7 @@ class CommentLike(models.Model):
     comment = models.ForeignKey(Comment, related_name='likes', on_delete=models.CASCADE)
     user = models.ForeignKey(AppUser, related_name='comment_likes', on_delete=models.CASCADE)
     is_like = models.BooleanField(default=True)  # True for like, False for dislike
-    date = models.DateTimeField(default=timezone.now)
+    date = models.DateTimeField(default=datetime.datetime.today)
 
     class Meta:
         # ordering = ["-date"]
