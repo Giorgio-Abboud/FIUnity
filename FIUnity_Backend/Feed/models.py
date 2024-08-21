@@ -60,7 +60,7 @@ class CommentLike(models.Model):
         index_together = (('user', 'comment'),)
 
 class Repost(models.Model):
-    original_post = models.ForeignKey(Post, related_name='reposts', on_delete=models.CASCADE)
+    original_post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='reposts')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='reposts', on_delete=models.CASCADE)
     date = models.DateTimeField(default=timezone.now)
 

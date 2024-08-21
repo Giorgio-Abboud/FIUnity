@@ -23,7 +23,13 @@ export default function FinalPost({
   onCommentSubmit,
   no_of_comment,
   profilePicture,
+  repostCount = 0,
+  repostDate
 }) {
+  const hasReposts = repostCount > 0;
+  const [repostedBy, setRepostedBy] = useState({});
+  // const repostedByFullName = repostedBy?.fullName || "Unknown";
+  // const repostedByProfilePicture = repostedBy?.profilePicture || defaultProfilePicture;
   console.log("Received Classification:", userClassification);
   const [userInput, setUserInput] = useState("");
   const [postLikesCount, setPostLikesCount] = useState(0);
@@ -295,31 +301,90 @@ export default function FinalPost({
       const endpoint = isReposted
         ? `http://localhost:8000/feed/posts/${postId}/unrepost/`
         : `http://localhost:8000/feed/posts/${postId}/repost/`;
-      
+
       const response = await axios.post(endpoint, null, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
-  
+
       if (response.status === 200) {
+        const repostData = response.data;
         setIsReposted(!isReposted);
-        setRepostsCount(response.data.reposts_count);
-  
-        // Optionally save state to local storage
-        localStorage.setItem(`post_${postId}_reposts_count`, response.data.reposts_count);
+        setRepostsCount(repostData.reposts_count);
+
+        console.log("Reposted by Full Name:", response.data.repostedBy?.fullName || "Unknown");
+        console.log("Reposted by Profile Picture:", response.data.repostedBy?.profilePicture || defaultProfilePicture);
+
+        if (!isReposted && repostData.original_post_id) {
+          const originalPostResponse = await axios.get(
+            `http://localhost:8000/feed/posts/${repostData.original_post_id}/`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              },
+            }
+          );
+
+          if (originalPostResponse.status === 200) {
+            const originalPost = originalPostResponse.data;
+            const repostedPost = {
+              ...originalPost,
+              repostedBy: {
+                fullName: userName || "Unknown",
+                profilePicture: profilePicture || defaultProfilePicture,
+              },
+              repostDate: repostData.date,
+            };
+            localStorage.setItem('repostedPost', JSON.stringify(repostedPost));
+            setRepostedBy(repostedPost.repostedBy);
+
+
+            const handleRepostedPost = (post) => {
+              console.log("Reposted Post:", post);
+            };
+
+            handleRepostedPost(repostedPost);
+
+          }
+        }
+
+        localStorage.setItem(`post_${postId}_reposts_count`, repostData.reposts_count);
         localStorage.setItem(`post_${postId}_is_reposted`, !isReposted);
       }
     } catch (error) {
       console.error("Error handling repost click:", error);
     }
   };
+
+  useEffect(() => {
+    const storedRepostedPost = localStorage.getItem('repostedPost');
+    if (storedRepostedPost) {
+      const repostedPost = JSON.parse(storedRepostedPost);
+      setRepostedBy(repostedPost.repostedBy);
+      setRepostsCount(repostedPost.repostsCount || 0);
+    }
+  }, []);
   
+
+
 
   return (
     <>
+      {/* {console.log("Reposted by Full Name:", repostedByFullName)}
+      {console.log("Reposted by Profile Picture:", repostedByProfilePicture)} */}
       <div className="final-post-box font">
+        {repostsCount > 0 && (
+          <div className="repost-info">
+            <img
+              src={repostedBy.profilePicture || defaultProfilePicture}
+              alt={`${repostedBy.fullName}'s profile picture`}
+            />
+            <span>Reposted by {repostedBy.fullName}</span>
+          </div>
+        )}
         <div className="delete-post-container">
           {isPostAuthor && (
             <button className="icon-button" onClick={handleDeletePost}>
