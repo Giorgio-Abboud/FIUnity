@@ -40,6 +40,8 @@ export default function FinalPost({
   const [isPostAuthor, setIsPostAuthor] = useState(false);
   const [currentUserId, setCurrentUserId] = useState("");
   const [commentAuthors, setCommentAuthors] = useState({});
+  const [isReposted, setIsReposted] = useState(false);
+  const [repostsCount, setRepostsCount] = useState(0);
 
   useEffect(() => {
     const fetchPostDetails = async () => {
@@ -47,11 +49,14 @@ export default function FinalPost({
         const response = await axios.get(
           `http://localhost:8000/feed/posts/${postId}/`
         );
-        
+
         const savedLikeCount = localStorage.getItem(`post_${postId}_like_count`);
         const savedIsLiked = localStorage.getItem(`post_${postId}_is_liked`);
         setPostLikesCount(savedLikeCount ? parseInt(savedLikeCount) : response.data.no_of_like);
         setIsLiked(savedIsLiked === 'true' ? true : response.data.is_liked);
+
+        setRepostsCount(response.data.reposts_count);
+        setIsReposted(response.data.is_reposted);
 
         const profilePic = response.data.profile_picture || defaultProfilePicture;
         setProfilePic(profilePic);
@@ -285,6 +290,33 @@ export default function FinalPost({
     }
   };
 
+  const handleRepostClick = async () => {
+    try {
+      const endpoint = isReposted
+        ? `http://localhost:8000/feed/posts/${postId}/unrepost/`
+        : `http://localhost:8000/feed/posts/${postId}/repost/`;
+      
+      const response = await axios.post(endpoint, null, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+  
+      if (response.status === 200) {
+        setIsReposted(!isReposted);
+        setRepostsCount(response.data.reposts_count);
+  
+        // Optionally save state to local storage
+        localStorage.setItem(`post_${postId}_reposts_count`, response.data.reposts_count);
+        localStorage.setItem(`post_${postId}_is_reposted`, !isReposted);
+      }
+    } catch (error) {
+      console.error("Error handling repost click:", error);
+    }
+  };
+  
+
   return (
     <>
       <div className="final-post-box font">
@@ -336,7 +368,8 @@ export default function FinalPost({
           <div className="Post-icon-color">
             <IoShareOutline /> Share
           </div>
-          <div className="Post-icon-color">
+          <div className="Post-icon-color" onClick={handleRepostClick}>
+            {repostsCount}
             <BiRepost /> Repost
           </div>
         </div>

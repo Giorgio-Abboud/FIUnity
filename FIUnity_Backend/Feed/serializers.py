@@ -74,7 +74,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_is_reposted(self, obj):
         user = self.context['request'].user
-        return obj.reposts.filter(reposted_by=user).exists()
+        return obj.reposts.filter(user=user).exists()
 
     # def get_is_liked(self, obj):
     #     user = self.context['request'].user

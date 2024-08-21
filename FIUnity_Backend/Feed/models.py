@@ -60,11 +60,11 @@ class CommentLike(models.Model):
 
 class Repost(models.Model):
     original_post = models.ForeignKey(Post, related_name='reposts', on_delete=models.CASCADE)
-    reposted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reposts')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='reposts', on_delete=models.CASCADE)
     date = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        unique_together = (('original_post', 'reposted_by'),)
+        unique_together = (('original_post', 'user'),)
         ordering = ["-date"]
 
     def __str__(self):
@@ -78,7 +78,7 @@ class Repost(models.Model):
     
     def poster_profile(self):
         return self.user.profile
-    
+
 class RepostLike(models.Model):
     repost = models.ForeignKey(Repost, related_name='likes', on_delete=models.CASCADE)
     user = models.ForeignKey(AppUser, related_name='repost_likes', on_delete=models.CASCADE)
@@ -93,6 +93,9 @@ class RepostLike(models.Model):
 
 class RepostComment(models.Model):
     repost = models.ForeignKey(Repost, related_name='comments', on_delete=models.CASCADE)
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(AppUser, related_name='repost_comments', on_delete=models.CASCADE)
     body = models.TextField()
     date = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ["-date"]
