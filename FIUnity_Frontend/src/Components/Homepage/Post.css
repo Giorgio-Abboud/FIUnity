@@ -14,6 +14,30 @@
   flex-direction: column;
 }
 
+.repost-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 5px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  width: 100%; /* Ensure it takes the full width */
+}
+
+.repost-info img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.repost-info span {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+
 .profile-pic img {
   /* margin-bottom: 10px; */
   width: 55px;
@@ -305,6 +329,7 @@
   scrollbar-width: none;
   overflow-y: scroll;
 }
+
 
 .report-final {
   position: absolute;

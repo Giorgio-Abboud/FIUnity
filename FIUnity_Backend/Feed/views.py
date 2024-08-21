@@ -16,15 +16,26 @@ class PostViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['POST'])
     def repost(self, request, pk=None):
-        post = self.get_object()
-        user = request.user
-        existing_repost = post.reposts.filter(user=user).first()
+        try:
+            post = self.get_object()
+            user = request.user
+            existing_repost = post.reposts.filter(user=user).first()
 
-        if existing_repost:
-            return Response({'message': 'You have already reposted this post'}, status=status.HTTP_400_BAD_REQUEST)
+            if existing_repost:
+                return Response({'message': 'You have already reposted this post'}, status=status.HTTP_400_BAD_REQUEST)
 
-        Repost.objects.create(user=user, original_post=post)
-        return Response({'message': 'Post reposted', 'reposts_count': post.reposts.count()}, status=status.HTTP_200_OK)
+            Repost.objects.create(user=user, original_post=post)
+
+            return Response({
+                'message': 'Post reposted',
+                'reposts_count': post.reposts.count(),
+                'original_post_id': post.id,  # Include the original post ID
+                'date': Repost.objects.get(original_post=post, user=user).date.isoformat(),  # Include the repost date
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(f"Error in repost method: {e}")
+            return Response({'message': 'An error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
     @action(detail=True, methods=['POST'])
     def unrepost(self, request, pk=None):

@@ -44,11 +44,11 @@ const Homepage = () => {
 
         const first_name = localStorage.getItem("first_name");
         const last_name = localStorage.getItem("last_name");
-        
+
 
         setFirstName(first_name);
         setLastName(last_name);
-        
+
         setAllPosts(postsResponse.data);
 
         setLoading(false);
@@ -76,7 +76,11 @@ const Homepage = () => {
   }
 
   const handlePostSubmit = (newPost) => {
-    setAllPosts((prevPosts) => [newPost, ...prevPosts]);
+    if (newPost.repostedBy) {
+      setAllPosts((prevPosts) => [newPost, ...prevPosts]);
+    } else {
+      setAllPosts((prevPosts) => [newPost, ...prevPosts]);
+    }
   };
 
   const handleCommentSubmit = (postId, newComment) => {
@@ -86,16 +90,16 @@ const Homepage = () => {
       last_name: lastName,
       text: newComment.text,
       profilePicture: profileData || defaultProfilePicture,
-      
+
     };
     setAllPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === postId
           ? {
-              ...post,
-              comments: [...(post.comments || []), newComment],
-              comments_count: (post.comments_count || 0) + 1,
-            }
+            ...post,
+            comments: [...(post.comments || []), newComment],
+            comments_count: (post.comments_count || 0) + 1,
+          }
           : post
       )
     );
@@ -118,9 +122,9 @@ const Homepage = () => {
         prevPosts.map((post) =>
           post.id === postId
             ? {
-                ...post,
-                likes_count: (post.likes_count || 0) + 1,
-              }
+              ...post,
+              likes_count: (post.likes_count || 0) + 1,
+            }
             : post
         )
       );
@@ -141,13 +145,13 @@ const Homepage = () => {
       {allPosts
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .map(
-          ({ id, body, date, comments, likes_count, no_of_comment, image, poster_profile, poster_status, status }) => (
+          ({ id, body, date, comments, likes_count, no_of_comment, image, poster_profile, poster_status, status, repostedBy, repostDate, reposts_count }) => (
             <FinalPost
               key={id}
               postId={id}
               posterFullName={poster_profile.full_name}
               description={body}
-              posterClassification={poster_profile.status} 
+              posterClassification={poster_profile.status}
               userClassification={classification}
               image={image || ""}
               likesCount={likes_count}
@@ -156,6 +160,10 @@ const Homepage = () => {
               comments={comments}
               onCommentSubmit={handleCommentSubmit}
               profilePicture={poster_profile.picture || defaultProfilePicture}
+              repostedBy={repostedBy || {}}
+              repostCount={reposts_count}
+              repostDate={repostDate}
+              onPostSubmit={handlePostSubmit}
             />
           )
         )}
