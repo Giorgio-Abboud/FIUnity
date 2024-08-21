@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Post, Like, Comment, CommentLike, Repost
+from Profile.models import Profile
 from Profile.serializers import UserProfileSerializer
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -73,7 +74,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_is_reposted(self, obj):
         user = self.context['request'].user
-        return obj.reposts.filter(user=user).exists()
+        return obj.reposts.filter(reposted_by=user).exists()
 
     # def get_is_liked(self, obj):
     #     user = self.context['request'].user
