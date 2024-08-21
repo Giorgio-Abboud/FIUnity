@@ -141,13 +141,13 @@ const Homepage = () => {
       {allPosts
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .map(
-          ({ id, body, date, comments, likes_count, no_of_comment, image, poster_full_name, poster_picture, poster_status, status }) => (
+          ({ id, body, date, comments, likes_count, no_of_comment, image, poster_profile, poster_status, status }) => (
             <FinalPost
               key={id}
               postId={id}
-              posterFullName={poster_full_name}
+              posterFullName={poster_profile.full_name}
               description={body}
-              posterClassification={poster_status} 
+              posterClassification={poster_profile.status} 
               userClassification={classification}
               image={image || ""}
               likesCount={likes_count}
@@ -155,7 +155,7 @@ const Homepage = () => {
               no_of_comment={no_of_comment}
               comments={comments}
               onCommentSubmit={handleCommentSubmit}
-              profilePicture={poster_picture || defaultProfilePicture}
+              profilePicture={poster_profile.picture || defaultProfilePicture}
             />
           )
         )}

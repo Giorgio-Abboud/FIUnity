@@ -47,8 +47,12 @@ export default function FinalPost({
         const response = await axios.get(
           `http://localhost:8000/feed/posts/${postId}/`
         );
-        setPostLikesCount(response.data.no_of_like);
-        setIsLiked(response.data.is_liked);
+        
+        const savedLikeCount = localStorage.getItem(`post_${postId}_like_count`);
+        const savedIsLiked = localStorage.getItem(`post_${postId}_is_liked`);
+        setPostLikesCount(savedLikeCount ? parseInt(savedLikeCount) : response.data.no_of_like);
+        setIsLiked(savedIsLiked === 'true' ? true : response.data.is_liked);
+
         const profilePic = response.data.profile_picture || defaultProfilePicture;
         setProfilePic(profilePic);
         console.log("Post details fetched:", response.data);
@@ -200,14 +204,19 @@ export default function FinalPost({
       );
 
       if (response.status === 200) {
-        console.log(isLiked ? "Unliked post" : "Liked post");
+        const newLikeCount = response.data.likes_count;
         setIsLiked(!isLiked);
-        setPostLikesCount(response.data.likes_count);
+        setPostLikesCount(newLikeCount);
+
+        // Save the new like count and state to local storage
+        localStorage.setItem(`post_${postId}_like_count`, newLikeCount);
+        localStorage.setItem(`post_${postId}_is_liked`, !isLiked);
       }
     } catch (error) {
       console.error("Error handling like click:", error);
     }
   };
+
 
   const handleCommentLikeClick = async (commentId) => {
     try {

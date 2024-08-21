@@ -60,11 +60,11 @@ class CommentLike(models.Model):
 
 class Repost(models.Model):
     original_post = models.ForeignKey(Post, related_name='reposts', on_delete=models.CASCADE)
-    user = models.ForeignKey(AppUser, related_name='reposts', on_delete=models.CASCADE)
+    reposted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reposts')
     date = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        unique_together = (('user', 'original_post'),)
+        unique_together = (('original_post', 'reposted_by'),)
         ordering = ["-date"]
 
     def __str__(self):
