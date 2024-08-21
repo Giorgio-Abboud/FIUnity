@@ -11,6 +11,7 @@ class Post(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to='image/', default=None)
     user = models.ForeignKey(AppUser, related_name='posts', on_delete=models.CASCADE)
     date = models.DateTimeField(default=timezone.now)
+    
 
     class Meta:
         ordering = ["-date"]
